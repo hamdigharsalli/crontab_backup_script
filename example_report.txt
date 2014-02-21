@@ -1,0 +1,244 @@
+Today's backup_device is "/dev/disk2"
+
+Disk space on local drives:
+
+Filesystem     Size   Used  Avail Capacity  Mounted on
+/dev/disk0s2   499G   313G   186G    63%    /
+/dev/disk1s3   2.0T   536G   1.5T    27%    /Volumes/firewire_disk
+/dev/disk5s2   150G    72G    78G    48%    /Volumes/thesis
+/dev/disk5s3   350G   284G    66G    82%    /Volumes/extra
+/dev/disk3s1   1000   971G    29G    98%    /Volumes/terabyte
+
+Mounting backup volumes...
+Volume(s) mounted successfully
+
+++++ Backing up local disk / to /Volumes/Backup-A
+
+"/usr/local/bin/rsync -iavzxAXE --exclude=/Volumes/ / /Volumes/Backup-A | tail -12 >> /Users/[redacted]/.20080129.1442_crontab_backup_report"
+
+.f....og... Users/[redacted]/Movies/iMovie Events.localized/IRISH IN THE WEST/iMovie Thumbnails/Clip 65
+.f....og... Users/[redacted]/Movies/iMovie Events.localized/IRISH IN THE WEST/iMovie Thumbnails/Clip 66
+.f....og... Users/[redacted]/Movies/iMovie Events.localized/IRISH IN THE WEST/iMovie Thumbnails/Clip 67
+.d....og... Users/[redacted]/Movies/iMovie Events.localized/IRISH IN THE WEST/iMovie Thumbnails/iMovie Movie Cache/
+.f....og... Users/[redacted]/Movies/iMovie Events.localized/IRISH IN THE WEST/iMovie Thumbnails/iMovie Movie Cache/Cache-24.mov
+.f....og... Users/[redacted]/Movies/iMovie Events.localized/IRISH IN THE WEST/iMovie Thumbnails/iMovie Movie Cache/Cache-25.mov
+.f....og... Users/[redacted]/Movies/iMovie Events.localized/IRISH IN THE WEST/iMovie Thumbnails/iMovie Movie Cache/Cache-30.mov
+.f....og... Users/[redacted]/Movies/iMovie Events.localized/IRISH IN THE WEST/iMovie Thumbnails/iMovie Movie Cache/Cache.plist
+.d..t.og... Users/[redacted]/Movies/iMovie Events.localized/Judith, book of - by [redacted]/
+.f....og... Users/[redacted]/Movies/iMovie Events.localized/Judith, book of - by [redacted]/.DS_Store
+.f....og... Users/[redacted]/Movies/iMovie Events.localized/Judith, book of - by [redacted]/00012.mov
+>f+++++++++ Users/[redacted]/Movies/iMovie Events.localized/Judith, book of - by [redacted]/00013.mov
+
+++++ Backing up local disk /Volumes/firewire_disk/ to /Volumes/Backup-C
+
+"/usr/local/bin/rsync -iavzxAXE --exclude=/Volumes/ /Volumes/firewire_disk/ /Volumes/Backup-C | tail -12 >> /Users/[redacted]/.20080129.1442_crontab_backup_report"
+
+>f..t...... .Spotlight-V100/Store-V2/DA1CE3C4-0FDA-448E-BDEF-5A4A170C90DE/store.db
+>f..t...... .Spotlight-V100/Store-V2/DA1CE3C4-0FDA-448E-BDEF-5A4A170C90DE/store.updates
+.d..t...... .Spotlight-V100/Store-V2/DA1CE3C4-0FDA-448E-BDEF-5A4A170C90DE/journals.live/
+>f+++++++++ .Spotlight-V100/Store-V2/DA1CE3C4-0FDA-448E-BDEF-5A4A170C90DE/journals.live/retire.1663146
+.d..t...... .fseventsd/
+>f..t...... .fseventsd/fseventsd-uuid
+.d..t...... Music/iTunes/
+>f.st...... Music/iTunes/iTunes Library.itl
+>f.st...... Music/iTunes/iTunes Music Library.xml
+
+sent 54342028 bytes  received 56022 bytes  501364.52 bytes/sec
+total size is 534982933606  speedup is 9834.60
+
+Checking if target directories exist in the /Volumes/Backup-B volume...
+...verified the existence of /Volumes/Backup-B/[redacted]
+...verified the existence of /Volumes/Backup-B/[redacted]
+...verified the existence of /Volumes/Backup-B/mail_spool
+...verified the existence of /Volumes/Backup-B/daily_archive
+
+---- Backing up remote disk [redacted]@[redacted]:.webmail to /Volumes/Backup-B/[redacted]/
+
+"/usr/local/bin/rsync -iavz [redacted]@[redacted]:.webmail /Volumes/Backup-B/[redacted]/ | tail -12 >> /Users/[redacted]/.20080129.1442_crontab_backup_report"
+
+.f....og... .webmail/users/[redacted]/SENT
+.f....og... .webmail/users/[redacted]/SENT.db
+.f....og... .webmail/users/[redacted]/TRASH
+.f....og... .webmail/users/[redacted]/TRASH.db
+.f....og... .webmail/users/[redacted]/WHAT?.db
+.f....og... .webmail/users/[redacted]/WHAT?.folder
+.f....og... .webmail/users/[redacted]/addressbook
+.f....og... .webmail/users/[redacted]/config
+.f....og... .webmail/users/[redacted]/signature
+
+sent 650 bytes  received 3050 bytes  352.38 bytes/sec
+total size is 5279980199  speedup is 1427021.68
+
+---- Backing up remote disk [redacted]@[redacted]:public_html to /Volumes/Backup-B/[redacted]/
+
+"/usr/local/bin/rsync -iavz [redacted]@[redacted]:public_html /Volumes/Backup-B/[redacted]/ | tail -12 >> /Users/[redacted]/.20080129.1442_crontab_backup_report"
+
+.f....og... public_html/test/archived_website/public_html/webmail/images/left-grey.gif
+.f....og... public_html/test/archived_website/public_html/webmail/images/left.gif
+.f....og... public_html/test/archived_website/public_html/webmail/images/logo.gif
+.f....og... public_html/test/archived_website/public_html/webmail/images/new.gif
+.f....og... public_html/test/archived_website/public_html/webmail/images/right-grey.gif
+.f....og... public_html/test/archived_website/public_html/webmail/images/right.gif
+.f....og... public_html/test/archived_website/public_html/webmail/images/up.gif
+.d....og... public_html/webmail/
+.d....og... public_html/webmail/images/
+
+sent 149142 bytes  received 1871867 bytes  35147.98 bytes/sec
+total size is 2871150028  speedup is 1420.65
+
+---- Backing up remote disk [redacted]@[redacted]:secure_html to /Volumes/Backup-B/[redacted]/
+
+"/usr/local/bin/rsync -iavz [redacted]@[redacted]:secure_html /Volumes/Backup-B/[redacted]/ | tail -12 >> /Users/[redacted]/.20080129.1442_crontab_backup_report"
+
+receiving file list ... done
+.d....og... secure_html/
+.f....og... secure_html/harbor_puppy_report_attachment_1.pdf
+.f....og... secure_html/harbor_puppy_report_attachment_2.pdf
+.f....og... secure_html/index.html
+
+sent 44 bytes  received 202 bytes  28.94 bytes/sec
+total size is 2095569  speedup is 8518.57
+
+---- Backing up remote disk [redacted]@[redacted]:.webmail to /Volumes/Backup-B/[redacted]/
+
+"/usr/local/bin/rsync -iavz [redacted]@[redacted]:.webmail /Volumes/Backup-B/[redacted]/ | tail -12 >> /Users/[redacted]/.20080129.1442_crontab_backup_report"
+
+.f....og... .webmail/users/[redacted]/TOUGHBOOK.db
+.f....og... .webmail/users/[redacted]/TOUGHBOOK.folder
+.f....og... .webmail/users/[redacted]/TRASH
+.f....og... .webmail/users/[redacted]/TRASH.db
+.f....og... .webmail/users/[redacted]/WORK_RELATED.db
+.f....og... .webmail/users/[redacted]/WORK_RELATED.folder
+.f....og... .webmail/users/[redacted]/addressbook
+.f....og... .webmail/users/[redacted]/config
+.f....og... .webmail/users/[redacted]/signature
+
+sent 211 bytes  received 1889 bytes  280.00 bytes/sec
+total size is 253477557  speedup is 120703.60
+
+---- Backing up remote disk [redacted]@[redacted]:public_html to /Volumes/Backup-B/[redacted]/
+
+"/usr/local/bin/rsync -iavz [redacted]@[redacted]:public_html /Volumes/Backup-B/[redacted]/ | tail -12 >> /Users/[redacted]/.20080129.1442_crontab_backup_report"
+
+.f....og... public_html/webmail/images/last-grey.gif
+.f....og... public_html/webmail/images/last.gif
+.f....og... public_html/webmail/images/left-grey.gif
+.f....og... public_html/webmail/images/left.gif
+.f....og... public_html/webmail/images/logo.gif
+.f....og... public_html/webmail/images/new.gif
+.f....og... public_html/webmail/images/right-grey.gif
+.f....og... public_html/webmail/images/right.gif
+.f....og... public_html/webmail/images/up.gif
+
+sent 10828 bytes  received 108798 bytes  15950.13 bytes/sec
+total size is 206950852  speedup is 1729.98
+
+---- Backing up remote disk [redacted]@[redacted]:secure_html to /Volumes/Backup-B/[redacted]/
+
+"/usr/local/bin/rsync -iavz [redacted]@[redacted]:secure_html /Volumes/Backup-B/[redacted]/ | tail -12 >> /Users/[redacted]/.20080129.1442_crontab_backup_report"
+
+receiving incremental file list
+.d....og... secure_html/
+
+sent 15 bytes  received 68 bytes  9.76 bytes/sec
+total size is 0  speedup is 0.00
+
+---- Backing up remote disk [redacted]@[redacted]:backups to /Volumes/Backup-B/[redacted]/
+
+"/usr/local/bin/rsync -iavz [redacted]@[redacted]:backups /Volumes/Backup-B/[redacted]/ | tail -12 >> /Users/[redacted]/.20080129.1442_crontab_backup_report"
+
+.f....og... backups/saved/20090224.2322_dissertation_backup.tar.gz
+.f....og... backups/saved/20091116.1956_dissertation_backup.tar.gz
+.f....og... backups/saved/20100204.2244_dissertation_backup.tar.gz
+.d....og... backups/saved/20071126.1643/
+.f....og... backups/saved/20071126.1643/p1.tar
+.d....og... backups/saved/20071126.1937/
+.f....og... backups/saved/20071126.1937/p1.tar
+.d....og... backups/saved/20080221.2215/
+.f....og... backups/saved/20080221.2215/20080221.2215_rjl_backup.tar.gz
+
+sent 466 bytes  received 7154 bytes  1016.00 bytes/sec
+total size is 6992396380  speedup is 917637.32
+
+---- Backing up remote disk [redacted]@[redacted]:/var/mail/[redacted]/[redacted] to /Volumes/Backup-B/mail_spool/
+
+"/usr/local/bin/rsync -iavz [redacted]@[redacted]:/var/mail/[redacted]/[redacted] /Volumes/Backup-B/mail_spool/ | tail -12 >> /Users/[redacted]/.20080129.1442_crontab_backup_report"
+
+>f+++++++++ [redacted]/m-UrwTBY510GpnV6Iqs01-183100-r
+>f+++++++++ [redacted]/m-UrwTBY510GpnV6J3w03-183103-r
+>f+++++++++ [redacted]/m-UrwTBY510GpnV6JGb01-183110-r
+>f.st.og... [redacted]/msg.eCDCu
+.d....og... [redacted]/Drafts/
+.d....og... [redacted]/Notes/
+.d....og... [redacted]/Sent Messages/
+.d....og... [redacted]/Sent/
+.d....og... [redacted]/Trash/
+
+sent 220 bytes  received 12937 bytes  1754.27 bytes/sec
+total size is 36115  speedup is 2.74
+
+---- Backing up remote disk [redacted]@[redacted]:/var/mail/[redacted]/[redacted] to /Volumes/Backup-B/mail_spool/
+
+"/usr/local/bin/rsync -iavz [redacted]@[redacted]:/var/mail/[redacted]/[redacted] /Volumes/Backup-B/mail_spool/ | tail -12 >> /Users/[redacted]/.20080129.1442_crontab_backup_report"
+
+.d....og... [redacted]/Pictures/
+.d....og... [redacted]/Random/
+.d....og... [redacted]/School/
+.d....og... [redacted]/School~Ricks~Play/
+.d....og... [redacted]/Sent Messages/
+.d....og... [redacted]/Sent/
+.d....og... [redacted]/Things to Keep/
+.d....og... [redacted]/Trash/
+.d....og... [redacted]/Vision/
+
+sent 146 bytes  received 2507 bytes  353.73 bytes/sec
+total size is 0  speedup is 0.00
+
+---- Backing up remote disk [redacted]@[redacted]:/var/mail/[redacted]/[redacted] to /Volumes/Backup-B/mail_spool/
+
+"/usr/local/bin/rsync -iavz [redacted]@[redacted]:/var/mail/[redacted]/[redacted] /Volumes/Backup-B/mail_spool/ | tail -12 >> /Users/[redacted]/.20080129.1442_crontab_backup_report"
+
+.f....og... [redacted]/.Trash/new/1392757551.M456849P30992.[redacted],S=54140
+.f....og... [redacted]/.Trash/new/1392907720.M993231P32449.[redacted],S=5635
+.f....og... [redacted]/.Trash/new/1392947656.M250317P27189.[redacted],S=56281
+>f+++++++++ [redacted]/.Trash/new/1392999178.M613102P20828.[redacted],S=8491
+.d..t.og... [redacted]/.Trash/tmp/
+.d..t.og... [redacted]/cur/
+.d..t.og... [redacted]/new/
+>f+++++++++ [redacted]/new/1393000198.26624_0.[redacted]
+.d..t.og... [redacted]/tmp/
+
+sent 4336 bytes  received 59192 bytes  11550.55 bytes/sec
+total size is 103020870  speedup is 1621.66
+
+---- snapshotting M's email to /Volumes/Backup-B
+
+"tar cf /Volumes/Backup-B/daily_archive/[redacted].webmail_M_only_and_mail_spool.1393000324.tar /Volumes/Backup-B/[redacted]/.webmail/users/[redacted]/ /Volumes/Backup-B/mail_spool/"
+
+Feb 19 12:47 [redacted].webmail_M_only_and_mail_spool.1392839106.tar.gz
+Feb 20 05:29 [redacted].webmail_M_only_and_mail_spool.1392899222.tar.gz
+Feb 20 09:33 [redacted].webmail_M_only_and_mail_spool.1392913898.tar.gz
+Feb 21 05:30 [redacted].webmail_M_only_and_mail_spool.1392985679.tar.gz
+Feb 21 09:34 [redacted].webmail_M_only_and_mail_spool.1393000324.tar.gz
+Feb 17 13:06 list_of_files
+
+Elapsed time 1812 seconds; a total of 550,692,041,176 bytes were synchronised;
+network usage was 2,233,722 bytes;
+return codes from rsync were 0,0,0,0,0,0,0,0,0,0,0,0,0;-,-,-,-,-,-,-,-,-,-,-,-,-:SUCCESS
+
+Disk space on all drives:
+
+Filesystem     Size   Used  Avail Capacity  Mounted on
+/dev/disk0s2   499G   313G   186G    63%    /
+/dev/disk1s3   2.0T   536G   1.5T    27%    /Volumes/firewire_disk
+/dev/disk5s2   150G    72G    78G    48%    /Volumes/thesis
+/dev/disk5s3   350G   284G    66G    82%    /Volumes/extra
+/dev/disk3s1   1000   971G    29G    98%    /Volumes/terabyte
+/dev/disk2s2   320G   316G   3.6G    99%    /Volumes/Backup-A
+/dev/disk2s3   100G    59G    41G    59%    /Volumes/Backup-B
+/dev/disk2s4   580G   553G    27G    96%    /Volumes/Backup-C
+
+Unmounting backup volumes...
+Unmount of all volumes on disk2 was successful
+
+End of report.
