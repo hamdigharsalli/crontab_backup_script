@@ -1,1 +1,1 @@
-initial commit
+moved old comments (pre-version-control) into history file
