@@ -1,1 +1,1 @@
-fix date at beginning of report; add TODO to README
+removed last vestiges of the old .20080129.1442 naming convention from script and report

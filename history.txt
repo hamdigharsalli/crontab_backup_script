@@ -4,7 +4,7 @@ separate firewire disk.  The intent is that the root volume on the backup
 drive will be bootable in the event of hardware failure of the internal disk
 on ATL's computer.
 
-20080718.2240: added rsync to grab copy of everything on hpwtdogmom.org and
+20080718.2240: added rsync to grab copy of everything on [redacted] and
 back it up to the local disk too.
 
 20080726.2242 (rjl) extended script to backup a second copy to a second
@@ -24,7 +24,7 @@ and size if it doesn't exist.
 
 20080730.1122 (rjl) functionalising.
 
-20080823.1600 (rjl) added applied-math.org backups.  This required setting
+20080823.1600 (rjl) added [redacted] backups.  This required setting
 up authorized_keys file so SSH would not ask for password, and then
 simply adding the necessary targets.  Note: the way return codes are
 handled is currently messy and inelegant.
@@ -37,7 +37,7 @@ and look at the results tomorrow.
 somehow, probably due to a side effect.  Reworked the debug statements
 into a permanent part of the script now; testing overnight...
 
-20081021.1257 (rjl) changed email address to joe.loughry@stx.ox.ac.uk to
+20081021.1257 (rjl) changed email address to [redacted] to
 mail the reports to.  I sure wish I had RCS instead of having to
 save changes in comments.
 
@@ -52,7 +52,7 @@ want to take the chance) while Andrea is using the backup.
 20090220.1838 (rjl) Changed to three backup volumes, not two.  The volumes
 are used as follows:
 Backup_1 (60 GB) used for /
-Backup_2 (40 GB) used for hpwtdogmom.org and applied-math.org
+Backup_2 (40 GB) used for [redacted] and [redacted]
 Backup_3 (365 GB) used for backup of firewire_disk (500 GB)
 
 20090221.1417 (rjl) When the offsite backup disk comes back for
@@ -62,7 +62,7 @@ refresh, don't forget to repartition it as described above.
 6, 7, and 8 for now.
 
 20090224.2331 (rjl) cleaned out the backups directory of
-applied-math.org and I think the bandwidth usage problem
+[redacted] and I think the bandwidth usage problem
 with BT is resolved now; I have turned targets 6, 7, and
 8 back on.
 
@@ -118,11 +118,11 @@ rsync: connection unexpectedly closed (10269270 bytes received so far) [sender]
 rsync error: error in rsync protocol data stream (code 12) at io.c(600) [sender=3.0.6]
 
 appears to have resulted because /Volumes/Backup_1_offsite/ is
-too small to contain the /Users/andrealoughry/Movies directory.
+too small to contain the /Users/[redacted]/Movies directory.
 
 I cleaned that directory out of the /Volumes/Backup_1_offsite/
 disk volume and edited the script to exclude the directory with
-the following syntax: --exclude /Users/andrealoughry/Movies/
+the following syntax: --exclude /Users/[redacted]/Movies/
 
 Re-running the backup now to test it.
 
@@ -132,7 +132,7 @@ Re-running the backup now to test it.
 actually works for more than one directory.  Currently I have
 both --exclude= and --exclude-from= command line arguments, plus
 an exclude file.  I think it is running now, properly excluding
-/Users/andrealoughry/Movies/ and /Volumes/ but I am going to
+/Users/[redacted]/Movies/ and /Volumes/ but I am going to
 trigger a crontab run just to check.  The real solution to this
 problem is to upgrade the backup drives with a pair of new 1TB
 disks and re-partition Backup_1, Backup_2 and Backup_3, plus

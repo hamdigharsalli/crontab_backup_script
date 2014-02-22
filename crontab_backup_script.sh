@@ -12,7 +12,7 @@ from_email_address=cron@hpwtdogmom.org
 
 start_time=`date +%s`
 
-tempfile=/Users/$backup_username/.20080129.1442_crontab_backup_report
+tempfile=/Users/$backup_username/crontab_backup_report
 
 target_1=/
 target_2=/Volumes/firewire_disk/
