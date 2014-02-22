@@ -11,3 +11,10 @@ servers.
 
 The `line_to_put_in_crontab` should be put in **root**'s crontab.
 
+TODO
+----
+
+1. Need a script to kill a running backup.
+
+2. Detect if another instance is already running.
+

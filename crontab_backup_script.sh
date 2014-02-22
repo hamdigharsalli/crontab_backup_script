@@ -264,8 +264,7 @@ snapshot_M_email()
 	return $RC
 }
 
-report_start_time=`date`
-report "Start time of this backup: " $report_start_time "."
+report "Starting time of this backup: `date`."
 
 backup_device=/dev/`/usr/sbin/diskutil list | grep "Backup-[A-C]" | head -1 | cut -c 69-73`
 report "Today's backup_device is " \"$backup_device\"
