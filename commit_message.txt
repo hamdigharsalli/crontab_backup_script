@@ -1,1 +1,1 @@
-removed last vestiges of the old .20080129.1442 naming convention from script and report
+display ending time at bottom of report

@@ -507,6 +507,8 @@ report "Unmounting backup volumes..."
 
 /usr/sbin/diskutil unmountDisk $backup_device >> $tempfile
 
+report "Ending time of this backup: `date`."
+
 blank_line
 
 report "End of report."
