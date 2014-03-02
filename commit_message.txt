@@ -1,1 +1,1 @@
-display ending time at bottom of report
+fix auto-mounting of backup disks when plugged in
