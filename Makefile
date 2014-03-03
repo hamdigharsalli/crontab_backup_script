@@ -7,7 +7,7 @@ script:
 	vi $(crontab_backup_script)
 
 vi:
-	make readme
+	make script
 
 install:
 	@echo "scp $(crontab_backup_script) user@dest:"

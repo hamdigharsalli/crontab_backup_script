@@ -52,10 +52,18 @@ TODO
 
 <a name="footnote-star"/>
 <sup>*</sup> There are two processes that need to be killed: the `crontab_backup_script.sh`
-and whatever `rsync` or `tar` or `gzip` process is currently running. It might be reasonable
-to use the lockfile to indicate the PID of the currently running subprocess in order to
-implement this cleanly and get the effect of a rapid shutdown when commanded to.
+and whatever long running `rsync` or `tar` or `gzip` process is currently running. It might
+be reasonable to use the lockfile to indicate the PID of the currently running subprocess
+in order to implement this cleanly and get the effect of a rapid shutdown when commanded to.
+
+The problem with the above mentioned solution, though, is that it interferes with the method
+I already used to save the return code of the child process; using `$!` to get the PID of
+the last-launched process works if we put an ampersand on the end of the `eval` call that
+launches `rsync`, but when the process is launched in the background like that, I can't get
+the exit code.
 
 <a name="footnote-dagger"/>
 <sup>&dagger;</sup> Use the lockfile method well developed in earlier scripts for this.
+
+Update: the lockfile is now being created by the process; testing now.
 

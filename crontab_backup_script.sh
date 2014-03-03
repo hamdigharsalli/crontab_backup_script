@@ -13,6 +13,7 @@ from_email_address=cron@hpwtdogmom.org
 start_time=`date +%s`
 
 tempfile=/Users/$backup_username/crontab_backup_report
+lockfile=/Users/$backup_username/crontab_backup_lockfile
 
 target_1=/
 target_2=/Volumes/firewire_disk/
@@ -44,6 +45,22 @@ backup_3_ofs=/Volumes/Backup-C_offsite
 #
 disable_spotlight=.metadata_never_index
 
+#
+# I'm doing something slightly illegitimate with the $tempfile here; because I
+# know it's persistent across invocations, I'm calling report() if I detect an
+# existing lockfile because I know that means that $tempfile has already been
+# created. The result is that I get to see the ALERT message, because otherwise
+# it would be lost since this script runs from crontab and all output is sent
+# to an email account that doesn't usually get read.
+#
+
+if [ -e $lockfile ] ; then
+	report "ALERT: another instance of $0 is apparently running (or expired lockfile)...exiting."
+	exit 1
+else
+	rm -f $lockfile; touch $lockfile
+fi
+
 rm -f $tempfile; touch $tempfile
 
 size_accumulator=0
@@ -52,6 +69,7 @@ global_failure_code="S"
 onsite_backup_success_code="F"
 offsite_backup_success_code="F"
 overall_success_code="FAILURE"
+short_success_code="F"
 
 rc101="-"
 rc102="-"
@@ -456,6 +474,10 @@ if [ "$offsite_backup_success_code" == "S" ]; then
 	overall_success_code="SUCCESS"
 fi
 
+if [ "$overall_success_code" == "SUCCESS" ]; then
+	short_success_code="S"
+fi
+
 end_time=`date +%s`
 elapsed_time=$(($end_time - $start_time))
 
@@ -530,6 +552,8 @@ report "End of report."
 
 tr -d \\023 < $tempfile | ssh aloughry@hpwtdogmom.org \
                             mail -r $from_email_address \
-	-s "\"backup report `date +%Y%m%d.%H%M` rc=$rc101,$rc102,$rc103,$rc104,$rc105,$rc106,$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,$rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_code\"" \
+	-s "\"backup report `date +%Y%m%d.%H%M` ($short_success_code) rc=$rc101,$rc102,$rc103,$rc104,$rc105,$rc106,$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,$rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_code\"" \
 	$report_to_email_address
+
+rm -f $lockfile
 
