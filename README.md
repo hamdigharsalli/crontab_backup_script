@@ -30,7 +30,7 @@ LABEL=Backup-B_offsite none hfs rw,noauto 0 2
 LABEL=Backup-C_offsite none hfs rw,noauto 0 2
 ```
 
-Fields in `/etc/fstab` are space or comma separated; `none' tells the automounter to
+Fields in `/etc/fstab` are space or comma separated; "none" tells the automounter to
 mount this filesystem in `/Volumes/` which is where we want it anyway; `rw,noauto` is
 appropriate for backup volumes; the 0 is irrelevant because I don't use `dump` but
 it's needed as a placeholder for the 2 which tells `fsck` to treat this volume as a
