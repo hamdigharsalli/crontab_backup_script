@@ -14,6 +14,7 @@ start_time=`date +%s`
 
 tempfile=/Users/$backup_username/crontab_backup_report
 lockfile=/Users/$backup_username/crontab_backup_lockfile
+killfile=/Users/$backup_username/crontab_backup_killfile
 
 target_1=/
 target_2=/Volumes/firewire_disk/
@@ -62,6 +63,8 @@ else
 fi
 
 rm -f $tempfile; touch $tempfile
+
+check_for_killfile
 
 size_accumulator=0
 bandwidth_accumulator=0
@@ -127,10 +130,21 @@ separator()
 	report "===================================================================="
 }
 
+check_for_killfile()
+{
+	if [ -e $killfile ]; then
+		blank_line
+		report "ALERT: killfile seen...exiting."
+		exit 2
+	fi
+}
+
 rsync_command="/usr/local/bin/rsync"
 
 backup_local_disk()
 {
+	check_for_killfile
+
 	TARGET=$1
 	BACKUP=$2
 	BYTES_BACKED_UP=0
@@ -175,6 +189,8 @@ backup_local_disk()
 
 backup_remote_disk()
 {
+	check_for_killfile
+
 	TARGET=$1
 	BACKUP=$2
 	BYTES_BACKED_UP=0
@@ -250,6 +266,8 @@ create_directory_if_it_does_not_exist()
 
 snapshot_M_email()
 {
+	check_for_killfile
+
 	BACKUP=$1
 	backup_directory=$BACKUP/daily_archive
 	snapshot_file=hpwtdogmom.org.webmail_M_only_and_mail_spool.`date +%s`.tar

@@ -1,1 +1,1 @@
-added short success code to subject line of email report; implement lockfile functionality for testing
+implement killfile functionality

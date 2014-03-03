@@ -48,6 +48,8 @@ TODO
 
 2. Detect if another instance is already running.<sup>[&dagger;](#footnote-dagger)</sup>
 
+3. Implement killfile functionality.<sup>[&Dagger;](#footnote-double-dagger)</sup>
+
 <hr/>
 
 <a name="footnote-star"/>
@@ -62,8 +64,15 @@ the last-launched process works if we put an ampersand on the end of the `eval` 
 launches `rsync`, but when the process is launched in the background like that, I can't get
 the exit code.
 
+The script `kill_it_kill_it_kill_it.sh` &#x263A; (under development) will eventually be used
+to do the job.
+
 <a name="footnote-dagger"/>
 <sup>&dagger;</sup> Use the lockfile method well developed in earlier scripts for this.
 
 Update: the lockfile is now being created by the process; testing now.
+
+<a name="footnote-double-dagger"/>
+<sup>&Dagger;</sup> if the file `crontab_backup_killfile` exists, the script will exit
+(although perhaps not for many minutes). A check is made for the killfile periodically.
 
