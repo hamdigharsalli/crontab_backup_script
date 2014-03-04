@@ -1,1 +1,1 @@
-check for lockfile before checking for killfile; remove lockfile if killfile triggers
+in bash, don't try to call a function until after (in the file) it's defined

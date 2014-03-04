@@ -47,13 +47,52 @@ backup_3_ofs=/Volumes/Backup-C_offsite
 disable_spotlight=.metadata_never_index
 
 #
-# I'm doing something slightly illegitimate with the $tempfile here; because I
-# know it's persistent across invocations, I'm calling report() if I detect an
-# existing lockfile because I know that means that $tempfile has already been
-# created. The result is that I get to see the ALERT message, because otherwise
-# it would be lost since this script runs from crontab and all output is sent
-# to an email account that doesn't usually get read.
+# The construct $1$2$3 is an attempt to work around a limitation in
+# the usage of the report() function when the user wants to report
+# very long lines.  Before, it was just $1 and if, for formatting, the
+# argument was broken up into several strings which are normally
+# concatenated automatically by the echo built-in, report() only saw
+# the first of those strings and ignored the others.
 #
+# Three arguments ($1$2$3) should be enough, right?  Increase later
+# if needed.
+#
+
+report()
+{
+	echo $1$2$3 >> $tempfile
+}
+
+blank_line()
+{
+	report ""
+}
+
+separator()
+{
+	blank_line
+	report "===================================================================="
+}
+
+check_for_killfile()
+{
+	if [ -e $killfile ]; then
+		blank_line
+		report "ALERT: killfile seen...exiting (and removing lockfile)."
+		rm -f $lockfile
+		exit 2
+	fi
+}
+
+check_for_lockfile()
+{
+	if [ -e $lockfile ] ; then
+		report "ALERT: another instance of $0 is apparently running (or expired lockfile)...exiting."
+		exit 1
+	else
+		rm -f $lockfile; touch $lockfile
+	fi
+}
 
 check_for_lockfile
 check_for_killfile
@@ -95,54 +134,6 @@ rc210="-"
 rc211="-"
 rc212="-"
 rc213="-"
-
-#
-# The construct $1$2$3 is an attempt to work around a limitation in
-# the usage of the report() function when the user wants to report
-# very long lines.  Before, it was just $1 and if, for formatting, the
-# argument was broken up into several strings which are normally
-# concatenated automatically by the echo built-in, report() only saw
-# the first of those strings and ignored the others.
-#
-# Three arguments ($1$2$3) should be enough, right?  Increase later
-# if needed.
-#
-
-report()
-{
-	echo $1$2$3 >> $tempfile
-}
-
-blank_line()
-{
-	report ""
-}
-
-separator()
-{
-	blank_line
-	report "===================================================================="
-}
-
-check_for_killfile()
-{
-	if [ -e $killfile ]; then
-		blank_line
-		report "ALERT: killfile seen...exiting."
-		rm -f $lockfile
-		exit 2
-	fi
-}
-
-check_for_lockfile()
-{
-	if [ -e $lockfile ] ; then
-		report "ALERT: another instance of $0 is apparently running (or expired lockfile)...exiting."
-		exit 1
-	else
-		rm -f $lockfile; touch $lockfile
-	fi
-}
 
 rsync_command="/usr/local/bin/rsync"
 
