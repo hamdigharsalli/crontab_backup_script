@@ -80,6 +80,7 @@ check_for_killfile()
 		blank_line
 		report "ALERT: killfile seen...exiting (and removing lockfile)."
 		rm -f $lockfile
+		report "WARNING: backup volumes may still be mounted; unmount them manually."
 		exit 2
 	fi
 }

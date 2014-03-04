@@ -1,1 +1,1 @@
-in bash, don't try to call a function until after (in the file) it's defined
+add warning message that backup volumes may still be mounted if killfile is used
