@@ -1,1 +1,1 @@
-add warning message that backup volumes may still be mounted if killfile is used
+update readme with TODO for unmounting backup volumes if killfile triggers

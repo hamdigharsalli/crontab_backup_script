@@ -50,6 +50,8 @@ TODO
 
 3. Implement killfile functionality.<sup>[&Dagger;](#footnote-double-dagger)</sup>
 
+4. Unmount backup volumes if killfile is used.<sup>[&sect;](footnote-section-mark)</sup>
+
 <hr/>
 
 <a name="footnote-star"/>
@@ -73,6 +75,11 @@ to do the job.
 Update: the lockfile is now being created by the process; testing now.
 
 <a name="footnote-double-dagger"/>
-<sup>&Dagger;</sup> if the file `crontab_backup_killfile` exists, the script will exit
+<sup>&Dagger;</sup> If the file `crontab_backup_killfile` exists, the script will exit
 (although perhaps not for many minutes). A check is made for the killfile periodically.
+
+<a name="footnote-section-mark"/>
+<sup>&sect;</sup> Currently, the script warns that backup volumes may still be mounted
+if the `killfile` triggers, but ideally they should be unmounted manaully. It's late and
+I don't want to modify code when I'm tired, especially critical-section code like this.
 
