@@ -55,16 +55,10 @@ disable_spotlight=.metadata_never_index
 # to an email account that doesn't usually get read.
 #
 
-if [ -e $lockfile ] ; then
-	report "ALERT: another instance of $0 is apparently running (or expired lockfile)...exiting."
-	exit 1
-else
-	rm -f $lockfile; touch $lockfile
-fi
+check_for_lockfile
+check_for_killfile
 
 rm -f $tempfile; touch $tempfile
-
-check_for_killfile
 
 size_accumulator=0
 bandwidth_accumulator=0
@@ -135,7 +129,18 @@ check_for_killfile()
 	if [ -e $killfile ]; then
 		blank_line
 		report "ALERT: killfile seen...exiting."
+		rm -f $lockfile
 		exit 2
+	fi
+}
+
+check_for_lockfile()
+{
+	if [ -e $lockfile ] ; then
+		report "ALERT: another instance of $0 is apparently running (or expired lockfile)...exiting."
+		exit 1
+	else
+		rm -f $lockfile; touch $lockfile
 	fi
 }
 

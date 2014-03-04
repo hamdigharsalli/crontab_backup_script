@@ -1,1 +1,1 @@
-implement killfile functionality
+check for lockfile before checking for killfile; remove lockfile if killfile triggers
