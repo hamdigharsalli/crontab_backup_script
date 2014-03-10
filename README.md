@@ -46,11 +46,8 @@ TODO
 
 1. Need a script to kill a running backup.<sup>[*](#footnote-star)</sup>
 
-2. Detect if another instance is already running.<sup>[&dagger;](#footnote-dagger)</sup>
-
-3. Implement killfile functionality.<sup>[&Dagger;](#footnote-double-dagger)</sup>
-
-4. Unmount backup volumes if killfile is used.<sup>[&sect;](footnote-section-mark)</sup>
+2. Define new functions for onsite_backup() and offsite_backup() and use
+them. Define new functions for interpreting success codes.<sup>[&dagger;](#footnote-dagger)</sup>
 
 <hr/>
 
@@ -70,16 +67,7 @@ The script `kill_it_kill_it_kill_it.sh` &#x263A; (under development) will eventu
 to do the job.
 
 <a name="footnote-dagger"/>
-<sup>&dagger;</sup> Use the lockfile method well developed in earlier scripts for this.
-
-Update: the lockfile is now being created by the process; testing now.
-
-<a name="footnote-double-dagger"/>
-<sup>&Dagger;</sup> If the file `crontab_backup_killfile` exists, the script will exit
-(although perhaps not for many minutes). A check is made for the killfile periodically.
-
-<a name="footnote-section-mark"/>
-<sup>&sect;</sup> Currently, the script warns that backup volumes may still be mounted
-if the `killfile` triggers, but ideally they should be unmounted manaully. It's late and
-I don't want to modify code when I'm tired, especially critical-section code like this.
+<sup>&dagger;</sup> There are at least two long sections of the script that could be
+functionalised, in addition to all the `if` statements that interpret return codes and
+report overall success or failure.
 

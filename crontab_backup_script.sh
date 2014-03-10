@@ -6,45 +6,90 @@
 # drive will be bootable in the event of hardware failure of the internal disk
 # on A's computer.
 
-backup_username=andrealoughry
-report_to_email_address=joe.loughry@stx.ox.ac.uk
-from_email_address=cron@hpwtdogmom.org
-
-start_time=`date +%s`
-
-tempfile=/Users/$backup_username/crontab_backup_report
-lockfile=/Users/$backup_username/crontab_backup_lockfile
-killfile=/Users/$backup_username/crontab_backup_killfile
-
-target_1=/
-target_2=/Volumes/firewire_disk/
-
-target_3=aloughry@hpwtdogmom.org:.webmail
-target_4=aloughry@hpwtdogmom.org:public_html
-target_5=aloughry@hpwtdogmom.org:secure_html
-
-target_6=loughry@applied-math.org:.webmail
-target_7=loughry@applied-math.org:public_html
-target_8=loughry@applied-math.org:secure_html
-target_9=loughry@applied-math.org:backups
-
-target_10=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/andrea
-target_11=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/miranda
-target_12=loughry@applied-math.org:/var/mail/applied-math.org/joe
-
-backup_1=/Volumes/Backup-A
-backup_2=/Volumes/Backup-B
-backup_3=/Volumes/Backup-C
-
-backup_1_ofs=/Volumes/Backup-A_offsite
-backup_2_ofs=/Volumes/Backup-B_offsite
-backup_3_ofs=/Volumes/Backup-C_offsite
-
 #
-# If the following file exists at the root of a volume, then Spotlight
-# will not waste CPU time indexing it.  This is a Mac OS X feature only.
+# First, define a bunch of functions.
 #
-disable_spotlight=.metadata_never_index
+
+initialise_variables()
+{
+	backup_username=andrealoughry
+	report_to_email_address=joe.loughry@stx.ox.ac.uk
+	from_email_address=cron@hpwtdogmom.org
+
+	rsync_command="/usr/local/bin/rsync"
+
+	start_time=`date +%s`
+
+	tempfile=/Users/$backup_username/crontab_backup_report
+	lockfile=/Users/$backup_username/crontab_backup_lockfile
+	killfile=/Users/$backup_username/crontab_backup_killfile
+
+	target_1=/
+	target_2=/Volumes/firewire_disk/
+
+	target_3=aloughry@hpwtdogmom.org:.webmail
+	target_4=aloughry@hpwtdogmom.org:public_html
+	target_5=aloughry@hpwtdogmom.org:secure_html
+
+	target_6=loughry@applied-math.org:.webmail
+	target_7=loughry@applied-math.org:public_html
+	target_8=loughry@applied-math.org:secure_html
+	target_9=loughry@applied-math.org:backups
+
+	target_10=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/andrea
+	target_11=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/miranda
+	target_12=loughry@applied-math.org:/var/mail/applied-math.org/joe
+
+	backup_1=/Volumes/Backup-A
+	backup_2=/Volumes/Backup-B
+	backup_3=/Volumes/Backup-C
+
+	backup_1_ofs=/Volumes/Backup-A_offsite
+	backup_2_ofs=/Volumes/Backup-B_offsite
+	backup_3_ofs=/Volumes/Backup-C_offsite
+
+	#
+	# If the following file exists at the root of a volume, then Spotlight
+	# will not waste CPU time indexing it.  This is a Mac OS X feature only.
+	#
+	disable_spotlight=.metadata_never_index
+
+	size_accumulator=0
+	bandwidth_accumulator=0
+	global_failure_code="S"
+	onsite_backup_success_code="F"
+	offsite_backup_success_code="F"
+	overall_success_code="FAILURE"
+	short_success_code="F"
+
+	rc101="-"
+	rc102="-"
+	rc103="-"
+	rc104="-"
+	rc105="-"
+	rc106="-"
+	rc107="-"
+	rc108="-"
+	rc109="-"
+	rc110="-"
+	rc111="-"
+	rc112="-"
+	rc113="-"
+
+	rc201="-"
+	rc202="-"
+	rc203="-"
+	rc204="-"
+	rc205="-"
+	rc206="-"
+	rc207="-"
+	rc208="-"
+	rc209="-"
+	rc210="-"
+	rc211="-"
+	rc212="-"
+	rc213="-"
+}
 
 #
 # The construct $1$2$3 is an attempt to work around a limitation in
@@ -74,13 +119,25 @@ separator()
 	report "===================================================================="
 }
 
-check_for_killfile()
+check_for_killfile_before_running()
 {
 	if [ -e $killfile ]; then
 		blank_line
-		report "ALERT: killfile seen...exiting (and removing lockfile)."
-		rm -f $lockfile
-		report "WARNING: backup volumes may still be mounted; unmount them manually."
+		report "ALERT: killfile seen...exiting (removing lockfile and killfile)."
+		blank_line
+		rm -f $lockfile $killfile
+		exit 2
+	fi
+}
+
+check_for_killfile_while_running()
+{
+	if [ -e $killfile ]; then
+		blank_line
+		report "ALERT: killfile seen...exiting (removing lockfile and killfile)."
+		blank_line
+		rm -f $lockfile $killfile
+		unmount_backup_volumes
 		exit 2
 	fi
 }
@@ -89,58 +146,45 @@ check_for_lockfile()
 {
 	if [ -e $lockfile ] ; then
 		report "ALERT: another instance of $0 is apparently running (or expired lockfile)...exiting."
+		blank_line
 		exit 1
 	else
 		rm -f $lockfile; touch $lockfile
 	fi
 }
 
-check_for_lockfile
-check_for_killfile
+initialise_tempfile()
+{
+	rm -f $tempfile; touch $tempfile
+}
 
-rm -f $tempfile; touch $tempfile
+#
+# Note that /usr/sbin/diskutil must be specified with a full path or
+# the command will be silently ignored. This script runs as root when
+# called from crontab, as verified by `whoami`.
+#
 
-size_accumulator=0
-bandwidth_accumulator=0
-global_failure_code="S"
-onsite_backup_success_code="F"
-offsite_backup_success_code="F"
-overall_success_code="FAILURE"
-short_success_code="F"
+determine_backup_device()
+{
+	backup_device=/dev/`/usr/sbin/diskutil list | grep "Backup-[A-C]" | head -1 | cut -c 69-73`
+}
 
-rc101="-"
-rc102="-"
-rc103="-"
-rc104="-"
-rc105="-"
-rc106="-"
-rc107="-"
-rc108="-"
-rc109="-"
-rc110="-"
-rc111="-"
-rc112="-"
-rc113="-"
+mount_backup_volumes()
+{
+	blank_line
+	report "Mounting backup volumes..."
+	/usr/sbin/diskutil mountDisk $backup_device >> $tempfile
+}
 
-rc201="-"
-rc202="-"
-rc203="-"
-rc204="-"
-rc205="-"
-rc206="-"
-rc207="-"
-rc208="-"
-rc209="-"
-rc210="-"
-rc211="-"
-rc212="-"
-rc213="-"
-
-rsync_command="/usr/local/bin/rsync"
+unmount_backup_volumes()
+{
+	report "Unmounting backup volumes..."
+	/usr/sbin/diskutil unmountDisk $backup_device >> $tempfile
+}
 
 backup_local_disk()
 {
-	check_for_killfile
+	check_for_killfile_while_running
 
 	TARGET=$1
 	BACKUP=$2
@@ -186,7 +230,7 @@ backup_local_disk()
 
 backup_remote_disk()
 {
-	check_for_killfile
+	check_for_killfile_while_running
 
 	TARGET=$1
 	BACKUP=$2
@@ -263,7 +307,7 @@ create_directory_if_it_does_not_exist()
 
 snapshot_M_email()
 {
-	check_for_killfile
+	check_for_killfile_while_running
 
 	BACKUP=$1
 	backup_directory=$BACKUP/daily_archive
@@ -297,11 +341,19 @@ snapshot_M_email()
 	return $RC
 }
 
+#
+# Here is where the script really begins.
+#
+
+initialise_variables
+check_for_lockfile
+check_for_killfile_before_running
+initialise_tempfile
+
 report "Starting time of this backup: `date`."
 
-backup_device=/dev/`/usr/sbin/diskutil list | grep "Backup-[A-C]" | head -1 | cut -c 69-73`
+determine_backup_device
 report "Today's backup_device is " \"$backup_device\"
-
 blank_line
 
 #
@@ -311,7 +363,6 @@ blank_line
 report "Disk space on local drives:"
 
 blank_line
-
 df -Hl >> $tempfile
 
 #
@@ -322,18 +373,8 @@ df -Hl >> $tempfile
 # the report will already tell us, implicitly, if the disk doesn't get mounted for any
 # reason, by failing.
 #
-# Note that the command must be preceded by /usr/sbin/ or it gets silently ignored;
-# this script runs as root, as verified by `whoami`.
-#
-# Since we don't know whether Backup-A or Backup-A_offsite is mounted today, we must
-# try both; expect to get an error on at least one of the groups of three.
-#
 
-blank_line
-
-report "Mounting backup volumes..."
-
-/usr/sbin/diskutil mountDisk $backup_device >>$tempfile
+mount_backup_volumes
 
 #
 # Try to backup local disks, not panicking just yet if /Volumes/Backup-A/ doesn't exist.
@@ -527,22 +568,17 @@ $rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_
 #
 
 blank_line
-
 report "Disk space on all drives:"
-
 blank_line
 
 df -Hl >> $tempfile
-
 blank_line
 
 #
-# Unmount the backup disk. We do this before the `df -Hl` so we can see if it happened.
+# Do this before the `df -Hl` so we can see if it happened.
 #
 
-report "Unmounting backup volumes..."
-
-/usr/sbin/diskutil unmountDisk $backup_device >> $tempfile
+unmount_backup_volumes
 
 report "Ending time of this backup: `date`."
 
@@ -565,8 +601,7 @@ report "End of report."
 # reader on the receiving end.
 #
 
-tr -d \\023 < $tempfile | ssh aloughry@hpwtdogmom.org \
-                            mail -r $from_email_address \
+tr -d \\023 < $tempfile | ssh aloughry@hpwtdogmom.org mail -r $from_email_address \
 	-s "\"backup report `date +%Y%m%d.%H%M` ($short_success_code) rc=$rc101,$rc102,$rc103,$rc104,$rc105,$rc106,$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,$rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_code\"" \
 	$report_to_email_address
 

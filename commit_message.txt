@@ -1,1 +1,1 @@
-update readme with TODO for unmounting backup volumes if killfile triggers
+move code into functions (still more work to do, but test this much now)
