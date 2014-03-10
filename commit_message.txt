@@ -1,1 +1,2 @@
-move code into functions (still more work to do, but test this much now)
+improve alert message when killfile or lockfile detected.
+Clarify that it's only this instance that is exiting.

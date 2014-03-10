@@ -123,7 +123,7 @@ check_for_killfile_before_running()
 {
 	if [ -e $killfile ]; then
 		blank_line
-		report "ALERT: killfile seen...exiting (removing lockfile and killfile)."
+		report "ALERT: killfile seen...this instance is exiting (removing lockfile and killfile)."
 		blank_line
 		rm -f $lockfile $killfile
 		exit 2
@@ -134,7 +134,7 @@ check_for_killfile_while_running()
 {
 	if [ -e $killfile ]; then
 		blank_line
-		report "ALERT: killfile seen...exiting (removing lockfile and killfile)."
+		report "ALERT: killfile seen...this instance is exiting (removing lockfile and killfile)."
 		blank_line
 		rm -f $lockfile $killfile
 		unmount_backup_volumes
@@ -145,7 +145,7 @@ check_for_killfile_while_running()
 check_for_lockfile()
 {
 	if [ -e $lockfile ] ; then
-		report "ALERT: another instance of $0 is apparently running (or expired lockfile)...exiting."
+		report "ALERT: another instance of $0 is apparently running (or expired lockfile)...this instance is exiting."
 		blank_line
 		exit 1
 	else
