@@ -167,6 +167,8 @@ initialise_tempfile()
 determine_backup_device()
 {
 	backup_device=/dev/`/usr/sbin/diskutil list | grep "Backup-[A-C]" | head -1 | cut -c 69-73`
+	report "Today's backup_device is " \"$backup_device\"
+	blank_line
 }
 
 mount_backup_volumes()
@@ -341,9 +343,177 @@ snapshot_M_email()
 	return $RC
 }
 
-#
+backup_to_onsite_disk()
+{
+	#
+	# Try to backup local disks, not panicking just yet if /Volumes/Backup-A/ doesn't exist.
+	#
+
+	if [ -e $backup_1 ]; then
+
+		# root volume
+		backup_local_disk $target_1 $backup_1
+		rc101=$?
+
+		# firewire_disk
+		backup_local_disk $target_2 $backup_3
+		rc102=$?
+
+		#
+		# Backup remote files
+		#
+
+		blank_line
+		report "Checking if target directories exist in the $backup_2 volume..."
+
+		create_directory_if_it_does_not_exist $backup_2 hpwtdogmom.org
+		create_directory_if_it_does_not_exist $backup_2 applied-math.org
+		create_directory_if_it_does_not_exist $backup_2 mail_spool
+		create_directory_if_it_does_not_exist $backup_2 daily_archive
+
+		backup_remote_disk $target_3 $backup_2/hpwtdogmom.org/
+		rc103=$?
+
+		backup_remote_disk $target_4 $backup_2/hpwtdogmom.org/
+		rc104=$?
+
+		backup_remote_disk $target_5 $backup_2/hpwtdogmom.org/
+		rc105=$?
+
+		backup_remote_disk $target_6 $backup_2/applied-math.org/
+		rc106=$?
+
+		backup_remote_disk $target_7 $backup_2/applied-math.org/
+		rc107=$?
+
+		backup_remote_disk $target_8 $backup_2/applied-math.org/
+		rc108=$?
+
+		backup_remote_disk $target_9 $backup_2/applied-math.org/
+		rc109=$?
+
+		backup_remote_disk $target_10 $backup_2/mail_spool/
+		rc110=$?
+
+		backup_remote_disk $target_11 $backup_2/mail_spool/
+		rc111=$?
+
+		backup_remote_disk $target_12 $backup_2/mail_spool/
+		rc112=$?
+
+		#
+		# snapshot M's webmail and the mail spool just in case...
+		#
+
+		snapshot_M_email $backup_2
+		rc113=$?
+
+		if [ $global_failure_code != "F" ] ; then
+			onsite_backup_success_code="S"
+		fi
+
+		if [ "$global_failure_code" == "F" ] ; then
+			onsite_backup_success_code="F"
+		fi
+	fi
+}
+
+backup_to_offsite_disk()
+{
+	#
+	# Second backup of local disks (gets sent offsite), but only if the offsite
+	# disk appears to be mounted.
+	#
+
+	if [ -e $backup_1_ofs ]; then
+
+		# root volume
+		backup_local_disk $target_1 $backup_1_ofs
+		rc201=$?
+
+		# firewire_disk
+		backup_local_disk $target_2 $backup_3_ofs
+		rc202=$?
+
+		#
+		# Second backup of remote files (gets sent offsite)
+		#
+
+		blank_line
+		report "Checking if target directories exist in the $backup_2_ofs volume..."
+
+		create_directory_if_it_does_not_exist $backup_2_ofs hpwtdogmom.org
+		create_directory_if_it_does_not_exist $backup_2_ofs applied-math.org
+		create_directory_if_it_does_not_exist $backup_2_ofs mail_spool
+		create_directory_if_it_does_not_exist $backup_2_ofs daily_archive
+
+		backup_remote_disk $target_3 $backup_2_ofs/hpwtdogmom.org/
+		rc203=$?
+
+		backup_remote_disk $target_4 $backup_2_ofs/hpwtdogmom.org/
+		rc204=$?
+
+		backup_remote_disk $target_5 $backup_2_ofs/hpwtdogmom.org/
+		rc205=$?
+
+		backup_remote_disk $target_6 $backup_2_ofs/applied-math.org/
+		rc206=$?
+
+		backup_remote_disk $target_7 $backup_2_ofs/applied-math.org/
+		rc207=$?
+
+		backup_remote_disk $target_8 $backup_2_ofs/applied-math.org/
+		rc208=$?
+
+		backup_remote_disk $target_9 $backup_2_ofs/applied-math.org/
+		rc209=$?
+
+		backup_remote_disk $target_10 $backup_2_ofs/mail_spool/
+		rc210=$?
+
+		backup_remote_disk $target_11 $backup_2_ofs/mail_spool/
+		rc211=$?
+
+		backup_remote_disk $target_12 $backup_2_ofs/mail_spool/
+		rc212=$?
+
+		#
+		# snapshot M's webmail and the mail spool just in case...
+		#
+
+		snapshot_M_email $backup_2_ofs
+		rc213=$?
+
+
+		if [ "$global_failure_code" != "F" ] ; then
+			offsite_backup_success_code="S"
+		fi
+
+		if [ "$global_failure_code" == "F" ] ; then
+			offsite_backup_success_code="F"
+		fi
+	fi
+}
+
+figure_overall_success_code()
+{
+	if [ "$onsite_backup_success_code" == "S" ]; then
+		overall_success_code="SUCCESS"
+	fi
+
+	if [ "$offsite_backup_success_code" == "S" ]; then
+		overall_success_code="SUCCESS"
+	fi
+
+	if [ "$overall_success_code" == "SUCCESS" ]; then
+		short_success_code="S"
+	fi
+}
+
+
+#===========================================================================
 # Here is where the script really begins.
-#
+#===========================================================================
 
 initialise_variables
 check_for_lockfile
@@ -351,10 +521,7 @@ check_for_killfile_before_running
 initialise_tempfile
 
 report "Starting time of this backup: `date`."
-
 determine_backup_device
-report "Today's backup_device is " \"$backup_device\"
-blank_line
 
 #
 # Show disk space at the beginning of the report, for convenience.
@@ -376,163 +543,9 @@ df -Hl >> $tempfile
 
 mount_backup_volumes
 
-#
-# Try to backup local disks, not panicking just yet if /Volumes/Backup-A/ doesn't exist.
-#
-
-if [ -e $backup_1 ]; then
-
-	# root volume
-	backup_local_disk $target_1 $backup_1
-	rc101=$?
-
-	# firewire_disk
-	backup_local_disk $target_2 $backup_3
-	rc102=$?
-
-	#
-	# Backup remote files
-	#
-
-	blank_line
-	report "Checking if target directories exist in the $backup_2 volume..."
-
-	create_directory_if_it_does_not_exist $backup_2 hpwtdogmom.org
-	create_directory_if_it_does_not_exist $backup_2 applied-math.org
-	create_directory_if_it_does_not_exist $backup_2 mail_spool
-	create_directory_if_it_does_not_exist $backup_2 daily_archive
-
-	backup_remote_disk $target_3 $backup_2/hpwtdogmom.org/
-	rc103=$?
-
-	backup_remote_disk $target_4 $backup_2/hpwtdogmom.org/
-	rc104=$?
-
-	backup_remote_disk $target_5 $backup_2/hpwtdogmom.org/
-	rc105=$?
-
-	backup_remote_disk $target_6 $backup_2/applied-math.org/
-	rc106=$?
-
-	backup_remote_disk $target_7 $backup_2/applied-math.org/
-	rc107=$?
-
-	backup_remote_disk $target_8 $backup_2/applied-math.org/
-	rc108=$?
-
-	backup_remote_disk $target_9 $backup_2/applied-math.org/
-	rc109=$?
-
-	backup_remote_disk $target_10 $backup_2/mail_spool/
-	rc110=$?
-
-	backup_remote_disk $target_11 $backup_2/mail_spool/
-	rc111=$?
-
-	backup_remote_disk $target_12 $backup_2/mail_spool/
-	rc112=$?
-
-	#
-	# snapshot M's webmail and the mail spool just in case...
-	#
-
-	snapshot_M_email $backup_2
-	rc113=$?
-
-	if [ $global_failure_code != "F" ] ; then
-		onsite_backup_success_code="S"
-	fi
-
-	if [ "$global_failure_code" == "F" ] ; then
-		onsite_backup_success_code="F"
-	fi
-fi
-
-#
-# Second backup of local disks (gets sent offsite), but only if the offsite
-# disk appears to be mounted.
-#
-
-if [ -e $backup_1_ofs ]; then
-
-	# root volume
-	backup_local_disk $target_1 $backup_1_ofs
-	rc201=$?
-
-	# firewire_disk
-	backup_local_disk $target_2 $backup_3_ofs
-	rc202=$?
-
-	#
-	# Second backup of remote files (gets sent offsite)
-	#
-
-	blank_line
-	report "Checking if target directories exist in the $backup_2_ofs volume..."
-
-	create_directory_if_it_does_not_exist $backup_2_ofs hpwtdogmom.org
-	create_directory_if_it_does_not_exist $backup_2_ofs applied-math.org
-	create_directory_if_it_does_not_exist $backup_2_ofs mail_spool
-	create_directory_if_it_does_not_exist $backup_2_ofs daily_archive
-
-	backup_remote_disk $target_3 $backup_2_ofs/hpwtdogmom.org/
-	rc203=$?
-
-	backup_remote_disk $target_4 $backup_2_ofs/hpwtdogmom.org/
-	rc204=$?
-
-	backup_remote_disk $target_5 $backup_2_ofs/hpwtdogmom.org/
-	rc205=$?
-
-	backup_remote_disk $target_6 $backup_2_ofs/applied-math.org/
-	rc206=$?
-
-	backup_remote_disk $target_7 $backup_2_ofs/applied-math.org/
-	rc207=$?
-
-	backup_remote_disk $target_8 $backup_2_ofs/applied-math.org/
-	rc208=$?
-
-	backup_remote_disk $target_9 $backup_2_ofs/applied-math.org/
-	rc209=$?
-
-	backup_remote_disk $target_10 $backup_2_ofs/mail_spool/
-	rc210=$?
-
-	backup_remote_disk $target_11 $backup_2_ofs/mail_spool/
-	rc211=$?
-
-	backup_remote_disk $target_12 $backup_2_ofs/mail_spool/
-	rc212=$?
-
-	#
-	# snapshot M's webmail and the mail spool just in case...
-	#
-
-	snapshot_M_email $backup_2_ofs
-	rc213=$?
-
-
-	if [ "$global_failure_code" != "F" ] ; then
-		offsite_backup_success_code="S"
-	fi
-
-	if [ "$global_failure_code" == "F" ] ; then
-		offsite_backup_success_code="F"
-	fi
-fi
-
-if [ "$onsite_backup_success_code" == "S" ]; then
-	overall_success_code="SUCCESS"
-fi
-
-if [ "$offsite_backup_success_code" == "S" ]; then
-	overall_success_code="SUCCESS"
-fi
-
-if [ "$overall_success_code" == "SUCCESS" ]; then
-	short_success_code="S"
-fi
+backup_to_onsite_disk
+backup_to_offsite_disk
+figure_overall_success_code
 
 end_time=`date +%s`
 elapsed_time=$(($end_time - $start_time))

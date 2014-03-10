@@ -1,0 +1,71 @@
+#
+# Try to backup local disks, not panicking just yet if /Volumes/Backup-A/ doesn't exist.
+#
+
+if [ -e $backup_1 ]; then
+
+	# root volume
+	backup_local_disk $target_1 $backup_1
+	rc101=$?
+
+	# firewire_disk
+	backup_local_disk $target_2 $backup_3
+	rc102=$?
+
+	#
+	# Backup remote files
+	#
+
+	blank_line
+	report "Checking if target directories exist in the $backup_2 volume..."
+
+	create_directory_if_it_does_not_exist $backup_2 hpwtdogmom.org
+	create_directory_if_it_does_not_exist $backup_2 applied-math.org
+	create_directory_if_it_does_not_exist $backup_2 mail_spool
+	create_directory_if_it_does_not_exist $backup_2 daily_archive
+
+	backup_remote_disk $target_3 $backup_2/hpwtdogmom.org/
+	rc103=$?
+
+	backup_remote_disk $target_4 $backup_2/hpwtdogmom.org/
+	rc104=$?
+
+	backup_remote_disk $target_5 $backup_2/hpwtdogmom.org/
+	rc105=$?
+
+	backup_remote_disk $target_6 $backup_2/applied-math.org/
+	rc106=$?
+
+	backup_remote_disk $target_7 $backup_2/applied-math.org/
+	rc107=$?
+
+	backup_remote_disk $target_8 $backup_2/applied-math.org/
+	rc108=$?
+
+	backup_remote_disk $target_9 $backup_2/applied-math.org/
+	rc109=$?
+
+	backup_remote_disk $target_10 $backup_2/mail_spool/
+	rc110=$?
+
+	backup_remote_disk $target_11 $backup_2/mail_spool/
+	rc111=$?
+
+	backup_remote_disk $target_12 $backup_2/mail_spool/
+	rc112=$?
+
+	#
+	# snapshot M's webmail and the mail spool just in case...
+	#
+
+	snapshot_M_email $backup_2
+	rc113=$?
+
+	if [ $global_failure_code != "F" ] ; then
+		onsite_backup_success_code="S"
+	fi
+
+	if [ "$global_failure_code" == "F" ] ; then
+		onsite_backup_success_code="F"
+	fi
+fi
