@@ -1,1 +1,1 @@
-moving more code into functions...not really satisfied with it yet, but regression test it
+move more functionality into functions

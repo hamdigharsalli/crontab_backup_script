@@ -171,6 +171,11 @@ determine_backup_device()
 	blank_line
 }
 
+#
+# Mount the backup drive. It doesn't matter whether it's Backup-A or Backup-A_offsite;
+# this refers to whatever physical device is plugged into the chain at that location.
+#
+
 mount_backup_volumes()
 {
 	blank_line
@@ -510,6 +515,61 @@ figure_overall_success_code()
 	fi
 }
 
+compute_statistics()
+{
+	end_time=`date +%s`
+	elapsed_time=$(($end_time - $start_time))
+
+	total_size=$size_accumulator
+	total_bandwidth_used=$bandwidth_accumulator
+
+	#
+	# The following bit of perl code is from
+	# http://www.sunmanagers.org/pipermail/summaries/2002-December/002817.html
+	# It formats a number with commas for display.  Retrieved on 20080202.1105
+	# from Google.
+	#
+	total_size_formatted=`echo $total_size | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
+
+	total_bandwidth_used_formatted=`echo $total_bandwidth_used \
+	 | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
+}
+
+format_report()
+{
+	report "Elapsed time $elapsed_time seconds; a total of\
+	 $total_size_formatted bytes were synchronised;"
+
+	report "network usage was $total_bandwidth_used_formatted bytes;"
+
+	report "return codes from rsync were $rc101,$rc102,$rc103,$rc104,$rc105,\
+$rc106,$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,$rc204,\
+$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_code"
+}
+
+email_report()
+{
+	#
+	# It is necessary to route the email through hpwtdogmom.org
+	# (Hurricane Electric) because this computer can't send email
+	# to Oxford (this computer doesn't have a reverse DNS entry,
+	# because it's on a BT DSL line).  The SSH command uses root's
+	# id_rsa file for public key authentication to hpwtdogmom.org
+	# because this script is run (via cron) by root.
+	#
+	# Remove non-printable characters from the report before mailing
+	# out, because hpwtdogmom.org runs on Linux and uses nail, which
+	# detects the ^S in the input and changes the MIME content-type
+	# header automatically to octet-stream, which confuses my mail
+	# reader on the receiving end.
+	#
+
+	tr -d \\023 < $tempfile | ssh aloughry@hpwtdogmom.org mail -r $from_email_address \
+		-s "\"backup report `date +%Y%m%d.%H%M` ($short_success_code) rc=$rc101,$rc102,\
+$rc103,$rc104,$rc105,$rc106,$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,\
+$rc202,$rc203,$rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:\
+$overall_success_code\"" $report_to_email_address
+}
 
 #===========================================================================
 # Here is where the script really begins.
@@ -521,6 +581,7 @@ check_for_killfile_before_running
 initialise_tempfile
 
 report "Starting time of this backup: `date`."
+
 determine_backup_device
 
 #
@@ -528,13 +589,9 @@ determine_backup_device
 #
 
 report "Disk space on local drives:"
-
 blank_line
 df -Hl >> $tempfile
 
-#
-# Mount the backup drive. It doesn't matter whether it's Backup-A or Backup-A_offsite;
-# this refers to whatever physical device is plugged into the chain at that location.
 #
 # We do this after the `df -Hl` so we can see in the report it it was already mounted;
 # the report will already tell us, implicitly, if the disk doesn't get mounted for any
@@ -545,35 +602,13 @@ mount_backup_volumes
 
 backup_to_onsite_disk
 backup_to_offsite_disk
+
 figure_overall_success_code
-
-end_time=`date +%s`
-elapsed_time=$(($end_time - $start_time))
-
-total_size=$size_accumulator
-total_bandwidth_used=$bandwidth_accumulator
-
-#
-# The following bit of perl code is from
-# http://www.sunmanagers.org/pipermail/summaries/2002-December/002817.html
-# It formats a number with commas for display.  Retrieved on 20080202.1105
-# from Google.
-#
-total_size_formatted=`echo $total_size | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
-
-total_bandwidth_used_formatted=`echo $total_bandwidth_used \
- | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
+compute_statistics
 
 blank_line
 
-report "Elapsed time $elapsed_time seconds; a total of\
- $total_size_formatted bytes were synchronised;"
-
-report "network usage was $total_bandwidth_used_formatted bytes;"
-
-report "return codes from rsync were $rc101,$rc102,$rc103,$rc104,$rc105,\
-$rc106,$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,$rc204,\
-$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_code"
+format_report
 
 #
 # If we don't do this before unmounting the backup disks, we can't see how much
@@ -581,7 +616,9 @@ $rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_
 #
 
 blank_line
+
 report "Disk space on all drives:"
+
 blank_line
 
 df -Hl >> $tempfile
@@ -593,30 +630,15 @@ blank_line
 
 unmount_backup_volumes
 
+blank_line
+
 report "Ending time of this backup: `date`."
 
 blank_line
 
 report "End of report."
 
-#
-# It is necessary to route the email through hpwtdogmom.org
-# (Hurricane Electric) because this computer can't send email
-# to Oxford (this computer doesn't have a reverse DNS entry,
-# because it's on a BT DSL line).  The SSH command uses root's
-# id_rsa file for public key authentication to hpwtdogmom.org
-# because this script is run (via cron) by root.
-#
-# Remove non-printable characters from the report before mailing
-# out, because hpwtdogmom.org runs on Linux and uses nail, which
-# detects the ^S in the input and changes the MIME content-type
-# header automatically to octet-stream, which confuses my mail
-# reader on the receiving end.
-#
-
-tr -d \\023 < $tempfile | ssh aloughry@hpwtdogmom.org mail -r $from_email_address \
-	-s "\"backup report `date +%Y%m%d.%H%M` ($short_success_code) rc=$rc101,$rc102,$rc103,$rc104,$rc105,$rc106,$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,$rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_code\"" \
-	$report_to_email_address
+email_report
 
 rm -f $lockfile
 
