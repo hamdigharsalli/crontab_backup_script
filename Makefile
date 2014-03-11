@@ -9,8 +9,6 @@ script:
 vi:
 	make script
 
-install:
-	@echo "scp $(crontab_backup_script) user@dest:"
-
 include common.mk
+include private.mk
 
