@@ -1,1 +1,1 @@
-store PII in private.mk so we can have an install target here.
+make the private.mk mechanism sufficiently general to use elsewhere.

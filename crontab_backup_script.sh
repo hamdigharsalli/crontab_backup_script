@@ -593,9 +593,9 @@ blank_line
 df -Hl >> $tempfile
 
 #
-# We do this after the `df -Hl` so we can see in the report it it was already mounted;
-# the report will already tell us, implicitly, if the disk doesn't get mounted for any
-# reason, by failing.
+# We mount the backup drives after the `df -Hl` so we can see in the report
+# if they were already mounted; the report will already tell us, implicitly,
+# that the volumes didn't get mounted for any reason, by failing.
 #
 
 mount_backup_volumes
@@ -610,23 +610,20 @@ blank_line
 
 format_report
 
-#
-# If we don't do this before unmounting the backup disks, we can't see how much
-# space is left on them in the report.
-#
-
 blank_line
 
 report "Disk space on all drives:"
 
 blank_line
 
-df -Hl >> $tempfile
-blank_line
+#
+# If we don't do this before unmounting the backup disks, then we can't see
+# how much space is left on them in the report.
+#
 
-#
-# Do this before the `df -Hl` so we can see if it happened.
-#
+df -Hl >> $tempfile
+
+blank_line
 
 unmount_backup_volumes
 

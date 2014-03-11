@@ -9,6 +9,8 @@ script:
 vi:
 	make script
 
+install: private-install-crontab_backup_script
+
 include common.mk
 include private.mk
 
