@@ -1,1 +1,1 @@
-make the private.mk mechanism sufficiently general to use elsewhere.
+document the private repository

@@ -41,13 +41,18 @@ be skipped by `fsck`).
 Not specifying disk volumes by UUID has the advantage of not spilling potentially
 sensitive information here, but the `UUID=` form didn't work when I tried it anyway.
 
+Private `Makefile`
+------------------
+
+This repository uses a new method for protecting PII such as usernames and host names
+in Makefiles; it includes a `private.mk` file stored in a different repository that is
+private. Unless you have access to my \verb,notes.new` repository, `make install` remains
+opaque to you.
+
 TODO
 ----
 
 1. Need a script to kill a running backup.<sup>[*](#footnote-star)</sup>
-
-2. Define new functions for onsite_backup() and offsite_backup() and use
-them. Define new functions for interpreting success codes.<sup>[&dagger;](#footnote-dagger)</sup>
 
 <hr/>
 
@@ -65,9 +70,4 @@ the exit code.
 
 The script `kill_it_kill_it_kill_it.sh` &#x263A; (under development) will eventually be used
 to do the job.
-
-<a name="footnote-dagger"/>
-<sup>&dagger;</sup> There are at least two long sections of the script that could be
-functionalised, in addition to all the `if` statements that interpret return codes and
-report overall success or failure.
 
