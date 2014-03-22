@@ -1,1 +1,1 @@
-updated for new backup disk drive names
+improve alert message when another copy of the script is running

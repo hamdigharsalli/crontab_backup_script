@@ -145,7 +145,7 @@ check_for_killfile_while_running()
 check_for_lockfile()
 {
 	if [ -e $lockfile ] ; then
-		report "ALERT: another instance of $0 is apparently running (or expired lockfile)...this instance is exiting."
+		report "ALERT: another instance of $0 is apparently running (or an old lockfile exists)...this instance is exiting."
 		blank_line
 		exit 1
 	else
