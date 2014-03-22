@@ -40,13 +40,13 @@ initialise_variables()
 	target_11=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/miranda
 	target_12=loughry@applied-math.org:/var/mail/applied-math.org/joe
 
-	backup_1=/Volumes/Backup-A
-	backup_2=/Volumes/Backup-B
-	backup_3=/Volumes/Backup-C
+	backup_1=/Volumes/Backup-A_new
+	backup_2=/Volumes/Backup-B_new
+	backup_3=/Volumes/Backup-C_new
 
-	backup_1_ofs=/Volumes/Backup-A_offsite
-	backup_2_ofs=/Volumes/Backup-B_offsite
-	backup_3_ofs=/Volumes/Backup-C_offsite
+	backup_1_ofs=/Volumes/Backup-A_offsite_new
+	backup_2_ofs=/Volumes/Backup-B_offsite_new
+	backup_3_ofs=/Volumes/Backup-C_offsite_new
 
 	#
 	# If the following file exists at the root of a volume, then Spotlight
