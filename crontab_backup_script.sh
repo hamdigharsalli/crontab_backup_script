@@ -356,9 +356,9 @@ snapshot_M_email()
 check_free_space_on_remote_machine()
 {
 	where=$1
-	report "Free space on `echo $where | cut -d @ -f 2`:"
+	report "Disk space on `echo $where | cut -d @ -f 2`:"
 	blank_line
-	$ssh_command -i /Users/$backup_username/.ssh/id_rsa $where "df -Hl" >> $tempfile
+	$ssh_command -i /Users/$backup_username/.ssh/id_rsa $where "df -PHl" >> $tempfile
 }
 
 backup_to_onsite_disk()
@@ -605,6 +605,12 @@ report "Disk space on local drives:"
 blank_line
 df -Hl >> $tempfile
 
+blank_line
+
+check_free_space_on_remote_machine mirandaloughry@MKL.local
+
+blank_line
+
 #
 # We mount the backup drives after the `df -Hl` so we can see in the report
 # if they were already mounted; the report will already tell us, implicitly,
@@ -613,8 +619,8 @@ df -Hl >> $tempfile
 
 mount_backup_volumes
 
-# backup_to_onsite_disk
-# backup_to_offsite_disk
+backup_to_onsite_disk
+backup_to_offsite_disk
 
 figure_overall_success_code
 compute_statistics
@@ -635,10 +641,6 @@ blank_line
 #
 
 df -Hl >> $tempfile
-
-blank_line
-
-check_free_space_on_remote_machine mirandaloughry@MKL.local
 
 blank_line
 
