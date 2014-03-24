@@ -17,6 +17,7 @@ initialise_variables()
 	from_email_address=cron@hpwtdogmom.org
 
 	rsync_command="/usr/local/bin/rsync"
+	ssh_command="/usr/bin/ssh"
 
 	start_time=`date +%s`
 
@@ -348,6 +349,18 @@ snapshot_M_email()
 	return $RC
 }
 
+#
+# Usage: check_free_space_on_remote_machine mirandaloughry@MKL.local
+#
+
+check_free_space_on_remote_machine()
+{
+	where=$1
+	report "Free space on `echo $where | cut -d @ -f 2`:"
+	blank_line
+	$ssh_command -i /Users/$backup_username/.ssh/id_rsa $where "df -Hl" >> $tempfile
+}
+
 backup_to_onsite_disk()
 {
 	#
@@ -600,8 +613,8 @@ df -Hl >> $tempfile
 
 mount_backup_volumes
 
-backup_to_onsite_disk
-backup_to_offsite_disk
+# backup_to_onsite_disk
+# backup_to_offsite_disk
 
 figure_overall_success_code
 compute_statistics
@@ -612,7 +625,7 @@ format_report
 
 blank_line
 
-report "Disk space on all drives:"
+report "Disk space on all local drives:"
 
 blank_line
 
@@ -622,6 +635,10 @@ blank_line
 #
 
 df -Hl >> $tempfile
+
+blank_line
+
+check_free_space_on_remote_machine mirandaloughry@MKL.local
 
 blank_line
 
