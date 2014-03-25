@@ -1,2 +1,1 @@
-move free space display on M's machine to beginning section of report and coordinate df options
-(df -P is required on OS X Mavericks due to a change in the default options)
+remove blank line after disk space report on remote machine

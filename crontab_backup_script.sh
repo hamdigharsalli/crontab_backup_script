@@ -609,8 +609,6 @@ blank_line
 
 check_free_space_on_remote_machine mirandaloughry@MKL.local
 
-blank_line
-
 #
 # We mount the backup drives after the `df -Hl` so we can see in the report
 # if they were already mounted; the report will already tell us, implicitly,
