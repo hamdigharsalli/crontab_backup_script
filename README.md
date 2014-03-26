@@ -15,6 +15,12 @@ The backup volumes are kept unmounted; they really should be kept physically unp
 and powered off in case CryptoLocker gets smart enough in future to try mounting disks
 before it goes hunting.
 
+GUID Partition Table scheme
+---------------------------
+
+For a disk to be bootable on the Mac, it must be formatted with the *GUID Partition
+Table scheme* option in Disk Utility (or `diskutil` from the command line).
+
 Preventing Disk Volumes from Auto-Mounting in Mac OS X
 ------------------------------------------------------
 

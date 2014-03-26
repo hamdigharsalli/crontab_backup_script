@@ -1,1 +1,1 @@
-set short_success_code to "A" when an alert is indicated
+document the GUID Partition Table scheme constraint on bootable backup disks
