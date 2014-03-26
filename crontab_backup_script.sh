@@ -632,6 +632,13 @@ graceful_exit()
 	report "End of report."
 
 	email_report
+
+	#
+	# If we didn't call exit now, then the script might continue after
+	# graceful_exit() was called.
+	#
+
+	exit 0
 }
 
 #===========================================================================
@@ -670,8 +677,6 @@ mount_backup_volumes
 backup_to_onsite_disk
 backup_to_offsite_disk
 
-graceful_exit
-
 #
 # If we got to the end this way, then remove the lockfile (it is not removed
 # by an exceptional condition exit, because those are usually due to another
@@ -680,4 +685,6 @@ graceful_exit
 #
 
 rm -f $lockfile
+
+graceful_exit
 

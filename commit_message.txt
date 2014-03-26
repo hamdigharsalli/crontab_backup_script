@@ -1,1 +1,2 @@
-graceful exit (sending report by email) when killfile or lockfile seen
+graceful_exit() needs to call exit when it's done, otherwise the script might continue after.
+Also, upon normal finishing, remove the lockfile before calling graceful_exit().
