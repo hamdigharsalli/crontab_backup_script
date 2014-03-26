@@ -8,7 +8,7 @@ rsync_PID=`ps ax | grep [r]sync | cut -d ' ' -f 2 | sort | head -1`
 script_PID=`ps ax | grep [c]rontab_backup_script\.sh | cut -d ' ' -f 2 | sort | head -1`
 
 #
-# If we killed rsync first, the script might launch another.
+# If we were to kill the rsync process first, the script might launch another.
 #
 
 # sudo kill $script_PID

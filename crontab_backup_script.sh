@@ -120,6 +120,13 @@ separator()
 	report "===================================================================="
 }
 
+#
+# Note that we remove the lockfile ONLY upon discovering a killfile, but not
+# if we discover a lockfile. The reason is because a lockfile usually indicates
+# another instance of this script is already running, and we don't want to
+# interfere with that instance's lockfile.
+#
+
 check_for_killfile_before_running()
 {
 	if [ -e $killfile ]; then
@@ -127,7 +134,7 @@ check_for_killfile_before_running()
 		report "ALERT: killfile seen...this instance is exiting (removing lockfile and killfile)."
 		blank_line
 		rm -f $lockfile $killfile
-		exit 2
+		graceful_exit
 	fi
 }
 
@@ -138,8 +145,7 @@ check_for_killfile_while_running()
 		report "ALERT: killfile seen...this instance is exiting (removing lockfile and killfile)."
 		blank_line
 		rm -f $lockfile $killfile
-		unmount_backup_volumes
-		exit 2
+		graceful_exit
 	fi
 }
 
@@ -148,7 +154,7 @@ check_for_lockfile()
 	if [ -e $lockfile ] ; then
 		report "ALERT: another instance of $0 is apparently running (or an old lockfile exists)...this instance is exiting."
 		blank_line
-		exit 1
+		graceful_exit
 	else
 		rm -f $lockfile; touch $lockfile
 	fi
@@ -584,6 +590,50 @@ $rc202,$rc203,$rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc
 $overall_success_code\"" $report_to_email_address
 }
 
+#
+# Since bash has no goto, the way to exit gracefully in exceptional
+# situations (such as when the killfile is seen) without duplicating
+# this code all over is to encapsulate all the desired ending actions
+# in a function that can be called whenever the killfile is seen.
+#
+
+graceful_exit()
+{
+	figure_overall_success_code
+	compute_statistics
+
+	blank_line
+
+	format_report
+
+	blank_line
+
+	report "Disk space on all local drives:"
+
+	blank_line
+
+	#
+	# If we don't do this before unmounting the backup disks, then we can't see
+	# how much space is left on them in the report.
+	#
+
+	df -Hl >> $tempfile
+
+	blank_line
+
+	unmount_backup_volumes
+
+	blank_line
+
+	report "Ending time of this backup: `date`."
+
+	blank_line
+
+	report "End of report."
+
+	email_report
+}
+
 #===========================================================================
 # Here is where the script really begins.
 #===========================================================================
@@ -620,39 +670,14 @@ mount_backup_volumes
 backup_to_onsite_disk
 backup_to_offsite_disk
 
-figure_overall_success_code
-compute_statistics
-
-blank_line
-
-format_report
-
-blank_line
-
-report "Disk space on all local drives:"
-
-blank_line
+graceful_exit
 
 #
-# If we don't do this before unmounting the backup disks, then we can't see
-# how much space is left on them in the report.
+# If we got to the end this way, then remove the lockfile (it is not removed
+# by an exceptional condition exit, because those are usually due to another
+# instanct of the same script running, and we don't want to interfere with
+# the other script's lockfile).
 #
-
-df -Hl >> $tempfile
-
-blank_line
-
-unmount_backup_volumes
-
-blank_line
-
-report "Ending time of this backup: `date`."
-
-blank_line
-
-report "End of report."
-
-email_report
 
 rm -f $lockfile
 

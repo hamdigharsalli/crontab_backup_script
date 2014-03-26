@@ -49,6 +49,19 @@ in Makefiles; it includes a `private.mk` file stored in a different repository t
 private. Unless you have access to my \verb,notes.new` repository, `make install` remains
 opaque to you.
 
+Stopping a Running Backup
+-------------------------
+
+Because this script does lots of work, and hammers the computer whilst doing it, it is
+sometimes advantageous to be able to stop a running backup. To do that, first kill the
+`crontab_backup_script.sh` process (as root), then kill the first-listed `rsync` process;
+the following child processes will exit normally.
+
+Note that the above method will leave an unfinished `crontab_backup_report` and not send
+an email; setting the killfile will exit the script gracefully, but not send the email;
+repeatedly killing `rsync` processes until there are no more will let the script send an
+email report indicating failure.
+
 TODO
 ----
 
@@ -57,10 +70,17 @@ TODO
 <hr/>
 
 <a name="footnote-star"/>
-<sup>*</sup> There are two processes that need to be killed: the `crontab_backup_script.sh`
-and whatever long running `rsync` or `tar` or `gzip` process is currently running. It might
-be reasonable to use the lockfile to indicate the PID of the currently running subprocess
-in order to implement this cleanly and get the effect of a rapid shutdown when commanded to.
+<sup>*</sup> There are two processes that need to be killed: *firstly*, the
+`crontab_backup_script.sh` and *secondly*, whatever long running `rsync` or `tar` or
+`gzip` process is currently running. It might be reasonable to use the lockfile to
+indicate the PID of the currently running subprocess in order to implement this
+cleanly and get the effect of a rapid shutdown when commanded to, but it's not easy
+to get the PID of a process when you fork one off in bash; `$!` only works for processes
+launched in the background, and the alternative recommended method of using `jobs` is
+fragile. It's hard to do synchronously.
+
+Some programmes have a `--pid` option to create a file containing their PID; `rsync`
+can do that if run as a daemon.
 
 The problem with the above mentioned solution, though, is that it interferes with the method
 I already used to save the return code of the child process; using `$!` to get the PID of

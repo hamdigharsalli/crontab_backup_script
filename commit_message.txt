@@ -1,1 +1,1 @@
-remove blank line after disk space report on remote machine
+graceful exit (sending report by email) when killfile or lockfile seen
