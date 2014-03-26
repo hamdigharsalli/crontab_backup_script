@@ -132,9 +132,11 @@ check_for_killfile_before_running()
 	if [ -e $killfile ]; then
 		blank_line
 		report "ALERT: killfile seen...this instance is exiting (removing lockfile and killfile)."
-		blank_line
+		#
+		# no need to unmount backup volumes; they haven't been mounted yet.
+		#
 		rm -f $lockfile $killfile
-		graceful_exit
+		send_report_and_exit
 	fi
 }
 
@@ -143,7 +145,9 @@ check_for_killfile_while_running()
 	if [ -e $killfile ]; then
 		blank_line
 		report "ALERT: killfile seen...this instance is exiting (removing lockfile and killfile)."
-		blank_line
+		#
+		# unmount backup volumes before leaving.
+		#
 		rm -f $lockfile $killfile
 		graceful_exit
 	fi
@@ -153,8 +157,10 @@ check_for_lockfile()
 {
 	if [ -e $lockfile ] ; then
 		report "ALERT: another instance of $0 is apparently running (or an old lockfile exists)...this instance is exiting."
-		blank_line
-		graceful_exit
+		#
+		# don't unmount backup volumes first; somebody else is using them.
+		#
+		send_report_and_exit
 	else
 		rm -f $lockfile; touch $lockfile
 	fi
@@ -597,6 +603,26 @@ $overall_success_code\"" $report_to_email_address
 # in a function that can be called whenever the killfile is seen.
 #
 
+send_report_and_exit()
+{
+	blank_line
+
+	report "Ending time of this backup: `date`."
+
+	blank_line
+
+	report "End of report."
+
+	email_report
+
+	#
+	# If we didn't call exit now, then the script might continue after
+	# we meant to quit.
+	#
+
+	exit 0
+}
+
 graceful_exit()
 {
 	figure_overall_success_code
@@ -623,22 +649,7 @@ graceful_exit()
 
 	unmount_backup_volumes
 
-	blank_line
-
-	report "Ending time of this backup: `date`."
-
-	blank_line
-
-	report "End of report."
-
-	email_report
-
-	#
-	# If we didn't call exit now, then the script might continue after
-	# graceful_exit() was called.
-	#
-
-	exit 0
+	send_report_and_exit
 }
 
 #===========================================================================

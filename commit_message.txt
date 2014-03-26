@@ -1,2 +1,1 @@
-graceful_exit() needs to call exit when it's done, otherwise the script might continue after.
-Also, upon normal finishing, remove the lockfile before calling graceful_exit().
+don't unmount the backup volumes before exiting if lockfile is seen
