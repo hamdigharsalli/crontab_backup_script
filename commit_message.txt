@@ -1,1 +1,1 @@
-don't unmount the backup volumes before exiting if lockfile is seen
+set short_success_code to "A" when an alert is indicated

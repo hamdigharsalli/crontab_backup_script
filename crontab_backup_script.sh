@@ -136,6 +136,7 @@ check_for_killfile_before_running()
 		# no need to unmount backup volumes; they haven't been mounted yet.
 		#
 		rm -f $lockfile $killfile
+		short_success_code="A"
 		send_report_and_exit
 	fi
 }
@@ -149,6 +150,7 @@ check_for_killfile_while_running()
 		# unmount backup volumes before leaving.
 		#
 		rm -f $lockfile $killfile
+		short_success_code="A"
 		graceful_exit
 	fi
 }
@@ -160,6 +162,7 @@ check_for_lockfile()
 		#
 		# don't unmount backup volumes first; somebody else is using them.
 		#
+		short_success_code="A"
 		send_report_and_exit
 	else
 		rm -f $lockfile; touch $lockfile
