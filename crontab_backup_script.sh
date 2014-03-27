@@ -18,6 +18,7 @@ initialise_variables()
 
 	rsync_command="/usr/local/bin/rsync"
 	ssh_command="/usr/bin/ssh"
+	ping_command="/sbin/ping"
 
 	start_time=`date +%s`
 
@@ -155,23 +156,34 @@ check_for_killfile_while_running()
 	fi
 }
 
-check_for_lockfile()
+initialise_lockfile()
 {
-	if [ -e $lockfile ] ; then
-		report "ALERT: another instance of $0 is apparently running (or an old lockfile exists)...this instance is exiting."
-		#
-		# don't unmount backup volumes first; somebody else is using them.
-		#
-		short_success_code="A"
-		send_report_and_exit
-	else
-		rm -f $lockfile; touch $lockfile
-	fi
+	rm -f $lockfile; touch $lockfile
 }
 
 initialise_tempfile()
 {
 	rm -f $tempfile; touch $tempfile
+}
+
+
+check_for_lockfile()
+{
+	if [ -e $lockfile ] ; then
+		report "ALERT: another instance of $0 is apparently running (or an old lockfile exists)...this instance is exiting."
+		blank_line
+		#
+		# Don't unmount the backup volumes first; somebody else is using them. Don't
+		# remove the lockfile; it belongs to somebody else. Set the alert code which
+		# will persist in case of failure (but will be changed to "S" if successful)
+		# and call exit to guarantee that this instance of the script won't continue
+		# running.
+		#
+		short_success_code="A"
+		exit 0
+	else
+		initialise_lockfile
+	fi
 }
 
 #
@@ -370,10 +382,16 @@ snapshot_M_email()
 
 check_free_space_on_remote_machine()
 {
-	where=$1
-	report "Disk space on `echo $where | cut -d @ -f 2`:"
+	user_at_machine=$1
+	machine=`echo $user_at_machine | cut -d @ -f 2`
+	#
+	# wake up the remote machine first (sometimes ssh silently fails if remote is not awake)
+	#
+	$ping_command -i 2 -o $machine
+
+	report "Disk space on $machine:"
 	blank_line
-	$ssh_command -i /Users/$backup_username/.ssh/id_rsa $where "df -PHl" >> $tempfile
+	$ssh_command -i /Users/$backup_username/.ssh/id_rsa $user_at_machine "df -PHl" >> $tempfile
 }
 
 backup_to_onsite_disk()
