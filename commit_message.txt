@@ -1,1 +1,1 @@
-fine tuning: ping the remote machine before checking its disk space and wait for it to respond first
+improve ssh and ping command options; document them

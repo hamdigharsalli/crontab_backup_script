@@ -16,9 +16,22 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
+	#
+	# rsync options vary, so they are specified closer to where the command is called
+	#
 	rsync_command="/usr/local/bin/rsync"
-	ssh_command="/usr/bin/ssh"
-	ping_command="/sbin/ping"
+
+	#
+	# ConnectTimeout=40 makes ssh be more patient about slow remote hosts;
+	# BatchMode=yes keeps SSH from hanging if host is unknown;
+	# StrictHostKeyChecking=no adds the key fingerprint automatically.
+	#
+	ssh_command="/usr/bin/ssh -o ConnectTimeout=40 -o BatchMode=yes -o StrictHostKeyChecking=no"
+
+	#
+	# -o tells ping to quit after receiving one reply packet successfully
+	#
+	ping_command="/sbin/ping -o"
 
 	start_time=`date +%s`
 
@@ -174,12 +187,11 @@ check_for_lockfile()
 		blank_line
 		#
 		# Don't unmount the backup volumes first; somebody else is using them. Don't
-		# remove the lockfile; it belongs to somebody else. Set the alert code which
-		# will persist in case of failure (but will be changed to "S" if successful)
-		# and call exit to guarantee that this instance of the script won't continue
-		# running.
+		# remove the lockfile; it belongs to somebody else. Don't bother setting the
+		# alert code because this function exits the script without sending an email
+		# report; then call exit to guarantee that this instance of the script won't
+		# continue running in parallel.
 		#
-		short_success_code="A"
 		exit 0
 	else
 		initialise_lockfile
@@ -387,7 +399,7 @@ check_free_space_on_remote_machine()
 	#
 	# wake up the remote machine first (sometimes ssh silently fails if remote is not awake)
 	#
-	$ping_command -i 2 -o $machine
+	$ping_command $machine
 
 	report "Disk space on $machine:"
 	blank_line
@@ -610,7 +622,7 @@ email_report()
 	# reader on the receiving end.
 	#
 
-	tr -d \\023 < $tempfile | ssh aloughry@hpwtdogmom.org mail -r $from_email_address \
+	tr -d \\023 < $tempfile | $ssh_command aloughry@hpwtdogmom.org mail -r $from_email_address \
 		-s "\"backup report `date +%Y%m%d.%H%M` ($short_success_code) rc=$rc101,$rc102,\
 $rc103,$rc104,$rc105,$rc106,$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,\
 $rc202,$rc203,$rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:\
