@@ -1,1 +1,1 @@
-improve ssh and ping command options; document them
+update $df_command options after OS was upgraded to Mavericks over the weekend

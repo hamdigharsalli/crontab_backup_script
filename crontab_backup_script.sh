@@ -33,6 +33,13 @@ initialise_variables()
 	#
 	ping_command="/sbin/ping -o"
 
+	#
+	# -PHl tells `df` not to include inodes in the report (because it makes the report
+	# too wide to read on the screen); the -P must occur first in the list of options
+	# or it won't have any effect on the -H like we want it to.
+	#
+	df_command="/bin/df -PHl"
+
 	start_time=`date +%s`
 
 	tempfile=/Users/$backup_username/crontab_backup_report
@@ -403,7 +410,7 @@ check_free_space_on_remote_machine()
 
 	report "Disk space on $machine:"
 	blank_line
-	$ssh_command -i /Users/$backup_username/.ssh/id_rsa $user_at_machine "df -PHl" >> $tempfile
+	$ssh_command -i /Users/$backup_username/.ssh/id_rsa $user_at_machine "$df_command" >> $tempfile
 }
 
 backup_to_onsite_disk()
@@ -676,7 +683,7 @@ graceful_exit()
 	# how much space is left on them in the report.
 	#
 
-	df -Hl >> $tempfile
+	$df_command >> $tempfile
 
 	blank_line
 
@@ -704,14 +711,14 @@ determine_backup_device
 
 report "Disk space on local drives:"
 blank_line
-df -Hl >> $tempfile
+$df_command >> $tempfile
 
 blank_line
 
 check_free_space_on_remote_machine mirandaloughry@MKL.local
 
 #
-# We mount the backup drives after the `df -Hl` so we can see in the report
+# We mount the backup drives after the `$df_command` so we can see in the report
 # if they were already mounted; the report will already tell us, implicitly,
 # that the volumes didn't get mounted for any reason, by failing.
 #
