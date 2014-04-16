@@ -1,1 +1,1 @@
-update $df_command options after OS was upgraded to Mavericks over the weekend
+add short_return_code at end of report

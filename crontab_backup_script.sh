@@ -651,7 +651,7 @@ send_report_and_exit()
 
 	blank_line
 
-	report "End of report."
+	report "End of report ($short_success_code)."
 
 	email_report
 
