@@ -1,1 +1,1 @@
-add short_return_code at end of report
+improve formatting of end-of-report short success code
