@@ -1,1 +1,2 @@
-take out extraneous punctuation
+add FAILURE tag to former "debug<nnn>" messages to make rsync failures easier to spot in report
+also improve indentation of long report() messages in the same area of code

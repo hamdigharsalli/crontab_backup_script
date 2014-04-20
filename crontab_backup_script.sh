@@ -262,9 +262,9 @@ backup_local_disk()
 				size_accumulator=`echo $(($size_accumulator + $BYTES_BACKED_UP))`
 			else
 				# This inelegant line break is required by the report() function.
-				report "debug129: not updating size_accumulator...BYTES_BACKED_UP" \
+				report "FAILURE: not updating size_accumulator...BYTES_BACKED_UP" \
 					" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
-				RC=z
+				RC="z"
 				global_failure_code="F"
 			fi
 
@@ -316,8 +316,8 @@ backup_remote_disk()
 			fi
 		else
 			# The following inelegant line break is required by the report() function.
-			report "debug173: not updating bandwidth_accumulator...BYTES_BACKED_UP \
-contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
+			report "FAILURE: not updating bandwidth_accumulator...BYTES_BACKED_UP" \
+				" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
 			global_failure_code="F"
 			RC="X"
 		fi
@@ -325,8 +325,8 @@ contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
 			size_accumulator=`echo $(($size_accumulator + $BYTES_BACKED_UP))`
 		else
 			# The following inelegant line break is required by the report() function.
-			report "debug178: not updating size_accumulator...BYTES_BACKED_UP \
-contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
+			report "FAILURE: not updating size_accumulator...BYTES_BACKED_UP" \
+				" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
 			RC="Y"
 			global_failure_code="F"
 		fi
