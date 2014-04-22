@@ -1,1 +1,1 @@
-add blank line before failure message; tag individual failures for analysis of cause
+display the value of RC before the rsync command line is run through eval()
