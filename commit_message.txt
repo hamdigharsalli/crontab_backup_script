@@ -1,1 +1,1 @@
-display the value of RC before the rsync command line is run through eval()
+added 2>&1 to end of rsync command line (after the >> $tempfile) to try to catch error messages

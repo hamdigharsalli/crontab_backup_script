@@ -252,7 +252,7 @@ backup_local_disk()
 
 	if [ -e $BACKUP ]; then
 		if [ -e $TARGET ]; then
-			rsync_command_line="$rsync_command $local_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile"
+			rsync_command_line="$rsync_command $local_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 			echo "rsync command line is \"$rsync_command_line\" and RC=\"$RC\" beforehand" >> $tempfile
 			blank_line
 			eval $rsync_command_line
@@ -300,7 +300,7 @@ backup_remote_disk()
 	remote_rsync_options="-iavz"
 
 	if [ -e $BACKUP ]; then
-		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile"
+		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 		echo "rsync command line is \"$rsync_command_line\" and RC=\"$RC\" beforehand" >> $tempfile
 		blank_line
 		eval $rsync_command_line
