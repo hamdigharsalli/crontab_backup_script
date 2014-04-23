@@ -1,1 +1,1 @@
-added 2>&1 to end of rsync command line (after the >> $tempfile) to try to catch error messages
+initialise RC before running rsync_command (so we can tell if RC was changed by rsync)
