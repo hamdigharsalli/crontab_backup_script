@@ -309,6 +309,9 @@ backup_remote_disk()
 		RC=$?
 		tail_minus_1=`tail -1 $tempfile`
 		tail_minus_2=`tail -2 $tempfile`
+		tail_minus_3=`tail -3 $tempfile`
+		tail_minus_4=`tail -4 $tempfile`
+		tail_minus_5=`tail -5 $tempfile`
 		BYTES_BACKED_UP=`tail -1 $tempfile | cut -d ' ' -f 4`
 		bytes_sent=`tail -2 $tempfile | head -1 | cut -d ' ' -f 2`
 		bytes_rcvd=`tail -2 $tempfile | head -1 | cut -d ' ' -f 6`
@@ -322,8 +325,12 @@ backup_remote_disk()
 			blank_line
 			report "FAILURE (B): not updating bandwidth_accumulator...BYTES_BACKED_UP" \
 				" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
-			report "diagnostic 325: tail_minus_1 = \"$tail_minus_1\""
-			report "diagnostic 326: tail_minus_2 = \"$tail_minus_2\""
+			blank_line
+			report "diagnostic 329: tail_minus_5 = \"$tail_minus_5\""
+			report "diagnostic 330: tail_minus_4 = \"$tail_minus_4\""
+			report "diagnostic 331: tail_minus_3 = \"$tail_minus_3\""
+			report "diagnostic 332: tail_minus_2 = \"$tail_minus_2\""
+			report "diagnostic 333: tail_minus_1 = \"$tail_minus_1\""
 			global_failure_code="F"
 			RC="X"
 		fi
