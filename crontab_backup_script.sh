@@ -298,7 +298,7 @@ backup_remote_disk()
 	report "---- Backing up remote disk $TARGET to $BACKUP"
 	blank_line
 
-	remote_rsync_options="-iavz"
+	remote_rsync_options="-iavvz"
 
 	if [ -e $BACKUP ]; then
 		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
@@ -330,7 +330,6 @@ backup_remote_disk()
 		if [ ${#BYTES_BACKED_UP} -ne 0 ]; then
 			size_accumulator=`echo $(($size_accumulator + $BYTES_BACKED_UP))`
 		else
-			blank_line
 			report "FAILURE (C): not updating size_accumulator...BYTES_BACKED_UP" \
 				" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
 			report "diagnostic 336: tail_minus_1 = \"$tail_minus_1\""

@@ -1,4 +1,2 @@
-capture the value of tail -1 $tempfile (and tail -2) to help figure out what goes
-wrong when rsync(1) fails on a remote disk; rsync(1) appears to return a 0 exit code
-but the log file might contain something useful from stderr, which is captured with
-a redirect of 2>&1 at the end of the rsync(1) command line.
+add an extra -v to remote_rsync_options to see if we can figure out why rsync(1) sometimes
+just stops in the middle of a transfer.
