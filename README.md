@@ -68,6 +68,23 @@ an email; setting the killfile will exit the script gracefully, but not send the
 repeatedly killing `rsync` processes until there are no more will let the script send an
 email report indicating failure.
 
+Troubleshooting
+---------------
+
+`rsync(1)` is called with a full path so the old, out-of-date version that Apple
+insists on installing with the OS is not used. Also, sometimes `cron` is a little
+picky about running programmes not specified with an absolute path, and silently
+does nothing.
+
+Hint: if the output in the `crontab_backup_report` shows *nothing* apparently
+happening on a remote `rsync(1)`&mdash;no return code, nothing&mdash;try running
+the command manually as `sudo rsync`... and look for a message about *the authenticity
+of this host cannot be verified* with the usual string of hex digits. Answer the
+question manually and it should work after that.
+
+I have no idea why that error message is not passed back to the caller, either via
+the protocol or stdin.
+
 TODO
 ----
 
