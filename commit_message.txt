@@ -1,1 +1,1 @@
-fix tail_minus_x logic error and redirect server name from applied-math.org to xray.he.net
+add a period after "before" in message so it won't be confused with a truncated line

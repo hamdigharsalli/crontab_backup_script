@@ -262,7 +262,7 @@ backup_local_disk()
 		if [ -e $TARGET ]; then
 			rsync_command_line="$rsync_command $local_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 			RC="x"
-			echo "rsync command line is \"$rsync_command_line\" and RC=\"$RC\" before" >> $tempfile
+			echo "rsync command line is \"$rsync_command_line\" and RC=\"$RC\" before." >> $tempfile
 			blank_line
 			eval $rsync_command_line
 			RC=$?
@@ -311,7 +311,7 @@ backup_remote_disk()
 	if [ -e $BACKUP ]; then
 		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 		RC="y"
-		echo "rsync command line is \"$rsync_command_line\" and RC=\"$RC\" before" >> $tempfile
+		echo "rsync command line is \"$rsync_command_line\" and RC=\"$RC\" before." >> $tempfile
 		blank_line
 		eval $rsync_command_line
 		RC=$?
@@ -398,7 +398,7 @@ snapshot_M_email()
 
 	if [ -e $BACKUP ]; then
 		tar_command_line="tar cf $backup_directory/$snapshot_file $BACKUP/hpwtdogmom.org/.webmail/users/miranda/ $BACKUP/mail_spool/"
-		echo "tar command line is \"$tar_command_line\" and RC=\"$RC\" before" >> $tempfile
+		echo "tar command line is \"$tar_command_line\" and RC=\"$RC\" before." >> $tempfile
 		blank_line
 		eval $tar_command_line
 		RC=$?
