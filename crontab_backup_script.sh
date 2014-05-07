@@ -307,7 +307,7 @@ backup_remote_disk()
 	report "---- Backing up remote disk $TARGET to $BACKUP"
 	blank_line
 
-	remote_rsync_options="-iavvz"
+	remote_rsync_options="-iavz"
 
 	if [ -e $BACKUP ]; then
 		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"

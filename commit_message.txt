@@ -1,1 +1,1 @@
-bash usage notes: variables cannot contain hyphens, only underscores.
+remove extra -v option from rsync(1); still testing
