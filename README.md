@@ -79,7 +79,7 @@ does nothing.
 Hint: if the output in the `crontab_backup_report` shows *nothing* apparently
 happening on a remote `rsync(1)`&mdash;no return code, nothing&mdash;try running
 the command manually as `sudo rsync`... and look for a message about *the authenticity
-of this host cannot be verified* with the usual string of hex digits. Answer the
+of host '...' can't be established* with the usual string of hex digits. Answer the
 question manually and it should work after that.
 
 I have no idea why that error message is not passed back to the caller, either via

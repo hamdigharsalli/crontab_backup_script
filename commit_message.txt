@@ -1,2 +1,1 @@
-document the behaviour when 'the authenticity of this host cannot be verified' does not
-show up in the output.
+correct the phrasing of the error message frum rsync(1)/ssh(1)
