@@ -17,7 +17,13 @@ initialise_variables()
 	from_email_address=cron@hpwtdogmom.org
 
 	#
-	# rsync options vary, so they are specified closer to where the command is called
+	# rsync(1) options vary, so they are specified closer to where the command is
+	# called. Note that rsync(1) is called with a full path so the old version
+	# that Apple installs by default in the OS is not used. Hint: if the output
+	# shows nothing apparently happening on a remote rsync(1)---no return code,
+	# nothing---then try running it manually as 'sudo rsync...' and look for 'the
+	# authenticity of this host cannot be verified...' and the usual string of
+	# hex digits. Answer the question manually and it should work after that.
 	#
 	rsync_command="/usr/local/bin/rsync"
 
@@ -307,7 +313,7 @@ backup_remote_disk()
 	report "---- Backing up remote disk $TARGET to $BACKUP"
 	blank_line
 
-	remote_rsync_options="-iavz"
+	remote_rsync_options="-iavz --no-human-readable"
 
 	if [ -e $BACKUP ]; then
 		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
@@ -316,11 +322,6 @@ backup_remote_disk()
 		blank_line
 		eval $rsync_command_line
 		RC=$?
-		tail_minus_1=`tail -1 $tempfile`
-		tail_minus_2=`tail -2 $tempfile | head -1`
-		tail_minus_3=`tail -3 $tempfile | head -1`
-		tail_minus_4=`tail -4 $tempfile | head -1`
-		tail_minus_5=`tail -5 $tempfile | head -1`
 		BYTES_BACKED_UP=`tail -1 $tempfile | cut -d ' ' -f 4`
 		bytes_sent=`tail -2 $tempfile | head -1 | cut -d ' ' -f 2`
 		bytes_rcvd=`tail -2 $tempfile | head -1 | cut -d ' ' -f 6`
@@ -334,12 +335,6 @@ backup_remote_disk()
 			blank_line
 			report "FAILURE (B): not updating bandwidth_accumulator...BYTES_BACKED_UP" \
 				" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
-			blank_line
-			report "diagnostic 329 = \"$tail_minus_5\""
-			report "diagnostic 330 = \"$tail_minus_4\""
-			report "diagnostic 331 = \"$tail_minus_3\""
-			report "diagnostic 332 = \"$tail_minus_2\""
-			report "diagnostic 333 = \"$tail_minus_1\""
 			global_failure_code="F"
 			RC="X"
 		fi
@@ -348,11 +343,6 @@ backup_remote_disk()
 		else
 			report "FAILURE (C): not updating size_accumulator...BYTES_BACKED_UP" \
 				" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
-			report "diagnostic 342 = \"$tail_minus_5\""
-			report "diagnostic 343 = \"$tail_minus_4\""
-			report "diagnostic 344 = \"$tail_minus_3\""
-			report "diagnostic 345 = \"$tail_minus_2\""
-			report "diagnostic 346 = \"$tail_minus_1\""
 			global_failure_code="F"
 			RC="Y"
 		fi

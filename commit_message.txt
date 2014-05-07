@@ -1,1 +1,2 @@
-remove extra -v option from rsync(1); still testing
+add --no-human-readable option to rsync(1) to turn off comma grouping in numbers; document
+the behaviour when 'the authenticity of this host cannot be verified' message appears.
