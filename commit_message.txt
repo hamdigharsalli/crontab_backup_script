@@ -1,1 +1,1 @@
-add a period after "before" in message so it won't be confused with a truncated line
+bash usage notes: variables cannot contain hyphens, only underscores.

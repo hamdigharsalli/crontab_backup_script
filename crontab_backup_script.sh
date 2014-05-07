@@ -59,16 +59,17 @@ initialise_variables()
 	# to ssh as applied-math.org but always works as xray.he.net. This
 	# lets me switch the name easily without rewriting many lines of code.
 	#
-	applied-math_server=xray.he.net
+	applied_math_server=xray.he.net
+	# applied_math_server=applied-math.org
 
-	target_6=loughry@$applied-math_server:.webmail
-	target_7=loughry@$applied-math_server:public_html
-	target_8=loughry@$applied-math_server:secure_html
-	target_9=loughry@$applied-math_server:backups
+	target_6=loughry@$applied_math_server:.webmail
+	target_7=loughry@$applied_math_server:public_html
+	target_8=loughry@$applied_math_server:secure_html
+	target_9=loughry@$applied_math_server:backups
 
 	target_10=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/andrea
 	target_11=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/miranda
-	target_12=loughry@$applied-math_server:/var/mail/applied-math.org/joe
+	target_12=loughry@$applied_math_server:/var/mail/applied-math.org/joe
 
 	backup_1=/Volumes/Backup-A_new
 	backup_2=/Volumes/Backup-B_new
