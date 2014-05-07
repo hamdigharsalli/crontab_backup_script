@@ -53,14 +53,22 @@ initialise_variables()
 	target_4=aloughry@hpwtdogmom.org:public_html
 	target_5=aloughry@hpwtdogmom.org:secure_html
 
-	target_6=loughry@applied-math.org:.webmail
-	target_7=loughry@applied-math.org:public_html
-	target_8=loughry@applied-math.org:secure_html
-	target_9=loughry@applied-math.org:backups
+	#
+	# The following variable is used for debugging remote access to the
+	# web server at Hurricane Electric, which sometimes doesn't respond
+	# to ssh as applied-math.org but always works as xray.he.net. This
+	# lets me switch the name easily without rewriting many lines of code.
+	#
+	applied-math_server=xray.he.net
+
+	target_6=loughry@$applied-math_server:.webmail
+	target_7=loughry@$applied-math_server:public_html
+	target_8=loughry@$applied-math_server:secure_html
+	target_9=loughry@$applied-math_server:backups
 
 	target_10=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/andrea
 	target_11=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/miranda
-	target_12=loughry@applied-math.org:/var/mail/applied-math.org/joe
+	target_12=loughry@$applied-math_server:/var/mail/applied-math.org/joe
 
 	backup_1=/Volumes/Backup-A_new
 	backup_2=/Volumes/Backup-B_new
@@ -254,7 +262,7 @@ backup_local_disk()
 		if [ -e $TARGET ]; then
 			rsync_command_line="$rsync_command $local_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 			RC="x"
-			echo "rsync command line is \"$rsync_command_line\" and RC=\"$RC\" beforehand" >> $tempfile
+			echo "rsync command line is \"$rsync_command_line\" and RC=\"$RC\" before" >> $tempfile
 			blank_line
 			eval $rsync_command_line
 			RC=$?
@@ -303,15 +311,15 @@ backup_remote_disk()
 	if [ -e $BACKUP ]; then
 		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 		RC="y"
-		echo "rsync command line is \"$rsync_command_line\" and RC=\"$RC\" beforehand" >> $tempfile
+		echo "rsync command line is \"$rsync_command_line\" and RC=\"$RC\" before" >> $tempfile
 		blank_line
 		eval $rsync_command_line
 		RC=$?
 		tail_minus_1=`tail -1 $tempfile`
-		tail_minus_2=`tail -2 $tempfile`
-		tail_minus_3=`tail -3 $tempfile`
-		tail_minus_4=`tail -4 $tempfile`
-		tail_minus_5=`tail -5 $tempfile`
+		tail_minus_2=`tail -2 $tempfile | head -1`
+		tail_minus_3=`tail -3 $tempfile | head -1`
+		tail_minus_4=`tail -4 $tempfile | head -1`
+		tail_minus_5=`tail -5 $tempfile | head -1`
 		BYTES_BACKED_UP=`tail -1 $tempfile | cut -d ' ' -f 4`
 		bytes_sent=`tail -2 $tempfile | head -1 | cut -d ' ' -f 2`
 		bytes_rcvd=`tail -2 $tempfile | head -1 | cut -d ' ' -f 6`
@@ -326,11 +334,11 @@ backup_remote_disk()
 			report "FAILURE (B): not updating bandwidth_accumulator...BYTES_BACKED_UP" \
 				" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
 			blank_line
-			report "diagnostic 329: tail_minus_5 = \"$tail_minus_5\""
-			report "diagnostic 330: tail_minus_4 = \"$tail_minus_4\""
-			report "diagnostic 331: tail_minus_3 = \"$tail_minus_3\""
-			report "diagnostic 332: tail_minus_2 = \"$tail_minus_2\""
-			report "diagnostic 333: tail_minus_1 = \"$tail_minus_1\""
+			report "diagnostic 329 = \"$tail_minus_5\""
+			report "diagnostic 330 = \"$tail_minus_4\""
+			report "diagnostic 331 = \"$tail_minus_3\""
+			report "diagnostic 332 = \"$tail_minus_2\""
+			report "diagnostic 333 = \"$tail_minus_1\""
 			global_failure_code="F"
 			RC="X"
 		fi
@@ -339,8 +347,11 @@ backup_remote_disk()
 		else
 			report "FAILURE (C): not updating size_accumulator...BYTES_BACKED_UP" \
 				" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
-			report "diagnostic 336: tail_minus_1 = \"$tail_minus_1\""
-			report "diagnostic 337: tail_minus_2 = \"$tail_minus_2\""
+			report "diagnostic 342 = \"$tail_minus_5\""
+			report "diagnostic 343 = \"$tail_minus_4\""
+			report "diagnostic 344 = \"$tail_minus_3\""
+			report "diagnostic 345 = \"$tail_minus_2\""
+			report "diagnostic 346 = \"$tail_minus_1\""
 			global_failure_code="F"
 			RC="Y"
 		fi
@@ -387,7 +398,7 @@ snapshot_M_email()
 
 	if [ -e $BACKUP ]; then
 		tar_command_line="tar cf $backup_directory/$snapshot_file $BACKUP/hpwtdogmom.org/.webmail/users/miranda/ $BACKUP/mail_spool/"
-		echo "tar command line is \"$tar_command_line\" and RC=\"$RC\" beforehand" >> $tempfile
+		echo "tar command line is \"$tar_command_line\" and RC=\"$RC\" before" >> $tempfile
 		blank_line
 		eval $tar_command_line
 		RC=$?

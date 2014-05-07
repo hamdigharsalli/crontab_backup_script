@@ -1,1 +1,1 @@
-I keep getting FAILURE (B) from applied-math.org: add more diagnostic output for debugging
+fix tail_minus_x logic error and redirect server name from applied-math.org to xray.he.net
