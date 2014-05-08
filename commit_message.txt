@@ -1,1 +1,1 @@
-correct the phrasing of the error message frum rsync(1)/ssh(1)
+rationalise the error codes (and make empty RC values distinct)

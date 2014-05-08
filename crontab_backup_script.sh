@@ -268,8 +268,8 @@ backup_local_disk()
 	if [ -e $BACKUP ]; then
 		if [ -e $TARGET ]; then
 			rsync_command_line="$rsync_command $local_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
-			RC="x"
-			echo "rsync command line is \"$rsync_command_line\" and RC=\"$RC\" before." >> $tempfile
+			RC="empty(1)"
+			echo "rsync command line is \"$rsync_command_line\" and RC = \"$RC\" before." >> $tempfile
 			blank_line
 			eval $rsync_command_line
 			RC=$?
@@ -280,19 +280,19 @@ backup_local_disk()
 				blank_line
 				report "FAILURE (A): not updating size_accumulator...BYTES_BACKED_UP" \
 					" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
-				RC="z"
+				RC="A"
 				global_failure_code="F"
 			fi
 
 			touch $BACKUP/$disable_spotlight
 		else
 			report "Warning: $TARGET does not exist"
-			RC=13
+			RC="B"
 			global_failure_code="F"
 		fi
 	else
 		report "Warning: $BACKUP does not exist"
-		RC=9
+		RC="C"
 		global_failure_code="F"
 	fi
 	return $RC
@@ -313,12 +313,17 @@ backup_remote_disk()
 	report "---- Backing up remote disk $TARGET to $BACKUP"
 	blank_line
 
+	if [ "$TARGET" == "xray.he.net" ]; then
+		report "Using $TARGET for connection."
+		blank_line
+	fi
+
 	remote_rsync_options="-iavz --no-human-readable"
 
 	if [ -e $BACKUP ]; then
 		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
-		RC="y"
-		echo "rsync command line is \"$rsync_command_line\" and RC=\"$RC\" before." >> $tempfile
+		RC="empty(2)"
+		echo "rsync command line is \"$rsync_command_line\" and RC = \"$RC\" before." >> $tempfile
 		blank_line
 		eval $rsync_command_line
 		RC=$?
@@ -336,7 +341,7 @@ backup_remote_disk()
 			report "FAILURE (B): not updating bandwidth_accumulator...BYTES_BACKED_UP" \
 				" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
 			global_failure_code="F"
-			RC="X"
+			RC="D"
 		fi
 		if [ ${#BYTES_BACKED_UP} -ne 0 ]; then
 			size_accumulator=`echo $(($size_accumulator + $BYTES_BACKED_UP))`
@@ -344,12 +349,12 @@ backup_remote_disk()
 			report "FAILURE (C): not updating size_accumulator...BYTES_BACKED_UP" \
 				" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
 			global_failure_code="F"
-			RC="Y"
+			RC="E"
 		fi
 
 	else
 		report "Warning: $BACKUP does not exist"
-		RC=9
+		RC="F"
 		global_failure_code="F"
 	fi
 	return $RC
@@ -389,7 +394,8 @@ snapshot_M_email()
 
 	if [ -e $BACKUP ]; then
 		tar_command_line="tar cf $backup_directory/$snapshot_file $BACKUP/hpwtdogmom.org/.webmail/users/miranda/ $BACKUP/mail_spool/"
-		echo "tar command line is \"$tar_command_line\" and RC=\"$RC\" before." >> $tempfile
+		RC="empty(3)"
+		echo "tar command line is \"$tar_command_line\" and RC = \"$RC\" before." >> $tempfile
 		blank_line
 		eval $tar_command_line
 		RC=$?
@@ -405,7 +411,7 @@ snapshot_M_email()
 		fi
 	else
 		report "Warning: $BACKUP does not exist"
-		RC="W"
+		RC="G"
 		global_failure_code="F"
 	fi
 	return $RC
