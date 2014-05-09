@@ -68,6 +68,15 @@ an email; setting the killfile will exit the script gracefully, but not send the
 repeatedly killing `rsync` processes until there are no more will let the script send an
 email report indicating failure.
 
+Modifying a Running Shell Script
+--------------------------------
+
+On MS-DOS, modifying a running batch file would cause weird errors. Evidently, Bash
+works that way too. It is always safe to append to a running shell script, but it is
+not safe to modify a running shell script in any other way (except possibly to delete
+it). Stop a running shell script before attempting to do `make install` on the remote
+machine.
+
 Troubleshooting
 ---------------
 

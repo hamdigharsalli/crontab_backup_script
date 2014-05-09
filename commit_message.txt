@@ -1,1 +1,1 @@
-display rsync version in the report
+update README with caution about not modifying a running shell script (at least in Bash)
