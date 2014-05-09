@@ -1,1 +1,1 @@
-update README with caution about not modifying a running shell script (at least in Bash)
+update README with recent problems and solution

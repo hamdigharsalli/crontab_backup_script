@@ -94,10 +94,46 @@ question manually and it should work after that.
 I have no idea why that error message is not passed back to the caller, either via
 the protocol or stdin.
 
+Another problem occurred when running `rsync(1)` that at first I thought was caused
+by a protocol incompatibility; version 2.6.9 (protocol version 29) is installed by
+default on Mac OS X Mavericks, but version 3.0.7 (protocol version 30) was running
+on the remote end. I compiled and installed version 3.1.0 (protocol version 31) on
+the Mac&mdash;which required tweaking the `--human-readable` option to `rsync(1)`
+because the default behaviour has changed; I had to read the source to find the name
+of the `--no-human-readable` option&mdash;but then it started failing quietly with
+the following error:
+
+````
+need to write 810560 bytes, iobuf.out.buf is only 65532 bytes.
+rsync error: protocol incompatibility (code 2) at io.c(599) [sender=3.1.0]
+rsync: [sender] write error: Broken pipe (32)
+````
+
+Interestingly, the error *only* shows up if `rsync(1)` is run manually as root like
+this:
+
+````
+% sudo /usr/local/bin/rsync -iavzxAXE /Volumes/firewire_disk/ /Volumes/Backup-C_new
+````
+
+When the programme runs from cron, no error message is ever seen; it just quietly
+fails and the shell script continues as if no error happened. To fix it, *downgrade*
+to version 3.0.9 (protocol version 30) from source on the Mac; do not apply any
+patches. The fix was recommended by ['jws'](https://alpha.app.net/jws/post/21775682).
+
+I ran experiments on A's machine to determine whether stderr gets properly sent to
+stdout when the idiom `... >> logfile 2>&1` is used in crontab. (See
+[here](https://github.com/jloughry/experiments/tree/master/test_stdout_and_stderr#readme)
+for more information.) It does seem to work as it should. Why doesn't `rsync(1)`
+report errors when run in a shell script?
+
 TODO
 ----
 
 1. Need a script to kill a running backup.<sup>[*](#footnote-star)</sup>
+
+2. I should modify the script to not use the flag `--exclude=/Volumes/` except when
+backing up the root volume.
 
 <hr/>
 
