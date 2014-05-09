@@ -724,7 +724,7 @@ check_for_killfile_before_running
 initialise_tempfile
 
 report "Starting time of this backup: `date`."
-
+report "`$rsync_command --version | head -1`"
 determine_backup_device
 
 #
