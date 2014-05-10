@@ -1,1 +1,1 @@
-update README with recent problems and solution
+try improved error checking on rsync output

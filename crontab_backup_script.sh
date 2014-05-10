@@ -273,17 +273,33 @@ backup_local_disk()
 			blank_line
 			eval $rsync_command_line
 			RC=$?
-			BYTES_BACKED_UP=`tail -1 $tempfile | cut -d ' ' -f 4`
-			if [ ${#BYTES_BACKED_UP} -ne 0 ]; then
-				size_accumulator=`echo $(($size_accumulator + $BYTES_BACKED_UP))`
+
+			first_marker=`tail -2 $tempfile | head -1`
+			second_marker=`tail -1 $tempfile`
+			if [ !`grep "^sent.*bytes.*received.*bytes.*bytes\/sec" first_marker` ]; then
+				if [ !`grep "^total size is.*speedup is" second_marker` ]; then
+					BYTES_BACKED_UP=`tail -1 $tempfile | cut -d ' ' -f 4`
+					if [ ${#BYTES_BACKED_UP} -ne 0 ]; then
+						size_accumulator=`echo $(($size_accumulator + $BYTES_BACKED_UP))`
+					else
+						blank_line
+						report "FAILURE (A): not updating size_accumulator...BYTES_BACKED_UP" \
+							" contains \"$BYTES_BACKED_UP\" and RC from rsync was \"$RC\""
+						RC="A"
+						global_failure_code="F"
+					fi
+				else
+					blank_line
+					report "FAILURE (A2): second marker not found (was \"$second_marker\")"
+					RC="A"
+					global_failure_code="F"
+				fi
 			else
 				blank_line
-				report "FAILURE (A): not updating size_accumulator...BYTES_BACKED_UP" \
-					" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
+				report "FAILURE (A1): first marker not found (was \"$first_marker\")"
 				RC="A"
 				global_failure_code="F"
 			fi
-
 			touch $BACKUP/$disable_spotlight
 		else
 			report "Warning: $TARGET does not exist"
