@@ -276,8 +276,8 @@ backup_local_disk()
 
 			first_marker=`tail -2 $tempfile | head -1`
 			second_marker=`tail -1 $tempfile`
-			if [ !`grep "^sent.*bytes.*received.*bytes.*bytes\/sec" first_marker` ]; then
-				if [ !`grep "^total size is.*speedup is" second_marker` ]; then
+			if [ !`grep -q "^sent.*bytes.*received.*bytes.*bytes\/sec" $first_marker` ]; then
+				if [ !`grep -1 "^total size is.*speedup is" $second_marker` ]; then
 					BYTES_BACKED_UP=`tail -1 $tempfile | cut -d ' ' -f 4`
 					if [ ${#BYTES_BACKED_UP} -ne 0 ]; then
 						size_accumulator=`echo $(($size_accumulator + $BYTES_BACKED_UP))`

@@ -1,1 +1,1 @@
-extend error checking in backup_remote_disk()
+fix syntax errors in backup_local_disk()
