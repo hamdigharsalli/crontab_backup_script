@@ -343,31 +343,51 @@ backup_remote_disk()
 		blank_line
 		eval $rsync_command_line
 		RC=$?
-		BYTES_BACKED_UP=`tail -1 $tempfile | cut -d ' ' -f 4`
-		bytes_sent=`tail -2 $tempfile | head -1 | cut -d ' ' -f 2`
-		bytes_rcvd=`tail -2 $tempfile | head -1 | cut -d ' ' -f 6`
-		if [ ${#bytes_sent} -ne  0 ]; then
-			if [ ${#bytes_rcvd} -ne 0 ]; then
-				total_bytes_networked=$(($bytes_sent + $bytes_rcvd))
-				bandwidth_accumulator=$(($bandwidth_accumulator \
-					+ $total_bytes_networked))
+		first_marker=`tail -2 $tempfile | head -1`
+		second_marker=`tail -1 $tempfile`
+		if [ !`grep -q "^sent.*bytes.*received.*bytes.*bytes\/sec" $first_marker` ]; then
+			if [ !`grep -q "^total size is.*speedup is" $second_marker` ]; then
+				BYTES_BACKED_UP=`tail -1 $tempfile | cut -d ' ' -f 4`
+				if [ ${#BYTES_BACKED_UP} -ne 0 ]; then
+					size_accumulator=`echo $(($size_accumulator + $BYTES_BACKED_UP))`
+				else
+					blank_line
+					report "FAILURE (C): not updating size_accumulator...BYTES_BACKED_UP" \
+						" contains \"$BYTES_BACKED_UP\" and RC from rsync was \"$RC\""
+					RC="E"
+					global_failure_code="F"
+				fi
+				bytes_sent=`tail -2 $tempfile | head -1 | cut -d ' ' -f 2`
+				bytes_rcvd=`tail -2 $tempfile | head -1 | cut -d ' ' -f 6`
+				if [ ${#bytes_sent} -ne 0 ]; then
+					if [ ${#bytes_rcvd} -ne 0 ]; then
+						total_bytes_networked=$(($bytes_sent + $bytes_rcvd))
+						bandwidth_accumulator=$(($bandwidth_accumulator \
+							+ $total_bytes_networked))
+					else
+						blank_line
+						report "FAILURE (B): not updating bandwidth accumulator: bytes_rcvd"
+						RC="E"
+						global_failure_code="F"
+					fi
+				else
+					blank_line
+					report "FAILURE (B): not updating bandwidth accumulator: bytes_sent"
+					RC="D"
+					global_failure_code="F"
+				fi
+			else
+				blank_line
+				report "FAILURE (C2): second marker not found (was \"$second_marker\")"
+				RC="A"
+				global_failure_code="F"
 			fi
 		else
 			blank_line
-			report "FAILURE (B): not updating bandwidth_accumulator...BYTES_BACKED_UP" \
-				" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
+			report "FAILURE (C1): first marker not found (was \"$first_marker\")"
+			RC="A"
 			global_failure_code="F"
-			RC="D"
 		fi
-		if [ ${#BYTES_BACKED_UP} -ne 0 ]; then
-			size_accumulator=`echo $(($size_accumulator + $BYTES_BACKED_UP))`
-		else
-			report "FAILURE (C): not updating size_accumulator...BYTES_BACKED_UP" \
-				" contains \"$BYTES_BACKED_UP\" and RC from rsync was $RC"
-			global_failure_code="F"
-			RC="E"
-		fi
-
 	else
 		report "Warning: $BACKUP does not exist"
 		RC="F"

@@ -1,1 +1,1 @@
-try improved error checking on rsync output
+extend error checking in backup_remote_disk()
