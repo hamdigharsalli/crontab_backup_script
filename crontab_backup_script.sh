@@ -16,6 +16,8 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
+	version=13
+
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
 	# called. Note that rsync(1) is called with a full path so the old version
@@ -759,6 +761,7 @@ check_for_lockfile
 check_for_killfile_before_running
 initialise_tempfile
 
+report "`basename $0` version $version"
 report "Starting time of this backup: `date`."
 report "`$rsync_command --version | head -1`"
 determine_backup_device
