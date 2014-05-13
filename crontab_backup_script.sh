@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=13
+	script_version=14
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
