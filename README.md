@@ -127,13 +127,22 @@ stdout when the idiom `... >> logfile 2>&1` is used in crontab. (See
 for more information.) It does seem to work as it should. Why doesn't `rsync(1)`
 report errors when run in a shell script?
 
+Notes
+-----
+
+The 'local_rsync_options' are different for the / volume and /Volumes/firewire_disk.
+The reason is because some kind of filesystem loop was causing the copy of
+/Volumes/firewire_disk/ to become much greater in size than the actual volume. I
+removed the `--exclude=/Volumes/` option when running rsync on /Volumes/firewire_disk/.
+
+Also, note that command line options for `rsync(1)` are different for `/usr/local/bin/rsync`
+than for the `/bin/rsync` that `man(1)` comes up with. Use `/usr/local/bin/rsync --help`
+to see the real options.
+
 TODO
 ----
 
 1. Need a script to kill a running backup.<sup>[*](#footnote-star)</sup>
-
-2. I should modify the script to not use the flag `--exclude=/Volumes/` except when
-backing up the root volume.
 
 <hr/>
 

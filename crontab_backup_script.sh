@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=14
+	script_version=15
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -265,8 +265,6 @@ backup_local_disk()
 	report "++++ Backing up local disk $TARGET to $BACKUP"
 	blank_line
 
-	local_rsync_options="-iavzxAXE --exclude=/Volumes/"
-
 	if [ -e $BACKUP ]; then
 		if [ -e $TARGET ]; then
 			rsync_command_line="$rsync_command $local_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
@@ -332,7 +330,7 @@ backup_remote_disk()
 	blank_line
 
 	if grep -q "xray.he.net" <<< "$TARGET" ; then
-		report "Using $TARGET for connection."
+		report "(using $TARGET for connection)"
 		blank_line
 	fi
 
@@ -482,10 +480,12 @@ backup_to_onsite_disk()
 	if [ -e $backup_1 ]; then
 
 		# root volume
+		local_rsync_options="-iavzxAXE --exclude=/Volumes/"
 		backup_local_disk $target_1 $backup_1
 		rc101=$?
 
 		# firewire_disk
+		local_rsync_options="-iavzxAXE"
 		backup_local_disk $target_2 $backup_3
 		rc102=$?
 
@@ -558,10 +558,12 @@ backup_to_offsite_disk()
 	if [ -e $backup_1_ofs ]; then
 
 		# root volume
+		local_rsync_options="-iavzxAXE --exclude=/Volumes/"
 		backup_local_disk $target_1 $backup_1_ofs
 		rc201=$?
 
 		# firewire_disk
+		local_rsync_options="-iavzxAXE"
 		backup_local_disk $target_2 $backup_3_ofs
 		rc202=$?
 

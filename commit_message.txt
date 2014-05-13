@@ -1,1 +1,1 @@
-increment version number in Makefile now
+new local_rsync_options
