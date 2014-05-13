@@ -1,1 +1,1 @@
-fix syntax error (grep -1 s/b/ grep -q) and logic error ($TARGET == xray.he.net).
+fixed logic error in grep command use

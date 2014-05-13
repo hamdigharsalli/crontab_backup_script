@@ -1,10 +1,10 @@
 all::
 	@echo "There is nothing to build in this directory."
 
-crontab_backup_script = crontab_backup_script.sh
+script_source = crontab_backup_script.sh
 
 script:
-	vi $(crontab_backup_script)
+	vi $(script_source)
 
 vi:
 	make script

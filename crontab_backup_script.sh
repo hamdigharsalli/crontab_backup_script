@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	version=13
+	script_version=13
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -278,8 +278,8 @@ backup_local_disk()
 
 			first_marker=`tail -2 $tempfile | head -1`
 			second_marker=`tail -1 $tempfile`
-			if [ !`grep -q "^sent.*bytes.*received.*bytes.*bytes\/sec" $first_marker` ]; then
-				if [ !`grep -q "^total size is.*speedup is" $second_marker` ]; then
+			if grep -q "^sent.*bytes.*received.*bytes.*bytes\/sec" <<< "$first_marker" ; then
+				if grep -q "^total size is.*speedup is" <<< "$second_marker" ; then
 					BYTES_BACKED_UP=`tail -1 $tempfile | cut -d ' ' -f 4`
 					if [ ${#BYTES_BACKED_UP} -ne 0 ]; then
 						size_accumulator=`echo $(($size_accumulator + $BYTES_BACKED_UP))`
@@ -331,7 +331,7 @@ backup_remote_disk()
 	report "---- Backing up remote disk $TARGET to $BACKUP"
 	blank_line
 
-	if [ !`grep -q "xray.he.net" $TARGET` ]; then
+	if grep -q "xray.he.net" <<< "$TARGET" ; then
 		report "Using $TARGET for connection."
 		blank_line
 	fi
@@ -347,8 +347,8 @@ backup_remote_disk()
 		RC=$?
 		first_marker=`tail -2 $tempfile | head -1`
 		second_marker=`tail -1 $tempfile`
-		if [ !`grep -q "^sent.*bytes.*received.*bytes.*bytes\/sec" $first_marker` ]; then
-			if [ !`grep -q "^total size is.*speedup is" $second_marker` ]; then
+		if grep -q "^sent.*bytes.*received.*bytes.*bytes\/sec" <<< "$first_marker" ; then
+			if grep -q "^total size is.*speedup is" <<< "$second_marker" ; then
 				BYTES_BACKED_UP=`tail -1 $tempfile | cut -d ' ' -f 4`
 				if [ ${#BYTES_BACKED_UP} -ne 0 ]; then
 					size_accumulator=`echo $(($size_accumulator + $BYTES_BACKED_UP))`
@@ -761,7 +761,7 @@ check_for_lockfile
 check_for_killfile_before_running
 initialise_tempfile
 
-report "`basename $0` version $version"
+report "`basename $0` version $script_version"
 report "Starting time of this backup: `date`."
 report "`$rsync_command --version | head -1`"
 determine_backup_device
