@@ -63,10 +63,18 @@ sometimes advantageous to be able to stop a running backup. To do that, first ki
 `crontab_backup_script.sh` process (as root), then kill the first-listed `rsync` process;
 the following child processes will exit normally.
 
-Note that the above method will leave an unfinished `crontab_backup_report` and not send
+Alternatively, `touch ~/crontab_backup_killfile` and then `kill -2` the first-listed
+`rsync(1)` process.
+
+Note that the first method will leave an unfinished `crontab_backup_report` and not send
 an email; setting the killfile will exit the script gracefully, but not send the email;
 repeatedly killing `rsync` processes until there are no more will let the script send an
 email report indicating failure.
+
+When the killfile method is used to stop a running script, it unmounts the backup
+volumes as it exits. If the script starts and sees a `~/crontab_backup_lockfile`, it
+exits gracefully but does *not* unmount the backup volumes, because somebody else
+seems to be using them.
 
 Modifying a Running Shell Script
 --------------------------------
