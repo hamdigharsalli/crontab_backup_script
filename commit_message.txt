@@ -1,1 +1,1 @@
-update README
+try excluding Movies and Pictures directories
