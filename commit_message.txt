@@ -1,3 +1,1 @@
-rsync(1) is getting screwy on the main data disk (possibly due to some deeply buried
-links). Use cp -Rpv instead of rsync(1) on the data disk; leave rsync(1) alone on the
-root volume, since it's working fine there.
+update script version number
