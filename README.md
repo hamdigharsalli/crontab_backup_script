@@ -135,6 +135,15 @@ stdout when the idiom `... >> logfile 2>&1` is used in crontab. (See
 for more information.) It does seem to work as it should. Why doesn't `rsync(1)`
 report errors when run in a shell script?
 
+Not Using `rsync(1)` for Some Local Backups
+-------------------------------------------
+
+It appears that `rsync(1)` interacts unfavourably with A's main data drive. Because
+it is (1) critical, (2) a locally mounted drive anyway, not especially in need of
+care for permissions or bootability like the root drive, and (4) we don't really care
+about `--delete` capability on this volume, I am going to use `cp -Rpv` instead on
+this one drive, then compare `du -sh *` reports after.
+
 Notes
 -----
 

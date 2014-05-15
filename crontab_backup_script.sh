@@ -30,6 +30,14 @@ initialise_variables()
 	rsync_command="/usr/local/bin/rsync"
 
 	#
+	# rsync(1) is causing problems in a complicated data directory structure that
+	# might contain links (but I can't find them), so try using cp(1) for comparison.
+	#
+
+	cp_command="/bin/cp"
+	cp_options="-Rpv"
+
+	#
 	# ConnectTimeout=40 makes ssh be more patient about slow remote hosts;
 	# BatchMode=yes keeps SSH from hanging if host is unknown;
 	# StrictHostKeyChecking=no adds the key fingerprint automatically.
@@ -253,7 +261,7 @@ unmount_backup_volumes()
 	/usr/sbin/diskutil unmountDisk $backup_device >> $tempfile
 }
 
-backup_local_disk()
+backup_local_disk_using_rsync()
 {
 	check_for_killfile_while_running
 
@@ -262,14 +270,14 @@ backup_local_disk()
 	BYTES_BACKED_UP=0
 
 	blank_line
-	report "++++ Backing up local disk $TARGET to $BACKUP"
+	report "++++ Backing up local disk $TARGET to $BACKUP using rsync(1)"
 	blank_line
 
 	if [ -e $BACKUP ]; then
 		if [ -e $TARGET ]; then
 			rsync_command_line="$rsync_command $local_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 			RC="empty(1)"
-			echo "rsync command line is \"$rsync_command_line\" and RC = \"$RC\" before." >> $tempfile
+			echo "rsync(1) command line is \"$rsync_command_line\" and RC = \"$RC\" before." >> $tempfile
 			blank_line
 			eval $rsync_command_line
 			RC=$?
@@ -300,6 +308,40 @@ backup_local_disk()
 				RC="A"
 				global_failure_code="F"
 			fi
+			touch $BACKUP/$disable_spotlight
+		else
+			report "Warning: $TARGET does not exist"
+			RC="B"
+			global_failure_code="F"
+		fi
+	else
+		report "Warning: $BACKUP does not exist"
+		RC="C"
+		global_failure_code="F"
+	fi
+	return $RC
+}
+
+backup_local_disk_using_cp()
+{
+	check_for_killfile_while_running
+
+	TARGET=$1
+	BACKUP=$2
+
+	blank_line
+	report "++++ Backing up local disk $TARGET to $BACKUP using cp(1)"
+	blank_line
+
+	if [ -e $BACKUP ]; then
+		if [ -e $TARGET ]; then
+			cp_command_line="$cp_command $cp_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
+			RC="empty(4)"
+			echo "cp(1) command line is \"$cp_command_line\" and RC = \"$RC\" before." >> $tempfile
+			blank_line
+			eval $cp_command_line
+			RC=$?
+
 			touch $BACKUP/$disable_spotlight
 		else
 			report "Warning: $TARGET does not exist"
@@ -481,12 +523,11 @@ backup_to_onsite_disk()
 
 		# root volume
 		local_rsync_options="-iavzxAXE --exclude=/Volumes/"
-		backup_local_disk $target_1 $backup_1
+		backup_local_disk_using_rsync $target_1 $backup_1
 		rc101=$?
 
 		# firewire_disk
-		local_rsync_options="-iavzxAXE --exclude /Volumes/firewire_disk/Movies/ --exclude /Volumes/firewire_disk/Pictures/"
-		backup_local_disk $target_2 $backup_3
+		backup_local_disk_using_cp $target_2 $backup_3
 		rc102=$?
 
 		#
@@ -559,12 +600,11 @@ backup_to_offsite_disk()
 
 		# root volume
 		local_rsync_options="-iavzxAXE --exclude=/Volumes/"
-		backup_local_disk $target_1 $backup_1_ofs
+		backup_local_disk_using_rsync $target_1 $backup_1_ofs
 		rc201=$?
 
 		# firewire_disk
-		local_rsync_options="-iavzxAXE --exclude /Volumes/firewire_disk/Movies/ --exclude /Volumes/firewire_disk/Pictures/"
-		backup_local_disk $target_2 $backup_3_ofs
+		backup_local_disk_using_cp $target_2 $backup_3_ofs
 		rc202=$?
 
 		#
