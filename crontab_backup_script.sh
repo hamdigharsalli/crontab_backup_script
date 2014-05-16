@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=18
+	script_version=19
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -89,7 +89,7 @@ initialise_variables()
 
 	backup_1=/Volumes/Backup-A_new
 	backup_2=/Volumes/Backup-B_new
-	backup_3=/Volumes/Backup-C_new
+	backup_3=/Volumes/CoreStorage_test_LV_1
 
 	backup_1_ofs=/Volumes/Backup-A_offsite_new
 	backup_2_ofs=/Volumes/Backup-B_offsite_new

@@ -1,2 +1,2 @@
-bug fix: determine backup device name correctly even if more than nine disks are available,
-e.g., get /dev/disk10 instead of misparsing it as /dev/disk1
+experiment to find out whether /Volumes/firewire_disk/ will back up to a THREE terabyte
+volume (/Volumes/CoreStorage_test_LV_1/) without running out of space.
