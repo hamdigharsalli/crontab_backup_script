@@ -1,1 +1,2 @@
-update script version number
+bug fix: determine backup device name correctly even if more than nine disks are available,
+e.g., get /dev/disk10 instead of misparsing it as /dev/disk1

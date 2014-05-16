@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=17
+	script_version=18
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -231,6 +231,9 @@ check_for_lockfile()
 }
 
 #
+# The following function extracts a word like "disk10" from the output
+# of diskutil. It tries not to mistake "disk10" for "disk1".
+#
 # Note that /usr/sbin/diskutil must be specified with a full path or
 # the command will be silently ignored. This script runs as root when
 # called from crontab, as verified by `whoami`.
@@ -238,7 +241,8 @@ check_for_lockfile()
 
 determine_backup_device()
 {
-	backup_device=/dev/`/usr/sbin/diskutil list | grep "Backup-[A-C]" | head -1 | cut -c 69-73`
+	backup_device=/dev/`/usr/sbin/diskutil list | grep "Backup-[A-C]" \
+		| head -1 | cut -c 69-99 | cut -d s -f 1-2`
 	report "Today's backup_device is " \"$backup_device\"
 	blank_line
 }
