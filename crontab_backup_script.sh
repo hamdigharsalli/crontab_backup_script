@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=19
+	script_version=20
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -257,12 +257,14 @@ mount_backup_volumes()
 	blank_line
 	report "Mounting backup volumes..."
 	/usr/sbin/diskutil mountDisk $backup_device >> $tempfile
+	/usr/sbin/diskutil mount CoreStorage_test_LV_1 >> $tempfile
 }
 
 unmount_backup_volumes()
 {
 	report "Unmounting backup volumes..."
 	/usr/sbin/diskutil unmountDisk $backup_device >> $tempfile
+	/usr/sbin/diskutil unmount CoreStorage_test_LV_1 >> $tempfile
 }
 
 backup_local_disk_using_rsync()

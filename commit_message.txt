@@ -1,2 +1,1 @@
-experiment to find out whether /Volumes/firewire_disk/ will back up to a THREE terabyte
-volume (/Volumes/CoreStorage_test_LV_1/) without running out of space.
+mount and unmount CoreStorage_test_LV_1 also

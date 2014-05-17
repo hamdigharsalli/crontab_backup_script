@@ -7,7 +7,7 @@ all::
 	sed -i 's/\(script_version=\)[0-9]*/\1$(version_number_value)/g' $(script_source)
 	@echo $$(($$(cat $(build_counter)) + 1)) > $(build_counter)
 	make commit
-	make install
+	% make install
 
 script:
 	vi $(script_source)
