@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=20
+	script_version=21
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -533,7 +533,8 @@ backup_to_onsite_disk()
 		rc101=$?
 
 		# firewire_disk
-		backup_local_disk_using_cp $target_2 $backup_3
+		local_rsync_options="-iavzxAXE"
+		backup_local_disk_using_rsync $target_2 $backup_3
 		rc102=$?
 
 		#
@@ -610,7 +611,8 @@ backup_to_offsite_disk()
 		rc201=$?
 
 		# firewire_disk
-		backup_local_disk_using_cp $target_2 $backup_3_ofs
+		local_rsync_options="-iavzxAXE"
+		backup_local_disk_using_rsync $target_2 $backup_3_ofs
 		rc202=$?
 
 		#

@@ -1,1 +1,1 @@
-mount and unmount CoreStorage_test_LV_1 also
+return to using rsync(1) instead of cp(1) as rsync(1) won't redo work already done.
