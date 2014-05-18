@@ -16,7 +16,7 @@ vi:
 	make script
 
 clean::
-	unlink consolidated_bibtex_file.bib
+	rm -f consolidated_bibtex_file.bib
 
 install: private-install-crontab_backup_script
 
