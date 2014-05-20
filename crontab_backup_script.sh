@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=25
+	script_version=26
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -490,7 +490,7 @@ backup_to_onsite_disk()
 	# Try to backup local disks, not panicking just yet if /Volumes/Backup-A/ doesn't exist.
 	#
 
-	if [ -e $backup_1 ]; then
+	if [ -e $backup_3 ]; then
 
 		# root volume
 		local_rsync_options="-iavzxAXE --exclude=/Volumes/"
@@ -568,7 +568,7 @@ backup_to_offsite_disk()
 	# disk appears to be mounted.
 	#
 
-	if [ -e $backup_1_ofs ]; then
+	if [ -e $backup_3_ofs ]; then
 
 		# root volume
 		local_rsync_options="-iavzxAXE --exclude=/Volumes/"

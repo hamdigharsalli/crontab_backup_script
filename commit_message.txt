@@ -1,1 +1,1 @@
-check for existence of backup volumes and report if none are available.
+check for existence of backup_3, not backup_1, because backup_3 is more important
