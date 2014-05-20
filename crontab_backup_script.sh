@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=26
+	script_version=27
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -480,7 +480,7 @@ check_for_existence_of_all_backup_volumes()
 	if [[ ! -e $backup_1 && ! -e $backup_1_ofs ]]
 	then
 		blank_line
-		report "No backup volumes are available."
+		report "Neither backup set seems to be completely available."
 	fi
 }
 

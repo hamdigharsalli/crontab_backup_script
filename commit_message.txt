@@ -1,1 +1,1 @@
-check for existence of backup_3, not backup_1, because backup_3 is more important
+logic error: report reasonably if a backup set is only partly available
