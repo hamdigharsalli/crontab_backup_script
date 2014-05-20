@@ -1,1 +1,1 @@
-logic error: report reasonably if a backup set is only partly available
+restore "make install" in Makefile when committing
