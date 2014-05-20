@@ -1,1 +1,1 @@
-remove the option to use cp(1) instead of rsync(1) after experiment completed
+return to using Backup-C_new instead of CoreStorage_test_LV_1 for /Volumes/firewire_disk/ backup

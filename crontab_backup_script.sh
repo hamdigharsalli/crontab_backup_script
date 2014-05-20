@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=23
+	script_version=24
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -81,7 +81,7 @@ initialise_variables()
 
 	backup_1=/Volumes/Backup-A_new
 	backup_2=/Volumes/Backup-B_new
-	backup_3=/Volumes/CoreStorage_test_LV_1
+	backup_3=/Volumes/Backup-C_new
 
 	backup_1_ofs=/Volumes/Backup-A_offsite_new
 	backup_2_ofs=/Volumes/Backup-B_offsite_new
@@ -249,14 +249,12 @@ mount_backup_volumes()
 	blank_line
 	report "Mounting backup volumes..."
 	/usr/sbin/diskutil mountDisk $backup_device >> $tempfile
-	/usr/sbin/diskutil mount CoreStorage_test_LV_1 >> $tempfile
 }
 
 unmount_backup_volumes()
 {
 	report "Unmounting backup volumes..."
 	/usr/sbin/diskutil unmountDisk $backup_device >> $tempfile
-	/usr/sbin/diskutil unmount CoreStorage_test_LV_1 >> $tempfile
 }
 
 backup_local_disk()
@@ -268,7 +266,7 @@ backup_local_disk()
 	BYTES_BACKED_UP=0
 
 	blank_line
-	report "++++ Backing up local disk $TARGET to $BACKUP using rsync(1)"
+	report "++++ Backing up local disk $TARGET to $BACKUP"
 	blank_line
 
 	if [ -e $BACKUP ]; then
