@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=24
+	script_version=25
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -475,6 +475,15 @@ check_free_space_on_remote_machine()
 	$ssh_command -i /Users/$backup_username/.ssh/id_rsa $user_at_machine "$df_command" >> $tempfile
 }
 
+check_for_existence_of_all_backup_volumes()
+{
+	if [[ ! -e $backup_1 && ! -e $backup_1_ofs ]]
+	then
+		blank_line
+		report "No backup volumes are available."
+	fi
+}
+
 backup_to_onsite_disk()
 {
 	#
@@ -791,6 +800,8 @@ check_free_space_on_remote_machine mirandaloughry@MKL.local
 #
 
 mount_backup_volumes
+
+check_for_existence_of_all_backup_volumes
 
 backup_to_onsite_disk
 backup_to_offsite_disk
