@@ -1,1 +1,1 @@
-logic error in Makefile; unlink gives an error if the file does not exist; rm -f does not.
+remove the option to use cp(1) instead of rsync(1) after experiment completed
