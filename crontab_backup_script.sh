@@ -131,20 +131,20 @@ initialise_variables()
 }
 
 #
-# The construct $1$2$3$4$5 is an attempt to work around a limitation in
-# the usage of the report() function when the user wants to report
-# very long lines.  Before, it was just $1 and if, for formatting, the
-# argument was broken up into several strings which are normally
-# concatenated automatically by the echo built-in, report() only saw
-# the first of those strings and ignored the others.
+# The construct $1$2$3$4$5$6$7 below is an attempt to work around a
+# limitation in the usage of the report() function when the user wants
+# to report very long lines.  Before, it was just $1 and if, for
+# formatting, the argument was broken up into several strings which
+# are normally concatenated automatically by the echo built-in,
+# report() only saw the first of those strings and ignored the others.
 #
-# Five arguments ($1$2$3$4$5) should be enough, right?  Increase later
-# if needed.
+# Seven arguments ($1$2$3$4$5$6$7) should be enough, right?  Increase
+# the number later if needed (this has been done several times).
 #
 
 report()
 {
-	echo $1$2$3$4$5 >> $tempfile
+	echo $1$2$3$4$5$6$7 >> $tempfile
 }
 
 blank_line()
@@ -237,7 +237,7 @@ determine_backup_devices()
 		| head -1 | cut -c 69-99 | cut -d s -f 1-2`
 	backup_device_2=/dev/`/usr/sbin/diskutil list | grep "Backup-C" \
 		| head -1 | cut -c 69-99 | cut -d s -f 1-2`
-	report "Today's backup_devices are " \"$backup_device_1\" and \"$backup_device_2\"
+	report "Today's backup_devices are " \"$backup_device_1\" " and " \"$backup_device_2\" "."
 	blank_line
 }
 

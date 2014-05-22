@@ -1,1 +1,1 @@
-mount both backup drives[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[Dand unmount both backup drives now that they are separate devices
+increase the number of parameters to report() to 7
