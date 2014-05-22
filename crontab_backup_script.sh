@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=27
+	script_version=28
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -131,20 +131,20 @@ initialise_variables()
 }
 
 #
-# The construct $1$2$3 is an attempt to work around a limitation in
+# The construct $1$2$3$4$5 is an attempt to work around a limitation in
 # the usage of the report() function when the user wants to report
 # very long lines.  Before, it was just $1 and if, for formatting, the
 # argument was broken up into several strings which are normally
 # concatenated automatically by the echo built-in, report() only saw
 # the first of those strings and ignored the others.
 #
-# Three arguments ($1$2$3) should be enough, right?  Increase later
+# Five arguments ($1$2$3$4$5) should be enough, right?  Increase later
 # if needed.
 #
 
 report()
 {
-	echo $1$2$3 >> $tempfile
+	echo $1$2$3$4$5 >> $tempfile
 }
 
 blank_line()
@@ -170,11 +170,11 @@ check_for_killfile_before_running()
 	if [ -e $killfile ]; then
 		blank_line
 		report "ALERT: killfile seen...this instance is exiting (removing lockfile and killfile)."
+		rm -f $lockfile $killfile
+		short_success_code="A"
 		#
 		# no need to unmount backup volumes; they haven't been mounted yet.
 		#
-		rm -f $lockfile $killfile
-		short_success_code="A"
 		send_report_and_exit
 	fi
 }
@@ -184,11 +184,11 @@ check_for_killfile_while_running()
 	if [ -e $killfile ]; then
 		blank_line
 		report "ALERT: killfile seen...this instance is exiting (removing lockfile and killfile)."
+		rm -f $lockfile $killfile
+		short_success_code="A"
 		#
 		# unmount backup volumes before leaving.
 		#
-		rm -f $lockfile $killfile
-		short_success_code="A"
 		graceful_exit
 	fi
 }
@@ -231,11 +231,13 @@ check_for_lockfile()
 # called from crontab, as verified by `whoami`.
 #
 
-determine_backup_device()
+determine_backup_devices()
 {
-	backup_device=/dev/`/usr/sbin/diskutil list | grep "Backup-[A-C]" \
+	backup_device_1=/dev/`/usr/sbin/diskutil list | grep "Backup-[A-B]" \
 		| head -1 | cut -c 69-99 | cut -d s -f 1-2`
-	report "Today's backup_device is " \"$backup_device\"
+	backup_device_2=/dev/`/usr/sbin/diskutil list | grep "Backup-C" \
+		| head -1 | cut -c 69-99 | cut -d s -f 1-2`
+	report "Today's backup_devices are " \"$backup_device_1\" and \"$backup_device_2\"
 	blank_line
 }
 
@@ -248,13 +250,15 @@ mount_backup_volumes()
 {
 	blank_line
 	report "Mounting backup volumes..."
-	/usr/sbin/diskutil mountDisk $backup_device >> $tempfile
+	/usr/sbin/diskutil mountDisk $backup_device_1 >> $tempfile
+	/usr/sbin/diskutil mountDisk $backup_device_2 >> $tempfile
 }
 
 unmount_backup_volumes()
 {
 	report "Unmounting backup volumes..."
-	/usr/sbin/diskutil unmountDisk $backup_device >> $tempfile
+	/usr/sbin/diskutil unmountDisk $backup_device_1 >> $tempfile
+	/usr/sbin/diskutil unmountDisk $backup_device_2 >> $tempfile
 }
 
 backup_local_disk()
@@ -779,7 +783,7 @@ initialise_tempfile
 report "`basename $0` version $script_version"
 report "Starting time of this backup: `date`."
 report "`$rsync_command --version | head -1`"
-determine_backup_device
+determine_backup_devices
 
 #
 # Show disk space at the beginning of the report, for convenience.

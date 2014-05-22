@@ -1,1 +1,1 @@
-restore "make install" in Makefile when committing
+mount both backup drives[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[D[Dand unmount both backup drives now that they are separate devices
