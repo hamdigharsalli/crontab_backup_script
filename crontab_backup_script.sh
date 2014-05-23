@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=28
+	script_version=30
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -374,13 +374,13 @@ backup_remote_disk()
 							+ $total_bytes_networked))
 					else
 						blank_line
-						report "FAILURE (B): not updating bandwidth accumulator: bytes_rcvd"
+						report "FAILURE (B2): not updating bandwidth accumulator: bytes_rcvd"
 						RC="E"
 						global_failure_code="F"
 					fi
 				else
 					blank_line
-					report "FAILURE (B): not updating bandwidth accumulator: bytes_sent"
+					report "FAILURE (B1): not updating bandwidth accumulator: bytes_sent"
 					RC="D"
 					global_failure_code="F"
 				fi

@@ -1,1 +1,1 @@
-increase the number of parameters to report() to 7
+fix formatting of list of backup volumes and error codes in function
