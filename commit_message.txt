@@ -1,1 +1,1 @@
-fix formatting of list of backup volumes and error codes in function
+improve reporting of backup device names
