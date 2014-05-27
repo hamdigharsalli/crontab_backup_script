@@ -1,1 +1,1 @@
-improve reporting of backup device names
+shorten overly long informational message to fit report
