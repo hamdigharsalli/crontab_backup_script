@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=33
+	script_version=34
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -237,8 +237,8 @@ determine_backup_devices()
 		| head -1 | cut -c 69-99 | cut -d s -f 1-2`
 	backup_device_2=/dev/`/usr/sbin/diskutil list | grep "Backup-C" \
 		| head -1 | cut -c 69-99 | cut -d s -f 1-2`
-	report "Today's backup_devices are " \"$backup_device_1\" " (Backups A, B) and " \
-		\"$backup_device_2\" " (for C)."
+	report "Today's backup_devices are " \"$backup_device_1\" " (Backup-A, -B) and " \
+		\"$backup_device_2\" " (-C)."
 	blank_line
 }
 

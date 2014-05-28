@@ -1,1 +1,1 @@
-testing improved informational message
+shorten informational message to fit line
