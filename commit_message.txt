@@ -1,1 +1,1 @@
-verify values of BYTES_BACKED_UP, bytes_sent, bytes_rcvd
+add more information to debug message

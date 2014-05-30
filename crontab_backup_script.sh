@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=35
+	script_version=36
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -268,7 +268,7 @@ backup_local_disk()
 
 	TARGET=$1
 	BACKUP=$2
-	BYTES_BACKED_UP=0
+	bytes_backed_up=0
 
 	blank_line
 	report "++++ Backing up local disk $TARGET to $BACKUP"
@@ -287,13 +287,13 @@ backup_local_disk()
 			second_marker=`tail -1 $tempfile`
 			if grep -q "^sent.*bytes.*received.*bytes.*bytes\/sec" <<< "$first_marker" ; then
 				if grep -q "^total size is.*speedup is" <<< "$second_marker" ; then
-					BYTES_BACKED_UP=`tail -1 $tempfile | cut -d ' ' -f 4`
-					if [ ${#BYTES_BACKED_UP} -ne 0 ]; then
-						size_accumulator=`echo $(($size_accumulator + $BYTES_BACKED_UP))`
+					bytes_backed_up=`tail -1 $tempfile | cut -d ' ' -f 4`
+					if [ ${#bytes_backed_up} -ne 0 ]; then
+						size_accumulator=`echo $(($size_accumulator + $bytes_backed_up))`
 					else
 						blank_line
-						report "FAILURE (A): not updating size_accumulator...BYTES_BACKED_UP" \
-							" contains \"$BYTES_BACKED_UP\" and RC from rsync was \"$RC\""
+						report "FAILURE (A): not updating size_accumulator...bytes_backed_up" \
+							" contains \"$bytes_backed_up\" and RC from rsync was \"$RC\""
 						RC="A"
 						global_failure_code="F"
 					fi
@@ -322,7 +322,7 @@ backup_local_disk()
 	fi
 
 	blank_line
-	report "DEBUG: BYTES_BACKED_UP = \"$BYTES_BACKED_UP\""
+	report "DEBUG: bytes_backed_up = \"$bytes_backed_up\"; size_accumulator = \"$size_accumulator\""
 
 	return $RC
 }
@@ -333,7 +333,7 @@ backup_remote_disk()
 
 	TARGET=$1
 	BACKUP=$2
-	BYTES_BACKED_UP=0
+	bytes_backed_up=0
 	bytes_sent=0
 	bytes_rcvd=0
 	total_bytes_networked=0
@@ -360,13 +360,13 @@ backup_remote_disk()
 		second_marker=`tail -1 $tempfile`
 		if grep -q "^sent.*bytes.*received.*bytes.*bytes\/sec" <<< "$first_marker" ; then
 			if grep -q "^total size is.*speedup is" <<< "$second_marker" ; then
-				BYTES_BACKED_UP=`tail -1 $tempfile | cut -d ' ' -f 4`
-				if [ ${#BYTES_BACKED_UP} -ne 0 ]; then
-					size_accumulator=`echo $(($size_accumulator + $BYTES_BACKED_UP))`
+				bytes_backed_up=`tail -1 $tempfile | cut -d ' ' -f 4`
+				if [ ${#bytes_backed_up} -ne 0 ]; then
+					size_accumulator=`echo $(($size_accumulator + $bytes_backed_up))`
 				else
 					blank_line
-					report "FAILURE (C): not updating size_accumulator...BYTES_BACKED_UP" \
-						" contains \"$BYTES_BACKED_UP\" and RC from rsync was \"$RC\""
+					report "FAILURE (C): not updating size_accumulator...bytes_backed_up" \
+						" contains \"$bytes_backed_up\" and RC from rsync was \"$RC\""
 					RC="E"
 					global_failure_code="F"
 				fi
@@ -408,7 +408,7 @@ backup_remote_disk()
 	fi
 
 	blank_line
-	report "DEBUG: BYTES_BACKED_UP = \"$BYTES_BACKED_UP\", bytes_sent = \"$bytes_sent\", bytes_rcvd = \"$bytes_rcvd\""
+	report "DEBUG: bytes_backed_up = \"$bytes_backed_up\", bytes_sent = \"$bytes_sent\", bytes_rcvd = \"$bytes_rcvd\"; size_accumulator = \"$size_accumulator\", bandwidth_accumulator = \"$bandwidth_accumulator\""
 
 	return $RC
 }
@@ -691,13 +691,13 @@ compute_statistics()
 format_report()
 {
 	report "Elapsed time $elapsed_time seconds; a total of\
-	 $total_size_formatted bytes were synchronised;"
+	 $total_size_formatted bytes were synchronised."
 
-	report "network usage was $total_bandwidth_used_formatted bytes;"
+	report "Network usage was $total_bandwidth_used_formatted bytes."
 
-	report "return codes from rsync were $rc101,$rc102,$rc103,$rc104,$rc105,\
+	report "Return codes from rsync were $rc101,$rc102,$rc103,$rc104,$rc105,\
 $rc106,$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,$rc204,\
-$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_code"
+$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_code."
 }
 
 email_report()
