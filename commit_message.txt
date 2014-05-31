@@ -1,1 +1,2 @@
-add more information to debug message
+remove debugging messages after verifying that the arithmetic was happening correctly.
+Q: does bash use bignums for arithmetic?

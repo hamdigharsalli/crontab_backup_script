@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=36
+	script_version=37
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -321,9 +321,6 @@ backup_local_disk()
 		global_failure_code="F"
 	fi
 
-	blank_line
-	report "DEBUG: bytes_backed_up = \"$bytes_backed_up\"; size_accumulator = \"$size_accumulator\""
-
 	return $RC
 }
 
@@ -406,9 +403,6 @@ backup_remote_disk()
 		RC="F"
 		global_failure_code="F"
 	fi
-
-	blank_line
-	report "DEBUG: bytes_backed_up = \"$bytes_backed_up\", bytes_sent = \"$bytes_sent\", bytes_rcvd = \"$bytes_rcvd\"; size_accumulator = \"$size_accumulator\", bandwidth_accumulator = \"$bandwidth_accumulator\""
 
 	return $RC
 }
