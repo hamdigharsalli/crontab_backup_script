@@ -1,1 +1,1 @@
-format elapsed time in days, hours, minutes, and seconds
+fix Perl code

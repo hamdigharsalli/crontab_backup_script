@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=38
+	script_version=40
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -681,7 +681,12 @@ compute_statistics()
 	total_bandwidth_used_formatted=`echo $total_bandwidth_used \
 	 | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
 
-	formatted_elapsed_time=`perl -pe 'printf "%dd, %dh, %dm, %ds",(gmtime $elapsed_time)[7,2,1,0]'`
+	#
+	# The following Perl code was adapted from http://www.perlmonks.org/?node_id=101511
+	#
+
+	formatted_elapsed_time=`echo $elapsed_time | perl -e 'my $sec = <>; printf "%dd %dh %dm %ds", \
+		int($sec/(24*60*60)), ($sec/(60*60))%24, ($sec/60)%60, $sec%60;'`
 }
 
 format_report()
