@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=40
+	script_version=41
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -692,10 +692,10 @@ compute_statistics()
 format_report()
 {
 	report "Elapsed time $elapsed_time seconds ($formatted_elapsed_time); a total of " \
-		"$total_size_formatted bytes were synchronised. Network usage was " \
-		"$total_bandwidth_used_formatted bytes."
-
-	report "Return codes from rsync were $rc101,$rc102,$rc103,$rc104,$rc105,$rc106," \
+		"$total_size_formatted bytes"
+	report "were synchronised. Network usage was $total_bandwidth_used_formatted bytes." \
+		" Return codes from rsync"
+	report "programme were $rc101,$rc102,$rc103,$rc104,$rc105,$rc106," \
 		"$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,$rc204," \
 		"$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_code."
 }
