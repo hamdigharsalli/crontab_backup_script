@@ -1,2 +1,1 @@
-remove debugging messages after verifying that the arithmetic was happening correctly.
-Q: does bash use bignums for arithmetic?
+format elapsed time in days, hours, minutes, and seconds

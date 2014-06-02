@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=37
+	script_version=38
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -680,18 +680,19 @@ compute_statistics()
 
 	total_bandwidth_used_formatted=`echo $total_bandwidth_used \
 	 | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
+
+	formatted_elapsed_time=`perl -pe 'printf "%dd, %dh, %dm, %ds",(gmtime $elapsed_time)[7,2,1,0]'`
 }
 
 format_report()
 {
-	report "Elapsed time $elapsed_time seconds; a total of\
-	 $total_size_formatted bytes were synchronised."
+	report "Elapsed time $elapsed_time seconds ($formatted_elapsed_time); a total of " \
+		"$total_size_formatted bytes were synchronised. Network usage was " \
+		"$total_bandwidth_used_formatted bytes."
 
-	report "Network usage was $total_bandwidth_used_formatted bytes."
-
-	report "Return codes from rsync were $rc101,$rc102,$rc103,$rc104,$rc105,\
-$rc106,$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,$rc204,\
-$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_code."
+	report "Return codes from rsync were $rc101,$rc102,$rc103,$rc104,$rc105,$rc106," \
+		"$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,$rc204," \
+		"$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_code."
 }
 
 email_report()
