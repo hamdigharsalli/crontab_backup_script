@@ -1,1 +1,1 @@
-wrap lines in final report
+apply the recommended "strict mode" on bash scripts
