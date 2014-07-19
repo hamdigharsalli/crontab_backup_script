@@ -1,1 +1,1 @@
-apply the recommended "strict mode" on bash scripts
+revert the earlier changes to #!/bin/bash line (for "strict mode" bash)
