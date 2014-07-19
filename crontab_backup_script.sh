@@ -1,8 +1,5 @@
 #!/bin/bash
 
-set -euo pipefail
-IFS=$'\n\t' 
-
 # This script runs every day at 0500 from cron on A's machine.  It backs up
 # all of her files from the internal drive and external firewire storage to a
 # separate firewire disk.  The intent is that the root volume on the backup
