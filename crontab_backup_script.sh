@@ -16,7 +16,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron@hpwtdogmom.org
 
-	script_version=42
+	script_version=43
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -299,13 +299,13 @@ backup_local_disk()
 					fi
 				else
 					blank_line
-					report "FAILURE (A2): second marker not found (was \"$second_marker\")"
+					report "FAILURE (A2): second marker not found (last log entry was \"$second_marker\")"
 					RC="A"
 					global_failure_code="F"
 				fi
 			else
 				blank_line
-				report "FAILURE (A1): first marker not found (was \"$first_marker\")"
+				report "FAILURE (A1): first marker not found (last log entry was \"$first_marker\")"
 				RC="A"
 				global_failure_code="F"
 			fi
@@ -388,13 +388,14 @@ backup_remote_disk()
 				fi
 			else
 				blank_line
-				report "FAILURE (C2): second marker not found (was \"$second_marker\")"
+				report "FAILURE (C2): second marker not found (the last thing in the log was \"$second_marker\")"
 				RC="A"
 				global_failure_code="F"
 			fi
 		else
 			blank_line
-			report "FAILURE (C1): first marker not found (was \"$first_marker\")"
+			report "FAILURE (C1): first marker not found (the last thing in the log was \"`echo \
+				$first_marker | sed -e 's/^rsync command line is .*$/&.../g'`\")"
 			RC="A"
 			global_failure_code="F"
 		fi

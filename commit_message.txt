@@ -1,1 +1,1 @@
-revert the earlier changes to #!/bin/bash line (for "strict mode" bash)
+improve failure(C1) message
