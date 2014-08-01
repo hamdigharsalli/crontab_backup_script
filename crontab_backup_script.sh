@@ -12,9 +12,15 @@
 
 initialise_variables()
 {
+	#
+	# Login identifiers are hard-coded in the script, but not authenticators:
+	# all authentication is done by private/public key pairs handled transparently
+	# (and invisibly) outside of the script.
+	#
+
 	backup_username=andrealoughry
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
-	from_email_address=cron@hpwtdogmom.org
+	from_email_address=cron
 
 	script_version=43
 
@@ -62,22 +68,27 @@ initialise_variables()
 	target_5=aloughry@hpwtdogmom.org:secure_html
 
 	#
-	# The following variable is used for debugging remote access to the
+	# The following variables are used for debugging remote access to the
 	# web server at Hurricane Electric, which sometimes doesn't respond
 	# to ssh as applied-math.org but always works as xray.he.net. This
 	# lets me switch the name easily without rewriting many lines of code.
 	#
+	# Note that only alphanumeric characters and underscores are allowed
+	# in identifier names in Bash.
+	#
 	applied_math_server=xray.he.net
+	applied_math_username=loughry
+
 	# applied_math_server=applied-math.org
 
-	target_6=loughry@$applied_math_server:.webmail
-	target_7=loughry@$applied_math_server:public_html
-	target_8=loughry@$applied_math_server:secure_html
-	target_9=loughry@$applied_math_server:backups
+	target_6=applied_math_username@$applied_math_server:.webmail
+	target_7=applied_math_username@$applied_math_server:public_html
+	target_8=applied_math_username@$applied_math_server:secure_html
+	target_9=applied_math_username@$applied_math_server:backups
 
 	target_10=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/andrea
 	target_11=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/miranda
-	target_12=loughry@$applied_math_server:/var/mail/applied-math.org/joe
+	target_12=applied_math_username@$applied_math_server:/var/mail/applied-math.org/joe
 
 	backup_1=/Volumes/Backup-A_new
 	backup_2=/Volumes/Backup-B_new
