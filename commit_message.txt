@@ -1,3 +1,1 @@
-abstract username and hostname to variable
-(These should really be read from a file on the local machine and all identifying information
-removed from the script.)
+TODO: remove hard-coded usernames; read them from a file on the local disk[Dk

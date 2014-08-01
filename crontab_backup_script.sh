@@ -13,7 +13,7 @@
 initialise_variables()
 {
 	#
-	# Login identifiers are hard-coded in the script, but not authenticators:
+	# Login identifiers are hard-coded in the script, but authenticators are not:
 	# all authentication is done by private/public key pairs handled transparently
 	# (and invisibly) outside of the script.
 	#
@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=43
+	script_version=44
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
