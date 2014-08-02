@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=44
+	script_version=45
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -81,14 +81,14 @@ initialise_variables()
 
 	# applied_math_server=applied-math.org
 
-	target_6=applied_math_username@$applied_math_server:.webmail
-	target_7=applied_math_username@$applied_math_server:public_html
-	target_8=applied_math_username@$applied_math_server:secure_html
-	target_9=applied_math_username@$applied_math_server:backups
+	target_6=$applied_math_username@$applied_math_server:.webmail
+	target_7=$applied_math_username@$applied_math_server:public_html
+	target_8=$applied_math_username@$applied_math_server:secure_html
+	target_9=$applied_math_username@$applied_math_server:backups
 
 	target_10=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/andrea
 	target_11=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/miranda
-	target_12=applied_math_username@$applied_math_server:/var/mail/applied-math.org/joe
+	target_12=$applied_math_username@$applied_math_server:/var/mail/applied-math.org/joe
 
 	backup_1=/Volumes/Backup-A_new
 	backup_2=/Volumes/Backup-B_new
@@ -406,7 +406,7 @@ backup_remote_disk()
 		else
 			blank_line
 			report "FAILURE (C1): first marker not found (the last thing in the log was \"`echo \
-				$first_marker | sed -e 's/^rsync command line is .*$/&.../g'`\")"
+				$first_marker | sed -re 's/^(rsync command line is)( "[^"]*")/\1..."/g'`\")"
 			RC="A"
 			global_failure_code="F"
 		fi

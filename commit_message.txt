@@ -1,1 +1,1 @@
-TODO: remove hard-coded usernames; read them from a file on the local disk[Dk
+fix missing dollar sign on shell variable and implement non-greedy match in sed
