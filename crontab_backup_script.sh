@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=49
+	script_version=50
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -406,7 +406,7 @@ backup_remote_disk()
 		else
 			blank_line
 			report "FAILURE (C1): first marker not found (the last thing in the log was \"`echo \
-				$first_marker | sed -e 's/^\(rsync command line is\)\( "[^"]*"\)/\1..."/g'`\")"
+				$first_marker | sed -e 's/^\(rsync command line is\)\( "[^"]*"\)/\1..."/g'`)"
 			RC="A"
 			global_failure_code="F"
 		fi
