@@ -1,1 +1,1 @@
-remove junk script used for testing sed expression
+Mac OS sed does not accept the -r option; fails silently in crontab
