@@ -1,1 +1,2 @@
-remove a distracting quotation mark from C1 error message
+improve error messages when markers not found
+(tested)
