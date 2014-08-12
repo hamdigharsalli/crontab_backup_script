@@ -170,6 +170,19 @@ separator()
 }
 
 #
+# This function checks to see if the script is running with root privs.
+#
+
+are_we_running_as_root()
+{
+	if [[ $EUID -ne 0 ]]; then
+		report "The $0 is running as root."
+	else
+		report "The $0 is not running as root."
+	fi
+}
+
+#
 # Note that we remove the lockfile ONLY upon discovering a killfile, but not
 # if we discover a lockfile. The reason is because a lockfile usually indicates
 # another instance of this script is already running, and we don't want to
@@ -799,6 +812,7 @@ graceful_exit()
 # Here is where the script really begins.
 #===========================================================================
 
+are_we_running_as_root
 initialise_variables
 check_for_lockfile
 check_for_killfile_before_running

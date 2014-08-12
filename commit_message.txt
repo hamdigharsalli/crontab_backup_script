@@ -1,2 +1,0 @@
-improve error messages when markers not found
-(tested)
