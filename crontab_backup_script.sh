@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=52
+	script_version=53
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -173,7 +173,7 @@ separator()
 # This function checks to see if the script is running with root privs.
 #
 
-are_we_running_as_root()
+function are_we_running_as_root_interrogative
 {
 	if [[ $EUID -ne 0 ]]; then
 		report "The $0 is running as root."
@@ -812,11 +812,11 @@ graceful_exit()
 # Here is where the script really begins.
 #===========================================================================
 
-are_we_running_as_root
 initialise_variables
 check_for_lockfile
 check_for_killfile_before_running
 initialise_tempfile
+are_we_running_as_root_interrogative
 
 report "`basename $0` version $script_version"
 report "Starting time of this backup: `date`."
