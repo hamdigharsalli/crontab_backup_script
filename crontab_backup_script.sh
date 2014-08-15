@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=53
+	script_version=54
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -176,9 +176,9 @@ separator()
 function are_we_running_as_root_interrogative
 {
 	if [[ $EUID -ne 0 ]]; then
-		report "The $0 is running as root."
+		report "$0 is NOT running as root (UID $UID, EUID $EUID)."
 	else
-		report "The $0 is not running as root."
+		report "$0 is running as root (UID $UID, EUID $EUID)."
 	fi
 }
 
