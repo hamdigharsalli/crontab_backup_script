@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=55
+	script_version=56
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -176,9 +176,9 @@ separator()
 function are_we_running_as_root_interrogative
 {
 	if [[ $EUID -ne 0 ]]; then
-		report "`/usr/bin/basename $0` is NOT running as root (UID $UID, EUID $EUID)."
+		report "The `/usr/bin/basename $0` is NOT running as root (UID=$UID, EUID=$EUID)."
 	else
-		report "`/usr/bin/basename $0` is running as root (UID $UID, EUID $EUID)."
+		report "The `/usr/bin/basename $0` is running as root (UID=$UID, EUID=$EUID)."
 	fi
 }
 
@@ -818,9 +818,9 @@ check_for_killfile_before_running
 initialise_tempfile
 are_we_running_as_root_interrogative
 
-report "`basename $0` version $script_version"
-report "Starting time of this backup: `date`."
-report "`$rsync_command --version | head -1`"
+report "This is `basename $0` version $script_version."
+report "Starting time of this backup is `date`."
+report "Using `$rsync_command --version | head -1`."
 determine_backup_devices
 
 #
