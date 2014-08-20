@@ -7,11 +7,6 @@
 # on A's computer.
 
 #
-# Make undefined variables an error:
-#
-set -u
-
-#
 # First, define a bunch of functions.
 #
 
@@ -27,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=58
+	script_version=59
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
