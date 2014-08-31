@@ -22,7 +22,20 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=60
+	script_version=61
+
+	#
+	# Note that only alphanumeric characters and underscores are allowed
+	# in identifier names in Bash. Note also that forward references are
+	# not allowed in Bash; if variables like these are not set early in
+	# the script, they might as well not exist.
+	#
+
+	applied_math_server=xray.he.net
+	applied_math_username=loughry
+
+	hpwtdogmom_server=cyclone.he.net
+	hpwtdogmom_username=aloughry
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -66,23 +79,6 @@ initialise_variables()
 	target_3=$hpwtdogmom_username@$hpwtdogmom_server:.webmail
 	target_4=$hpwtdogmom_username@$hpwtdogmom_server:public_html
 	target_5=$hpwtdogmom_username@$hpwtdogmom_server:secure_html
-
-	#
-	# The following variables are used for debugging remote access to the
-	# web server at Hurricane Electric, which sometimes doesn't respond
-	# to ssh as applied-math.org but always works as xray.he.net. This
-	# lets me switch the name easily without rewriting many lines of code.
-	#
-	# Note that only alphanumeric characters and underscores are allowed
-	# in identifier names in Bash.
-	#
-	applied_math_server=xray.he.net
-	applied_math_username=loughry
-
-	# applied_math_server=applied-math.org
-
-	hpwtdogmom_server=cyclone.he.net
-	hpwtdogmom_username=aloughry
 
 	target_6=$applied_math_username@$applied_math_server:.webmail
 	target_7=$applied_math_username@$applied_math_server:public_html
