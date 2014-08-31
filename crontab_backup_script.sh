@@ -746,7 +746,7 @@ email_report()
 	# reader on the receiving end.
 	#
 
-	tr -d \\023 < $tempfile | $ssh_command aloughry@hpwtdogmom.org mail -r $from_email_address \
+	tr -d \\023 < $tempfile | $ssh_command $applied_math_username@$applied_math_server mail \
 		-s "\"backup report `date +%Y%m%d.%H%M` ($short_success_code) rc=$rc101,$rc102,\
 $rc103,$rc104,$rc105,$rc106,$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,\
 $rc202,$rc203,$rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:\
