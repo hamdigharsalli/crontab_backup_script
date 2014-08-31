@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=59
+	script_version=60
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the command is
@@ -63,9 +63,9 @@ initialise_variables()
 	target_1=/
 	target_2=/Volumes/firewire_disk/
 
-	target_3=aloughry@hpwtdogmom.org:.webmail
-	target_4=aloughry@hpwtdogmom.org:public_html
-	target_5=aloughry@hpwtdogmom.org:secure_html
+	target_3=$hpwtdogmom_username@$hpwtdogmom_server:.webmail
+	target_4=$hpwtdogmom_username@$hpwtdogmom_server:public_html
+	target_5=$hpwtdogmom_username@$hpwtdogmom_server:secure_html
 
 	#
 	# The following variables are used for debugging remote access to the
@@ -81,13 +81,16 @@ initialise_variables()
 
 	# applied_math_server=applied-math.org
 
+	hpwtdogmom_server=cyclone.he.net
+	hpwtdogmom_username=aloughry
+
 	target_6=$applied_math_username@$applied_math_server:.webmail
 	target_7=$applied_math_username@$applied_math_server:public_html
 	target_8=$applied_math_username@$applied_math_server:secure_html
 	target_9=$applied_math_username@$applied_math_server:backups
 
-	target_10=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/andrea
-	target_11=aloughry@hpwtdogmom.org:/var/mail/hpwtdogmom.org/miranda
+	target_10=$hpwtdogmom_username@$hpwtdogmom_server:/var/mail/hpwtdogmom.org/andrea
+	target_11=$hpwtdogmom_username@$hpwtdogmom_server:/var/mail/hpwtdogmom.org/miranda
 	target_12=$applied_math_username@$applied_math_server:/var/mail/applied-math.org/joe
 
 	backup_1=/Volumes/Backup-A_new
@@ -732,15 +735,15 @@ format_report()
 email_report()
 {
 	#
-	# It is necessary to route the email through hpwtdogmom.org
+	# It is necessary to route the email through the web server
 	# (Hurricane Electric) because this computer can't send email
 	# to Oxford (this computer doesn't have a reverse DNS entry,
 	# because it's on a BT DSL line).  The SSH command uses root's
-	# id_rsa file for public key authentication to hpwtdogmom.org
-	# because this script is run (via cron) by root.
+	# id_rsa file for public key authentication to Hurricane Electric's
+	# server because this script is run (via cron) by root.
 	#
 	# Remove non-printable characters from the report before mailing
-	# out, because hpwtdogmom.org runs on Linux and uses nail, which
+	# out, because Hurricane Electric's server runs on Linux and uses nail, which
 	# detects the ^S in the input and changes the MIME content-type
 	# header automatically to octet-stream, which confuses my mail
 	# reader on the receiving end.
