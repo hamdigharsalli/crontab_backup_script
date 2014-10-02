@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=63
+	script_version=64
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -504,6 +504,7 @@ check_free_space_on_remote_machine()
 	# wake up the remote machine first (sometimes ssh silently fails if remote is not awake)
 	#
 	$ping_command $machine
+	/bin/sleep 60
 
 	report "Disk space on $machine:"
 	blank_line
