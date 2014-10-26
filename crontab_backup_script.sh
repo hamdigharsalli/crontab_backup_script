@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=64
+	script_version=65
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -262,7 +262,22 @@ determine_backup_devices()
 		| head -1 | cut -c 69-99 | cut -d s -f 1-2`
 	report "Today's backup_devices are " \"$backup_device_1\" " (Backup-A, B) and " \
 		\"$backup_device_2\" " (C)."
-	blank_line
+}
+
+#
+# This function checks to see if a remote machine is alive.
+#
+
+determine_state_of_remote_machine()
+{
+	m=$1
+
+	$ping_command $m
+	if [ $? -eq 0 ]; then
+		report "The remote machine $m is up."
+	else
+		report "The remote machine $m is down."
+	fi
 }
 
 #
@@ -272,7 +287,6 @@ determine_backup_devices()
 
 mount_backup_volumes()
 {
-	blank_line
 	report "Mounting backup volumes..."
 	/usr/sbin/diskutil mountDisk $backup_device_1 >> $tempfile
 	/usr/sbin/diskutil mountDisk $backup_device_2 >> $tempfile
@@ -504,11 +518,13 @@ check_free_space_on_remote_machine()
 	# wake up the remote machine first (sometimes ssh silently fails if remote is not awake)
 	#
 	$ping_command $machine
-	/bin/sleep 60
-
-	report "Disk space on $machine:"
-	blank_line
-	$ssh_command -i /Users/$backup_username/.ssh/id_rsa $user_at_machine "$df_command" >> $tempfile
+	
+	if [ $? -eq 0 ]; then
+		report "Disk space on $machine:"
+		blank_line
+		$ssh_command -i /Users/$backup_username/.ssh/id_rsa $user_at_machine "$df_command" >> $tempfile
+		blank_line
+	fi
 }
 
 check_for_existence_of_all_backup_volumes()
@@ -825,6 +841,10 @@ report "This is `basename $0` version $script_version."
 report "Starting time of this backup is `date`."
 report "Using `$rsync_command --version | head -1`."
 determine_backup_devices
+determine_state_of_remote_machine $applied_math_server
+determine_state_of_remote_machine $hpwtdogmom_server
+determine_state_of_remote_machine MKL.local
+blank_line
 
 #
 # Show disk space at the beginning of the report, for convenience.
