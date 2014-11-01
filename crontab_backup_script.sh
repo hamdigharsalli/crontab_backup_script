@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=65
+	script_version=66
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -174,11 +174,12 @@ separator()
 
 function are_we_running_as_root_interrogative
 {
-	if [[ $EUID -ne 0 ]]; then
-		report "The `/usr/bin/basename $0` is NOT running as root (UID=$UID, EUID=$EUID)."
+	if [[ $EUID -eq 0 ]]; then
+		verb="is"
 	else
-		report "The `/usr/bin/basename $0` is running as root (UID=$UID, EUID=$EUID)."
+		verb="is not"
 	fi
+	report "The script $verb running as root (UID=$UID, EUID=$EUID)."
 }
 
 #
@@ -288,7 +289,7 @@ determine_state_of_remote_machine()
 mount_backup_volumes()
 {
 	report "Mounting backup volumes..."
-	/usr/sbin/diskutil mountDisk $backup_device_1 >> $tempfile
+	/usr/sbin/diskutil quiet mountDisk $backup_device_1 >> $tempfile
 	/usr/sbin/diskutil mountDisk $backup_device_2 >> $tempfile
 }
 
@@ -839,7 +840,7 @@ are_we_running_as_root_interrogative
 
 report "This is `basename $0` version $script_version."
 report "Starting time of this backup is `date`."
-report "Using `$rsync_command --version | head -1`."
+report "We are using `$rsync_command --version | head -1`."
 determine_backup_devices
 determine_state_of_remote_machine $applied_math_server
 determine_state_of_remote_machine $hpwtdogmom_server
