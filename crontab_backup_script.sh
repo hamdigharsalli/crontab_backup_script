@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=66
+	script_version=67
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -768,7 +768,7 @@ email_report()
 		-s \"backup report `date +%Y%m%d.%H%M` ($short_success_code) rc=$rc101,$rc102,\
 $rc103,$rc104,$rc105,$rc106,$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,\
 $rc202,$rc203,$rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:\
-$overall_success_code\" \
+$overall_success_code ($formatted_elapsed_time)\" \
 		$report_to_email_address"
 }
 
