@@ -54,7 +54,8 @@ initialise_variables()
 	# BatchMode=yes keeps SSH from hanging if host is unknown;
 	# StrictHostKeyChecking=no adds the key fingerprint automatically.
 	#
-	ssh_command="/usr/bin/ssh -o ConnectTimeout=40 -o BatchMode=yes -o StrictHostKeyChecking=no"
+	ssh_command="/usr/bin/ssh -o ConnectTimeout=40 \
+		-o BatchMode=yes -o StrictHostKeyChecking=no"
 
 	#
 	# -o tells ping to quit after receiving one reply packet successfully
@@ -196,7 +197,8 @@ check_for_killfile_before_running()
 {
 	if [ -e $killfile ]; then
 		blank_line
-		report "ALERT: killfile seen...this instance is exiting (removing lockfile and killfile)."
+		report "ALERT: killfile seen...this instance is exiting " \
+			"(removing lockfile and killfile)."
 		rm -f $lockfile $killfile
 		short_success_code="A"
 		#
@@ -210,7 +212,8 @@ check_for_killfile_while_running()
 {
 	if [ -e $killfile ]; then
 		blank_line
-		report "ALERT: killfile seen...this instance is exiting (removing lockfile and killfile)."
+		report "ALERT: killfile seen...this instance is exiting " \
+			"(removing lockfile and killfile)."
 		rm -f $lockfile $killfile
 		short_success_code="A"
 		#
@@ -234,7 +237,8 @@ initialise_tempfile()
 check_for_lockfile()
 {
 	if [ -e $lockfile ] ; then
-		report "ALERT: another instance of $0 is apparently running (or an old lockfile exists)...this instance is exiting."
+		report "ALERT: another instance of $0 is apparently running " \
+			"(or an old lockfile exists)...this instance is exiting."
 		blank_line
 		#
 		# Don't unmount the backup volumes first; somebody else is using
@@ -265,8 +269,8 @@ determine_backup_devices()
 		| head -1 | cut -c 69-99 | cut -d s -f 1-2`
 	backup_device_2=/dev/`/usr/sbin/diskutil list | grep "Backup-C" \
 		| head -1 | cut -c 69-99 | cut -d s -f 1-2`
-	report "Today's backup_devices are " \"$backup_device_1\" " (Backup-A, B) and " \
-		\"$backup_device_2\" " (C)."
+	report "Today's backup_devices are '$backup_device_1' (Backup-A, B)" \
+		" and '$backup_device_2' (C)."
 }
 
 #
@@ -319,9 +323,11 @@ backup_local_disk()
 
 	if [ -e $BACKUP ]; then
 		if [ -e $TARGET ]; then
-			rsync_command_line="$rsync_command $local_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
+			rsync_command_line="$rsync_command $local_rsync_options \
+$TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 			RC="empty(1)"
-			echo "rsync(1) command line is \"$rsync_command_line\" and RC was \"$RC\" before the rync command was executed." >> $tempfile
+			echo "rsync(1) command line is \"$rsync_command_line\" and \
+RC was \"$RC\" before the rync command was executed." >> $tempfile
 			blank_line
 			eval $rsync_command_line
 			RC=$?
@@ -421,27 +427,30 @@ backup_remote_disk()
 							+ $total_bytes_networked))
 					else
 						blank_line
-						report "FAILURE (B2): not updating bandwidth accumulator: bytes_rcvd"
+						report "FAILURE (B2): not updating bandwidth " \
+							"accumulator (bytes_rcvd)"
 						RC="E"
 						global_failure_code="F"
 					fi
 				else
 					blank_line
-					report "FAILURE (B1): not updating bandwidth accumulator: bytes_sent"
+					report "FAILURE (B1): not updating bandwidth " \
+						"accumulator (bytes_sent)"
 					RC="D"
 					global_failure_code="F"
 				fi
 			else
 				blank_line
-				report "FAILURE (C2): second marker not found [the last thing in the log before it
-stopped was \"`echo \
+				report "FAILURE (C2): second marker not found [the last " \
+					"thing in the log before it stopped was \"`echo \
 					$second_marker | sed -e 's/^\(rsync command line is\)\( "[^"]*".*$\)/\1..."/g'`]."
 				RC="A"
 				global_failure_code="F"
 			fi
 		else
 			blank_line
-			report "FAILURE (C1): first marker not found [the last thing in the log before it stopped was \"`echo \
+			report "FAILURE (C1): first marker not found [the last " \
+				"thing in the log before it stopped was \"`echo \
 				$first_marker | sed -e 's/^\(rsync command line is\)\( "[^"]*".*$\)/\1..."/g'`]."
 			RC="A"
 			global_failure_code="F"
@@ -488,9 +497,11 @@ snapshot_M_email()
 	blank_line
 
 	if [ -e $BACKUP ]; then
-		tar_command_line="tar cf $backup_directory/$snapshot_file $BACKUP/hpwtdogmom.org/.webmail/users/miranda/ $BACKUP/mail_spool/"
+		tar_command_line="tar cf $backup_directory/$snapshot_file \
+$BACKUP/hpwtdogmom.org/.webmail/users/miranda/ $BACKUP/mail_spool/"
 		RC="empty(3)"
-		echo "tar command line is \"$tar_command_line\" and RC was \"$RC\" before the tar command was executed." >> $tempfile
+		echo "tar command line is \"$tar_command_line\" and RC was \
+\"$RC\" before the tar command was executed." >> $tempfile
 		blank_line
 		eval $tar_command_line
 		RC=$?
@@ -529,7 +540,8 @@ check_free_space_on_remote_machine()
 	if [ $? -eq 0 ]; then
 		report "Disk space on $machine:"
 		blank_line
-		$ssh_command -i /Users/$backup_username/.ssh/id_rsa $user_at_machine "$df_command" >> $tempfile
+		$ssh_command -i /Users/$backup_username/.ssh/id_rsa \
+			$user_at_machine "$df_command" >> $tempfile
 		blank_line
 	fi
 }
@@ -567,7 +579,8 @@ backup_to_onsite_disk()
 		#
 
 		blank_line
-		report "Checking if target directories exist in the $backup_2 volume..."
+		report "Checking if target directories exist " \
+			"in the $backup_2 volume..."
 
 		create_directory_if_it_does_not_exist $backup_2 hpwtdogmom.org
 		create_directory_if_it_does_not_exist $backup_2 applied-math.org
@@ -645,7 +658,8 @@ backup_to_offsite_disk()
 		#
 
 		blank_line
-		report "Checking if target directories exist in the $backup_2_ofs volume..."
+		report "Checking if target directories exist " \
+			"in the $backup_2_ofs volume..."
 
 		create_directory_if_it_does_not_exist $backup_2_ofs hpwtdogmom.org
 		create_directory_if_it_does_not_exist $backup_2_ofs applied-math.org
@@ -726,20 +740,21 @@ compute_statistics()
 	#
 	# The following bit of perl code is from
 	# http://www.sunmanagers.org/pipermail/summaries/2002-December/002817.html
-	# It formats a number with commas for display.  Retrieved on 20080202.1105
-	# from Google.
+	# It formats a number with commas for display.
 	#
-	total_size_formatted=`echo $total_size | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
+	total_size_formatted=`echo $total_size \
+		| perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
 
 	total_bandwidth_used_formatted=`echo $total_bandwidth_used \
-	 | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
+		| perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
 
 	#
 	# The following Perl code was adapted from the web site
 	# http://www.perlmonks.org/?node_id=101511
 	#
 
-	formatted_elapsed_time=`echo $elapsed_time | perl -e 'my $sec = <>; printf "%dd %dh %dm %ds", \
+	formatted_elapsed_time=`echo $elapsed_time | perl -e 'my $sec = <>; \
+		printf "%dd %dh %dm %ds", \
 		int($sec/(24*60*60)), ($sec/(60*60))%24, ($sec/60)%60, $sec%60;'`
 }
 
