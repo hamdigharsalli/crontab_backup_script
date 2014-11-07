@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=67
+	script_version=68
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -737,13 +737,18 @@ compute_statistics()
 
 format_report()
 {
-	report "Elapsed time $elapsed_time seconds ($formatted_elapsed_time); a total of " \
-		"$total_size_formatted bytes"
-	report "were synchronised. Network usage was $total_bandwidth_used_formatted bytes." \
-		" Return codes from rsync"
-	report "programme were $rc101,$rc102,$rc103,$rc104,$rc105,$rc106," \
-		"$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,$rc204," \
-		"$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:$overall_success_code."
+	formatted_return_codes="$rc101,$rc102,$rc103,$rc104,$rc105,$rc106,\
+$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,\
+$rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:\
+$overall_success_code"
+
+	report "Elapsed time $elapsed_time seconds ($formatted_elapsed_time)" \
+		"; a total of $total_size_formatted bytes"
+
+	report "were synchronised. Network usage was " \
+		"$total_bandwidth_used_formatted bytes. Return codes from rsync"
+
+	report "programme were $formatted_return_codes."
 }
 
 email_report()
@@ -756,20 +761,20 @@ email_report()
 	# id_rsa file for public key authentication to Hurricane Electric's
 	# server because this script is run (via cron) by root.
 	#
-	# Remove non-printable characters (octal 023) from the report before mailing
-	# out, because Hurricane Electric's server runs on Linux and uses nail, which
-	# detects the ^S in the input and changes the MIME content-type
-	# header automatically to octet-stream, which confuses my mail
-	# reader on the receiving end.
+	# Remove non-printable characters (octal 023) from the report before
+	# mailing out, because Hurricane Electric's server runs on Linux and
+	# uses nail, which detects the ^S in the input and changes the MIME
+	# content-type header automatically to octet-stream, which confuses
+	# my mail reader on the receiving end.
 	#
 
-	tr -d \\023 < $tempfile | $ssh_command $applied_math_username@$applied_math_server "mail \
-		-a \"From: Andrea's Mac Mini <loughry@xray.he.net>\" \
-		-s \"backup report `date +%Y%m%d.%H%M` ($short_success_code) rc=$rc101,$rc102,\
-$rc103,$rc104,$rc105,$rc106,$rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,\
-$rc202,$rc203,$rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:\
-$overall_success_code ($formatted_elapsed_time)\" \
-		$report_to_email_address"
+	tr -d \\023 < $tempfile \
+		| $ssh_command $applied_math_username@$applied_math_server \
+			"mail \
+				-a \"From: Andrea's Mac Mini <loughry@xray.he.net>\" \
+				-s \"backup report `date +%Y%m%d.%H%M` ($short_success_code) \
+rc=$formatted_return_codes in $formatted_elapsed_time\" \
+				$report_to_email_address"
 }
 
 #
