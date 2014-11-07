@@ -323,11 +323,10 @@ backup_local_disk()
 
 	if [ -e $BACKUP ]; then
 		if [ -e $TARGET ]; then
-			rsync_command_line="$rsync_command $local_rsync_options \
-$TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
+			rsync_command_line="$rsync_command $local_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 			RC="empty(1)"
-			echo "rsync(1) command line is \"$rsync_command_line\" and \
-RC was \"$RC\" before the rync command was executed." >> $tempfile
+			report "rsync(1) command line is \"$rsync_command_line\" and" \
+				"RC was \"$RC\" before the rsync command was executed"
 			blank_line
 			eval $rsync_command_line
 			RC=$?
@@ -400,11 +399,10 @@ backup_remote_disk()
 	remote_rsync_options="-iavz --no-human-readable"
 
 	if [ -e $BACKUP ]; then
-		rsync_command_line="$rsync_command $remote_rsync_options \
-$TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
+		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 		RC="empty(2)"
-		echo "rsync command line is \"$rsync_command_line\" and RC was \
-\"$RC\" before the rsync command was executed." >> $tempfile
+		report "rsync command line is \"$rsync_command_line\" and RC " \
+			"was \"$RC\" before the rsync command was executed."
 		blank_line
 		eval $rsync_command_line
 		RC=$?
@@ -505,8 +503,8 @@ snapshot_M_email()
 		tar_command_line="tar cf $backup_directory/$snapshot_file \
 $BACKUP/hpwtdogmom.org/.webmail/users/miranda/ $BACKUP/mail_spool/"
 		RC="empty(3)"
-		echo "tar command line is \"$tar_command_line\" and RC was \
-\"$RC\" before the tar command was executed." >> $tempfile
+		report "tar command line is \"$tar_command_line\" and RC was " \
+			"\"$RC\" before the tar command was executed."
 		blank_line
 		eval $tar_command_line
 		RC=$?
