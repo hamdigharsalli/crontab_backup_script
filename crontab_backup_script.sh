@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # This script runs every day at 0500 from cron on A's machine.  It backs up
-# all of her files from the internal drive and external firewire storage to a
-# separate firewire disk.  The intent is that the root volume on the backup
-# drive will be bootable in the event of hardware failure of the internal disk
-# on A's computer.
+# all of her files from the internal drive and external firewire storage to
+# a separate firewire disk.  The intent is that the root volume on the
+# backup drive will be bootable in the event of hardware failure of the
+# internal disk on A's computer.
 
 #
 # First, define a bunch of functions.
@@ -13,9 +13,9 @@
 initialise_variables()
 {
 	#
-	# Login identifiers are hard-coded in the script, but authenticators are not:
-	# all authentication is done by private/public key pairs handled transparently
-	# (and invisibly) outside of the script.
+	# Login identifiers are hard-coded in the script, but authenticators
+	# are not: all authentication is done by private/public key pairs
+	# handled transparently (and invisibly) outside of the script.
 	#
 
 	backup_username=andrealoughry
@@ -38,13 +38,14 @@ initialise_variables()
 	hpwtdogmom_username=aloughry
 
 	#
-	# rsync(1) options vary, so they are specified closer to where the command is
-	# called. Note that rsync(1) is called with a full path so the old version
-	# that Apple installs by default in the OS is not used. Hint: if the output
-	# shows nothing apparently happening on a remote rsync(1)---no return code,
-	# nothing---then try running it manually as 'sudo rsync...' and look for 'the
-	# authenticity of this host cannot be verified...' and the usual string of
-	# hex digits. Answer the question manually and it should work after that.
+	# rsync(1) options vary, so they are specified closer to where the
+	# command is called. Note that rsync(1) is called with a full path so
+	# the old version that Apple installs by default in the OS is not used.
+	# Hint: if the output shows nothing apparently happening on a remote
+	# rsync(1)---no return code, nothing---then try running it manually as
+	# 'sudo rsync...' and look for 'the authenticity of this host cannot be
+	# verified...' and the usual string of hex digits. Answer the question
+	# manually and it should work after that.
 	#
 	rsync_command="/usr/local/bin/rsync"
 
@@ -61,9 +62,10 @@ initialise_variables()
 	ping_command="/sbin/ping -o"
 
 	#
-	# -PHl tells `df` not to include inodes in the report (because it makes the report
-	# too wide to read on the screen); the -P must occur first in the list of options
-	# or it won't have any effect on the -H like we want it to.
+	# -PHl tells `df` not to include inodes in the report (because it makes
+	# the report too wide to read on the screen); the -P must occur first
+	# in the list of options or it won't have any effect on the -H like we
+	# want it to.
 	#
 	df_command="/bin/df -PHl"
 
@@ -99,7 +101,8 @@ initialise_variables()
 
 	#
 	# If the following file exists at the root of a volume, then Spotlight
-	# will not waste CPU time indexing it.  This is a Mac OS X feature only.
+	# will not waste CPU time indexing it.  This is a Mac OS X feature
+	# only.
 	#
 	disable_spotlight=.metadata_never_index
 
@@ -165,7 +168,7 @@ blank_line()
 separator()
 {
 	blank_line
-	report "===================================================================="
+	report "=============================================================="
 }
 
 #
@@ -183,10 +186,10 @@ function are_we_running_as_root_interrogative
 }
 
 #
-# Note that we remove the lockfile ONLY upon discovering a killfile, but not
-# if we discover a lockfile. The reason is because a lockfile usually indicates
-# another instance of this script is already running, and we don't want to
-# interfere with that instance's lockfile.
+# Note that we remove the lockfile ONLY upon discovering a killfile, but
+# not if we discover a lockfile. The reason is because a lockfile usually
+# indicates another instance of this script is already running, and we
+# don't want to interfere with that instance's lockfile.
 #
 
 check_for_killfile_before_running()
@@ -234,11 +237,12 @@ check_for_lockfile()
 		report "ALERT: another instance of $0 is apparently running (or an old lockfile exists)...this instance is exiting."
 		blank_line
 		#
-		# Don't unmount the backup volumes first; somebody else is using them. Don't
-		# remove the lockfile; it belongs to somebody else. Don't bother setting the
-		# alert code because this function exits the script without sending an email
-		# report; then call exit to guarantee that this instance of the script won't
-		# continue running in parallel.
+		# Don't unmount the backup volumes first; somebody else is using
+		# them. Don't remove the lockfile; it belongs to somebody else.
+		# Don't bother setting the alert code because this function exits
+		# the script without sending an email report; then call exit to
+		# guarantee that this instance of the script won't continue running
+		# in parallel.
 		#
 		exit 0
 	else
@@ -282,8 +286,9 @@ determine_state_of_remote_machine()
 }
 
 #
-# Mount the backup drive. It doesn't matter whether it's Backup-A or Backup-A_offsite;
-# this refers to whatever physical device is plugged into the chain at that location.
+# Mount the backup drive. It doesn't matter whether it's Backup-A
+# or Backup-A_offsite; # this refers to whatever physical device is
+# plugged into the chain at that location.
 #
 
 mount_backup_volumes()
@@ -516,7 +521,8 @@ check_free_space_on_remote_machine()
 	user_at_machine=$1
 	machine=`echo $user_at_machine | cut -d @ -f 2`
 	#
-	# wake up the remote machine first (sometimes ssh silently fails if remote is not awake)
+	# Wake up the remote machine first (sometimes ssh silently fails
+	# if the remote machine is not awake).
 	#
 	$ping_command $machine
 	
@@ -540,7 +546,8 @@ check_for_existence_of_all_backup_volumes()
 backup_to_onsite_disk()
 {
 	#
-	# Try to backup local disks, not panicking just yet if /Volumes/Backup-A/ doesn't exist.
+	# Try to backup local disks, not panicking just yet
+	# if /Volumes/Backup-A/ doesn't exist.
 	#
 
 	if [ -e $backup_3 ]; then
@@ -617,8 +624,8 @@ backup_to_onsite_disk()
 backup_to_offsite_disk()
 {
 	#
-	# Second backup of local disks (gets sent offsite), but only if the offsite
-	# disk appears to be mounted.
+	# Second backup of local disks (gets sent offsite), but only if the
+	# offsite disk appears to be mounted.
 	#
 
 	if [ -e $backup_3_ofs ]; then
@@ -728,7 +735,8 @@ compute_statistics()
 	 | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
 
 	#
-	# The following Perl code was adapted from http://www.perlmonks.org/?node_id=101511
+	# The following Perl code was adapted from the web site
+	# http://www.perlmonks.org/?node_id=101511
 	#
 
 	formatted_elapsed_time=`echo $elapsed_time | perl -e 'my $sec = <>; printf "%dd %dh %dm %ds", \
@@ -820,8 +828,8 @@ graceful_exit()
 	blank_line
 
 	#
-	# If we don't do this before unmounting the backup disks, then we can't see
-	# how much space is left on them in the report.
+	# If we don't do this before unmounting the backup disks, then we
+	# can't see how much space is left on them in the report.
 	#
 
 	$df_command >> $tempfile
@@ -833,9 +841,9 @@ graceful_exit()
 	send_report_and_exit
 }
 
-#===========================================================================
+#==========================================================================
 # Here is where the script really begins.
-#===========================================================================
+#==========================================================================
 
 initialise_variables
 check_for_lockfile
@@ -865,9 +873,10 @@ blank_line
 check_free_space_on_remote_machine mirandaloughry@MKL.local
 
 #
-# We mount the backup drives after the `$df_command` so we can see in the report
-# if they were already mounted; the report will already tell us, implicitly,
-# that the volumes didn't get mounted for any reason, by failing.
+# We mount the backup drives after the `$df_command` so we can see in the
+# report if they were already mounted; the report will already tell us,
+# implicitly, that the volumes didn't get mounted for any reason, by
+# failing.
 #
 
 mount_backup_volumes
@@ -878,10 +887,10 @@ backup_to_onsite_disk
 backup_to_offsite_disk
 
 #
-# If we got to the end this way, then remove the lockfile (it is not removed
-# by an exceptional condition exit, because those are usually due to another
-# instanct of the same script running, and we don't want to interfere with
-# the other script's lockfile).
+# If we got to the end this way, then remove the lockfile (it is not
+# removed by an exceptional condition exit, because those are usually due
+# to another instanct of the same script running, and we don't want to
+# interfere with the other script's lockfile).
 #
 
 rm -f $lockfile
