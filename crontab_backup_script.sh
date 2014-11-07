@@ -348,15 +348,17 @@ RC was \"$RC\" before the rync command was executed." >> $tempfile
 					fi
 				else
 					blank_line
-					report "FAILURE (A2): second marker not found (last log entry was \"`echo \
-						$second_marker | sed -e 's/^\(rsync command line is\)\( "[^"]*".*$\)/\1..."/g'`]"
+					report "FAILURE (A2): second marker not found (the " \
+						"last log entry was \"`echo $second_marker " \
+						| sed -e 's/^\(rsync command line is\)\( "[^"]*".*$\)/\1..."/g'`]"
 					RC="A"
 					global_failure_code="F"
 				fi
 			else
 				blank_line
-				report "FAILURE (A1): first marker not found [last log entry was \"`echo \
-					$first_marker | sed -e 's/^\(rsync command line is\)\( "[^"]*".*$\)/\1..."/g'`]"
+				report "FAILURE (A1): first marker not found [the last " \
+					"log entry was \"`echo $first_marker \
+					| sed -e 's/^\(rsync command line is\)\( "[^"]*".*$\)/\1..."/g'`]"
 				RC="A"
 				global_failure_code="F"
 			fi
@@ -398,9 +400,11 @@ backup_remote_disk()
 	remote_rsync_options="-iavz --no-human-readable"
 
 	if [ -e $BACKUP ]; then
-		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
+		rsync_command_line="$rsync_command $remote_rsync_options \
+$TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 		RC="empty(2)"
-		echo "rsync command line is \"$rsync_command_line\" and RC was \"$RC\" before the rsync command was executed." >> $tempfile
+		echo "rsync command line is \"$rsync_command_line\" and RC was \
+\"$RC\" before the rsync command was executed." >> $tempfile
 		blank_line
 		eval $rsync_command_line
 		RC=$?
@@ -413,8 +417,9 @@ backup_remote_disk()
 					size_accumulator=`echo $(($size_accumulator + $bytes_backed_up))`
 				else
 					blank_line
-					report "FAILURE (C): not updating size_accumulator...bytes_backed_up" \
-						" contains \"$bytes_backed_up\" and RC from rsync was \"$RC\""
+					report "FAILURE (C): not updating size_accumulator" \
+						"...bytes_backed_up contains \"$bytes_backed_up\"" \
+						" and RC from rsync was \"$RC\""
 					RC="E"
 					global_failure_code="F"
 				fi
