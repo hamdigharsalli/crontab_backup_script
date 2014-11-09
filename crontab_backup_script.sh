@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=68
+	script_version=69
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -274,12 +274,28 @@ determine_backup_devices()
 }
 
 #
-# This function checks to see if a remote machine is alive.
+# This function checks to see if a remote machine is alive. If a MAC
+# address and IP address are given, it sends the remote machine a
+# Wake-On-LAN (WOL) packet first.
+#
+# Usage: determine_state_of_remote_machine name
+#
+# or
+#
+# determine_state_of_remote_machine name IP_address MAC_address
 #
 
 determine_state_of_remote_machine()
 {
 	m=$1
+
+	if [[ $# -gt 1 ]]; then
+		broadcast_address=$2
+		mac_address=$3
+
+		java -classpath /private/var/root WakeOnLan $broadcast_address $mac_address >> $tempfile
+		sleep 10
+	fi
 
 	$ping_command $m
 	if [ $? -eq 0 ]; then
@@ -875,7 +891,7 @@ report "We are using `$rsync_command --version | head -1`."
 determine_backup_devices
 determine_state_of_remote_machine $applied_math_server
 determine_state_of_remote_machine $hpwtdogmom_server
-determine_state_of_remote_machine MKL.local
+determine_state_of_remote_machine MKL.local 192.168.0.255 00:26:b0:e9:a4:0c
 blank_line
 
 #
