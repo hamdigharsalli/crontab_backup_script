@@ -293,7 +293,7 @@ determine_state_of_remote_machine()
 		broadcast_address=$2
 		mac_address=$3
 
-		java -classpath /private/var/root WakeOnLan $broadcast_address $mac_address >> $tempfile
+		report `java -classpath /private/var/root WakeOnLan $broadcast_address $mac_address`
 		sleep 10
 	fi
 
@@ -314,15 +314,15 @@ determine_state_of_remote_machine()
 mount_backup_volumes()
 {
 	report "Mounting backup volumes..."
-	/usr/sbin/diskutil quiet mountDisk $backup_device_1 >> $tempfile
-	/usr/sbin/diskutil mountDisk $backup_device_2 >> $tempfile
+	report `/usr/sbin/diskutil quiet mountDisk $backup_device_1`
+	report `/usr/sbin/diskutil mountDisk $backup_device_2`
 }
 
 unmount_backup_volumes()
 {
 	report "Unmounting backup volumes..."
-	/usr/sbin/diskutil unmountDisk $backup_device_1 >> $tempfile
-	/usr/sbin/diskutil unmountDisk $backup_device_2 >> $tempfile
+	report `/usr/sbin/diskutil unmountDisk $backup_device_1`
+	report `/usr/sbin/diskutil unmountDisk $backup_device_2`
 }
 
 backup_local_disk()
@@ -866,7 +866,7 @@ graceful_exit()
 	# can't see how much space is left on them in the report.
 	#
 
-	$df_command >> $tempfile
+	report `$df_command`
 
 	blank_line
 
@@ -900,7 +900,7 @@ blank_line
 
 report "Disk space on local drives:"
 blank_line
-$df_command >> $tempfile
+report `$df_command`
 
 blank_line
 
