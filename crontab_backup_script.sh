@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=69
+	script_version=70
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -551,8 +551,7 @@ check_free_space_on_remote_machine()
 	user_at_machine=$1
 	machine=`echo $user_at_machine | cut -d @ -f 2`
 	#
-	# Wake up the remote machine first (sometimes ssh silently fails
-	# if the remote machine is not awake).
+	# Only try SSH if ping works first.
 	#
 	$ping_command $machine
 	
