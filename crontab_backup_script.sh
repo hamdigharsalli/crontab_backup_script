@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=70
+	script_version=71
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -293,7 +293,8 @@ determine_state_of_remote_machine()
 		broadcast_address=$2
 		mac_address=$3
 
-		report `java -classpath /private/var/root WakeOnLan $broadcast_address $mac_address`
+		java -classpath /private/var/root WakeOnLan \
+			$broadcast_address $mac_address >> $tempfile
 		sleep 10
 	fi
 
@@ -307,22 +308,26 @@ determine_state_of_remote_machine()
 
 #
 # Mount the backup drive. It doesn't matter whether it's Backup-A
-# or Backup-A_offsite; # this refers to whatever physical device is
+# or Backup-A_offsite; this refers to whatever physical device is
 # plugged into the chain at that location.
+#
+# We can't use the report() function here because it compresses blank
+# spaces out of the output for some reason, probably bash parsing the
+# line.
 #
 
 mount_backup_volumes()
 {
 	report "Mounting backup volumes..."
-	report `/usr/sbin/diskutil quiet mountDisk $backup_device_1`
-	report `/usr/sbin/diskutil mountDisk $backup_device_2`
+	/usr/sbin/diskutil quiet mountDisk $backup_device_1 >> $tempfile
+	/usr/sbin/diskutil mountDisk $backup_device_2       >> $tempfile
 }
 
 unmount_backup_volumes()
 {
 	report "Unmounting backup volumes..."
-	report `/usr/sbin/diskutil unmountDisk $backup_device_1`
-	report `/usr/sbin/diskutil unmountDisk $backup_device_2`
+	/usr/sbin/diskutil unmountDisk $backup_device_1     >> $tempfile
+	/usr/sbin/diskutil unmountDisk $backup_device_2     >> $tempfile
 }
 
 backup_local_disk()
@@ -864,8 +869,11 @@ graceful_exit()
 	# If we don't do this before unmounting the backup disks, then we
 	# can't see how much space is left on them in the report.
 	#
+	# We can't use the report() function here because it compresses blank
+	# spaces out of the output.
+	#
 
-	report `$df_command`
+	$df_command >> $tempfile
 
 	blank_line
 
@@ -896,10 +904,13 @@ blank_line
 #
 # Show disk space at the beginning of the report, for convenience.
 #
+# We can't use the report() function here as it compresses blank spaces out
+# of the output of df.
+#
 
 report "Disk space on local drives:"
 blank_line
-report `$df_command`
+$df_command >> $tempfile
 
 blank_line
 
