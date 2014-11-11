@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=71
+	script_version=72
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -295,7 +295,8 @@ determine_state_of_remote_machine()
 
 		java -classpath /private/var/root WakeOnLan \
 			$broadcast_address $mac_address >> $tempfile
-		sleep 10
+		report "(sleeping 30s to give it time to wake up)"
+		sleep 30
 	fi
 
 	$ping_command $m
