@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=73
+	script_version=74
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -547,7 +547,7 @@ $BACKUP/hpwtdogmom.org/.webmail/users/miranda/ $BACKUP/mail_spool/"
 }
 
 #
-# Usage: check_free_space_on_remote_machine mirandaloughry@MKL.local
+# Usage: check_free_space_on_remote_machine name
 #
 
 check_free_space_on_remote_machine()
