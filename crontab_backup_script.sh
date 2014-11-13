@@ -22,7 +22,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=72
+	script_version=73
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -295,7 +295,7 @@ determine_state_of_remote_machine()
 
 		java -classpath /private/var/root WakeOnLan \
 			$broadcast_address $mac_address >> $tempfile
-		report "(sleeping 30s to give it time to wake up)"
+
 		sleep 30
 	fi
 
@@ -319,14 +319,12 @@ determine_state_of_remote_machine()
 
 mount_backup_volumes()
 {
-	report "Mounting backup volumes..."
 	/usr/sbin/diskutil quiet mountDisk $backup_device_1 >> $tempfile
 	/usr/sbin/diskutil mountDisk $backup_device_2       >> $tempfile
 }
 
 unmount_backup_volumes()
 {
-	report "Unmounting backup volumes..."
 	/usr/sbin/diskutil unmountDisk $backup_device_1     >> $tempfile
 	/usr/sbin/diskutil unmountDisk $backup_device_2     >> $tempfile
 }
