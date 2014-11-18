@@ -20,9 +20,6 @@ clean::
 
 install: private-install-crontab_backup_script
 
-ssh:
-	ssh $(private_remote_host_for_crontab_backup_script)
-
 include common.mk
 include private.mk
 
