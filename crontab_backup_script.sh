@@ -6,6 +6,8 @@
 # backup drive will be bootable in the event of hardware failure of the
 # internal disk on A's computer.
 
+source ./private.sh
+
 #
 # First, define a bunch of functions.
 #
@@ -18,11 +20,11 @@ initialise_variables()
 	# handled transparently (and invisibly) outside of the script.
 	#
 
-	backup_username=andrealoughry
+	backup_username=$(private_A_username)
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=74
+	script_version=75
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
