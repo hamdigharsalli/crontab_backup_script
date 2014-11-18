@@ -89,7 +89,7 @@ initialise_variables()
 	target_9=$applied_math_username@$applied_math_server:backups
 
 	target_10=$hpwtdogmom_username@$hpwtdogmom_server:/var/mail/hpwtdogmom.org/andrea
-	target_11=$hpwtdogmom_username@$hpwtdogmom_server:/var/mail/hpwtdogmom.org/$(private_M_directory)
+	target_11=$hpwtdogmom_username@$hpwtdogmom_server:/var/mail/hpwtdogmom.org/miranda
 	target_12=$applied_math_username@$applied_math_server:/var/mail/applied-math.org/joe
 
 	backup_1=/Volumes/Backup-A_new
@@ -521,7 +521,7 @@ snapshot_M_email()
 
 	if [ -e $BACKUP ]; then
 		tar_command_line="tar cf $backup_directory/$snapshot_file \
-$BACKUP/hpwtdogmom.org/.webmail/users/$(private_M_directory)/ $BACKUP/mail_spool/"
+$BACKUP/hpwtdogmom.org/.webmail/users/miranda/ $BACKUP/mail_spool/"
 		RC="empty(3)"
 		report "tar command line is \"$tar_command_line\" and RC was " \
 			"\"$RC\" before the tar command was executed."
@@ -913,7 +913,7 @@ $df_command >> $tempfile
 
 blank_line
 
-check_free_space_on_remote_machine $(private_M_machine)
+check_free_space_on_remote_machine mirandaloughry@MKL.local
 
 #
 # We mount the backup drives after the `$df_command` so we can see in the
