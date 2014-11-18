@@ -27,7 +27,7 @@ Preventing Disk Volumes from Auto-Mounting in Mac OS X
 In Mac OS X, to stop a disk volume auto-mounting when plugged in, make an entry like
 this in the `etc/fstab` file:
 
-```shell
+```bash
 LABEL=Backup-A none hfs rw,noauto 0 2
 LABEL=Backup-B none hfs rw,noauto 0 2
 LABEL=Backup-C none hfs rw,noauto 0 2
