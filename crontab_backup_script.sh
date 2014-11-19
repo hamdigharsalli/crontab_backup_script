@@ -6,7 +6,7 @@
 # backup drive will be bootable in the event of hardware failure of the
 # internal disk on A's computer.
 
-source ./private.sh
+source ./crontab_backup_private_information
 
 #
 # First, define a bunch of functions.
@@ -20,11 +20,11 @@ initialise_variables()
 	# handled transparently (and invisibly) outside of the script.
 	#
 
-	backup_username=$(private_A_username)
+	backup_username=$private_A_username
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=75
+	script_version=76
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -90,9 +90,9 @@ initialise_variables()
 	target_8=$applied_math_username@$applied_math_server:secure_html
 	target_9=$applied_math_username@$applied_math_server:backups
 
-	target_10=$hpwtdogmom_username@$hpwtdogmom_server:/var/mail/hpwtdogmom.org/andrea
-	target_11=$hpwtdogmom_username@$hpwtdogmom_server:/var/mail/hpwtdogmom.org/miranda
-	target_12=$applied_math_username@$applied_math_server:/var/mail/applied-math.org/joe
+	target_10=$hpwtdogmom_username@$hpwtdogmom_server:/var/mail/hpwtdogmom.org/$private_A_directory
+	target_11=$hpwtdogmom_username@$hpwtdogmom_server:/var/mail/hpwtdogmom.org/$private_M_directory
+	target_12=$applied_math_username@$applied_math_server:/var/mail/applied-math.org/$private_J_directory
 
 	backup_1=/Volumes/Backup-A_new
 	backup_2=/Volumes/Backup-B_new
@@ -523,7 +523,7 @@ snapshot_M_email()
 
 	if [ -e $BACKUP ]; then
 		tar_command_line="tar cf $backup_directory/$snapshot_file \
-$BACKUP/hpwtdogmom.org/.webmail/users/miranda/ $BACKUP/mail_spool/"
+$BACKUP/hpwtdogmom.org/.webmail/users/$private_M_directory/ $BACKUP/mail_spool/"
 		RC="empty(3)"
 		report "tar command line is \"$tar_command_line\" and RC was " \
 			"\"$RC\" before the tar command was executed."
