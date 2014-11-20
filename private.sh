@@ -1,1 +1,0 @@
-/home/rjl/Documents/thesis/github/notes.new/private.sh
