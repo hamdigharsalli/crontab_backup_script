@@ -6,7 +6,7 @@
 # backup drive will be bootable in the event of hardware failure of the
 # internal disk on A's computer.
 
-source ./crontab_backup_private_information
+source crontab_backup_private_information
 
 #
 # First, define a bunch of functions.
@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=joe.loughry@stx.ox.ac.uk
 	from_email_address=cron
 
-	script_version=76
+	script_version=78
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -175,6 +175,27 @@ separator()
 }
 
 #
+# This function verifies that external information necessary to the correct
+# running of the script was found.
+#
+
+function did_we_get_the_secret_information_interrogative
+{
+    if [ -n $private_A_machine ]; then
+        report "We have got the secret information."
+    else
+        blank_line
+        report "Unable to continue; we are missing secret information."
+        rm -f $lockfile $killfile
+        short_success_code="A"
+        #
+        # No need to unmount backup volumes; they haven't been mounted yet.
+        #
+        send_report_and_exit
+    fi
+}
+
+#
 # This function checks to see if the script is running with root privs.
 #
 
@@ -204,7 +225,7 @@ check_for_killfile_before_running()
 		rm -f $lockfile $killfile
 		short_success_code="A"
 		#
-		# no need to unmount backup volumes; they haven't been mounted yet.
+		# No need to unmount backup volumes; they haven't been mounted yet.
 		#
 		send_report_and_exit
 	fi
@@ -219,7 +240,7 @@ check_for_killfile_while_running()
 		rm -f $lockfile $killfile
 		short_success_code="A"
 		#
-		# unmount backup volumes before leaving.
+		# Unmount the backup volumes before leaving.
 		#
 		graceful_exit
 	fi
@@ -891,6 +912,7 @@ initialise_variables
 check_for_lockfile
 check_for_killfile_before_running
 initialise_tempfile
+did_we_get_the_secret_information_interrogative
 are_we_running_as_root_interrogative
 
 report "This is `basename $0` version $script_version."
