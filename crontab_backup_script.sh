@@ -21,10 +21,10 @@ initialise_variables()
 	#
 
 	backup_username=$private_A_username
-	report_to_email_address=joe.loughry@stx.ox.ac.uk
+	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=78
+	script_version=79
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -33,11 +33,11 @@ initialise_variables()
 	# the script, they might as well not exist.
 	#
 
-	applied_math_server=xray.he.net
-	applied_math_username=loughry
+	applied_math_server=$private_applied_math_server
+	applied_math_username=$private_applied_math_username
 
-	hpwtdogmom_server=cyclone.he.net
-	hpwtdogmom_username=aloughry
+	hpwtdogmom_server=$private_hpwtdogmom_server
+	hpwtdogmom_username=$private_hpwtdogmom_username
 
 	#
 	# rsync(1) options vary, so they are specified closer to where the
@@ -434,7 +434,7 @@ backup_remote_disk()
 	report "---- Backing up remote disk $TARGET to $BACKUP"
 	blank_line
 
-	if grep -q "xray.he.net" <<< "$TARGET" ; then
+	if grep -q "$applied_math_server" <<< "$TARGET" ; then
 		report "(using $TARGET for connection)"
 		blank_line
 	fi
@@ -839,7 +839,7 @@ email_report()
 	tr -d \\023 < $tempfile \
 		| $ssh_command $applied_math_username@$applied_math_server \
 			"mail \
-				-a \"From: Andrea's Mac Mini <loughry@xray.he.net>\" \
+				-a \"From: Andrea's Mac Mini <$private_originating_email_address>\" \
 				-s \"backup report `date +%Y%m%d.%H%M` ($short_success_code) \
 rc=$formatted_return_codes in $formatted_elapsed_time\" \
 				$report_to_email_address"
@@ -937,7 +937,7 @@ $df_command >> $tempfile
 
 blank_line
 
-check_free_space_on_remote_machine mirandaloughry@MKL.local
+check_free_space_on_remote_machine $private_M_machine
 
 #
 # We mount the backup drives after the `$df_command` so we can see in the
