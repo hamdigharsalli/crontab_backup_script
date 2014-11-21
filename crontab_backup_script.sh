@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=79
+	script_version=80
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -433,11 +433,6 @@ backup_remote_disk()
 	blank_line
 	report "---- Backing up remote disk $TARGET to $BACKUP"
 	blank_line
-
-	if grep -q "$applied_math_server" <<< "$TARGET" ; then
-		report "(using $TARGET for connection)"
-		blank_line
-	fi
 
 	remote_rsync_options="-iavz --no-human-readable"
 
