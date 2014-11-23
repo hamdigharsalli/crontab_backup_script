@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=80
+	script_version=81
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -916,7 +916,7 @@ report "We are using `$rsync_command --version | head -1`."
 determine_backup_devices
 determine_state_of_remote_machine $applied_math_server
 determine_state_of_remote_machine $hpwtdogmom_server
-determine_state_of_remote_machine MKL.local 192.168.0.255 00:26:b0:e9:a4:0c
+determine_state_of_remote_machine MKL.local 192.168.0.255 $private_M_machine_MAC_address
 blank_line
 
 #
