@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=81
+	script_version=82
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -301,11 +301,11 @@ determine_backup_devices()
 # address and IP address are given, it sends the remote machine a
 # Wake-On-LAN (WOL) packet first.
 #
-# Usage: determine_state_of_remote_machine name
+# Usage: $0 name
 #
 # or
 #
-# determine_state_of_remote_machine name IP_address MAC_address
+# $0 name IP_address MAC_address
 #
 
 determine_state_of_remote_machine()
@@ -565,7 +565,7 @@ $BACKUP/hpwtdogmom.org/.webmail/users/$private_M_directory/ $BACKUP/mail_spool/"
 }
 
 #
-# Usage: check_free_space_on_remote_machine name
+# Usage: $0 name
 #
 
 check_free_space_on_remote_machine()
@@ -584,6 +584,20 @@ check_free_space_on_remote_machine()
 			$user_at_machine "$df_command" >> $tempfile
 		blank_line
 	fi
+}
+
+Usage: $0 name
+
+put_remote_machine_back_to_sleep()
+{
+    user_at_machine=$1
+	machine=`echo $user_at_machine | cut -d @ -f 2`
+    $ping_command $machine
+    if [ $? -eq 0 ]; then
+        $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
+            $user_at_machine "pmset sleepnow" >> $tempfile
+        blank_line
+    fi
 }
 
 check_for_existence_of_all_backup_volumes()
@@ -933,6 +947,8 @@ $df_command >> $tempfile
 blank_line
 
 check_free_space_on_remote_machine $private_M_machine
+
+# put_remote_machine_back_to_sleep $private_M_machine
 
 #
 # We mount the backup drives after the `$df_command` so we can see in the
