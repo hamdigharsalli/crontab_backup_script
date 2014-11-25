@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=82
+	script_version=83
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -594,6 +594,7 @@ put_remote_machine_back_to_sleep()
 	machine=`echo $user_at_machine | cut -d @ -f 2`
     $ping_command $machine
     if [ $? -eq 0 ]; then
+        report "sleeping $machine..."
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine "pmset sleepnow" >> $tempfile
         blank_line
@@ -948,7 +949,7 @@ blank_line
 
 check_free_space_on_remote_machine $private_M_machine
 
-# put_remote_machine_back_to_sleep $private_M_machine
+put_remote_machine_back_to_sleep $private_M_machine
 
 #
 # We mount the backup drives after the `$df_command` so we can see in the
