@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=84
+	script_version=85
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -949,6 +949,8 @@ blank_line
 check_free_space_on_remote_machine $private_M_machine
 
 put_remote_machine_back_to_sleep $private_M_machine
+sleep 10
+determine_state_of_remote_machine MKL.local
 
 #
 # We mount the backup drives after the `$df_command` so we can see in the
