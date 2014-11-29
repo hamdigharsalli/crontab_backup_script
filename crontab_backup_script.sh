@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=85
+	script_version=86
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -596,7 +596,6 @@ put_remote_machine_back_to_sleep()
     if [ $? -eq 0 ]; then
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine "pmset sleepnow" >> $tempfile
-        blank_line
     fi
 }
 
@@ -949,7 +948,7 @@ blank_line
 check_free_space_on_remote_machine $private_M_machine
 
 put_remote_machine_back_to_sleep $private_M_machine
-sleep 10
+sleep 40
 determine_state_of_remote_machine MKL.local
 
 #
