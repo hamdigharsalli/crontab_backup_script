@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=86
+	script_version=88
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -58,6 +58,14 @@ initialise_variables()
 	#
 	ssh_command="/usr/bin/ssh -o ConnectTimeout=40 \
 		-o BatchMode=yes -o StrictHostKeyChecking=no"
+
+    #
+    # ping -o -t 10 will test to see if the host is up, giving up after no
+    # more than 10 seconds, returning 0 if the host is up, or a non-zero
+    # value otherwise.
+    #
+
+    ping_command="/sbin/ping -o -t 10"
 
 	#
 	# -PHl tells `df` not to include inodes in the report (because it makes
@@ -321,7 +329,7 @@ determine_state_of_remote_machine()
 		sleep 30
 	fi
 
-	/sbin/ping $m
+	$ping_command $m
 	if [ $? -eq 0 ]; then
 		report "The remote machine $m is up."
 	else
@@ -576,7 +584,7 @@ check_free_space_on_remote_machine()
 	# Only try SSH if ping works first.
 	#
 
-	/sbin/ping $machine
+	$ping_command $machine
 	if [ $? -eq 0 ]; then
 		report "Disk space on $machine:"
 		blank_line
@@ -595,14 +603,12 @@ put_remote_machine_back_to_sleep()
     user_at_machine=$1
 	machine=`echo $user_at_machine | cut -d @ -f 2`
 
-    /sbin/ping $machine
+    $ping_command $machine
     if [ $? -eq 0 ]; then
-        report "About to put remote machine $machine to sleep."
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine "pmset sleepnow" >> $tempfile 2>&1
     fi
     sleep 60
-    report "The remote machine $machine ought to be asleep now."
 }
 
 check_for_existence_of_all_backup_volumes()
@@ -955,6 +961,7 @@ check_free_space_on_remote_machine $private_M_user_at_machine
 
 put_remote_machine_back_to_sleep $private_M_user_at_machine
 determine_state_of_remote_machine $private_M_machine
+blank_line
 
 #
 # We mount the backup drives after the `$df_command` so we can see in the
