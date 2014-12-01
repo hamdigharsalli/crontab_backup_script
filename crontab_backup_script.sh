@@ -6,7 +6,7 @@
 # backup drive will be bootable in the event of hardware failure of the
 # internal disk on A's computer.
 
-source crontab_backup_private_information
+source /private/var/root/crontab_backup_private_information
 
 #
 # First, define a bunch of functions.
@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=88
+	script_version=86
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -58,11 +58,6 @@ initialise_variables()
 	#
 	ssh_command="/usr/bin/ssh -o ConnectTimeout=40 \
 		-o BatchMode=yes -o StrictHostKeyChecking=no"
-
-	#
-	# -o tells ping to quit after receiving one reply packet successfully
-	#
-	ping_command="/sbin/ping -o"
 
 	#
 	# -PHl tells `df` not to include inodes in the report (because it makes
@@ -178,10 +173,12 @@ separator()
 # This function verifies that external information necessary to the correct
 # running of the script was found.
 #
+# Usage: $0
+#
 
 function did_we_get_the_secret_information_interrogative
 {
-    if [ -n $private_A_machine ]; then
+    if [ -n $private_A_user_at_machine ]; then
         report "We have got the secret information."
     else
         blank_line
@@ -197,6 +194,8 @@ function did_we_get_the_secret_information_interrogative
 
 #
 # This function checks to see if the script is running with root privs.
+#
+# Usage: $0
 #
 
 function are_we_running_as_root_interrogative
@@ -301,11 +300,11 @@ determine_backup_devices()
 # address and IP address are given, it sends the remote machine a
 # Wake-On-LAN (WOL) packet first.
 #
-# Usage: $0 name
+# Usage: $0 machine
 #
 # or
 #
-# $0 name IP_address MAC_address
+# $0 machine IP_address MAC_address
 #
 
 determine_state_of_remote_machine()
@@ -322,7 +321,7 @@ determine_state_of_remote_machine()
 		sleep 30
 	fi
 
-	$ping_command $m
+	/sbin/ping $m
 	if [ $? -eq 0 ]; then
 		report "The remote machine $m is up."
 	else
@@ -565,7 +564,7 @@ $BACKUP/hpwtdogmom.org/.webmail/users/$private_M_directory/ $BACKUP/mail_spool/"
 }
 
 #
-# Usage: $0 name
+# Usage: $0 user@machine
 #
 
 check_free_space_on_remote_machine()
@@ -577,18 +576,18 @@ check_free_space_on_remote_machine()
 	# Only try SSH if ping works first.
 	#
 
-	$ping_command $machine
+	/sbin/ping $machine
 	if [ $? -eq 0 ]; then
 		report "Disk space on $machine:"
 		blank_line
-		$ssh_command -i /Users/$backup_username/.ssh/id_rsa \
-			$user_at_machine "$df_command" >> $tempfile
+        $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
+			$user_at_machine "$df_command" >> $tempfile 2>&1
 		blank_line
 	fi
 }
 
 #
-# Usage: $0 name
+# Usage: $0 user@machine
 #
 
 put_remote_machine_back_to_sleep()
@@ -596,11 +595,14 @@ put_remote_machine_back_to_sleep()
     user_at_machine=$1
 	machine=`echo $user_at_machine | cut -d @ -f 2`
 
-    $ping_command $machine
+    /sbin/ping $machine
     if [ $? -eq 0 ]; then
+        report "About to put remote machine $machine to sleep."
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
-            $user_at_machine "pmset sleepnow" >> $tempfile
+            $user_at_machine "pmset sleepnow" >> $tempfile 2>&1
     fi
+    sleep 60
+    report "The remote machine $machine ought to be asleep now."
 }
 
 check_for_existence_of_all_backup_volumes()
@@ -933,7 +935,7 @@ report "We are using `$rsync_command --version | head -1`."
 determine_backup_devices
 determine_state_of_remote_machine $applied_math_server
 determine_state_of_remote_machine $hpwtdogmom_server
-determine_state_of_remote_machine MKL.local 192.168.0.255 $private_M_machine_MAC_address
+determine_state_of_remote_machine $private_M_machine 192.168.0.255 $private_M_machine_MAC_address
 blank_line
 
 #
@@ -949,11 +951,10 @@ $df_command >> $tempfile
 
 blank_line
 
-check_free_space_on_remote_machine $private_M_machine
+check_free_space_on_remote_machine $private_M_user_at_machine
 
-put_remote_machine_back_to_sleep $private_M_machine
-sleep 120
-determine_state_of_remote_machine MKL.local
+put_remote_machine_back_to_sleep $private_M_user_at_machine
+determine_state_of_remote_machine $private_M_machine
 
 #
 # We mount the backup drives after the `$df_command` so we can see in the
