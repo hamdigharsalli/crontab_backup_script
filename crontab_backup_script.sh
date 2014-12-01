@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=87
+	script_version=88
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -322,7 +322,6 @@ determine_state_of_remote_machine()
 		sleep 30
 	fi
 
-    report "(ping)"
 	$ping_command $m
 	if [ $? -eq 0 ]; then
 		report "The remote machine $m is up."
@@ -573,12 +572,12 @@ check_free_space_on_remote_machine()
 {
 	user_at_machine=$1
 	machine=`echo $user_at_machine | cut -d @ -f 2`
+
 	#
 	# Only try SSH if ping works first.
 	#
-    report "(ping)"
+
 	$ping_command $machine
-	
 	if [ $? -eq 0 ]; then
 		report "Disk space on $machine:"
 		blank_line
@@ -588,13 +587,15 @@ check_free_space_on_remote_machine()
 	fi
 }
 
-Usage: $0 name
+#
+# Usage: $0 name
+#
 
 put_remote_machine_back_to_sleep()
 {
     user_at_machine=$1
 	machine=`echo $user_at_machine | cut -d @ -f 2`
-    report "(ping)"
+
     $ping_command $machine
     if [ $? -eq 0 ]; then
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
@@ -951,11 +952,7 @@ blank_line
 check_free_space_on_remote_machine $private_M_machine
 
 put_remote_machine_back_to_sleep $private_M_machine
-sleep 60
-determine_state_of_remote_machine MKL.local
-sleep 60
-determine_state_of_remote_machine MKL.local
-sleep 60
+sleep 120
 determine_state_of_remote_machine MKL.local
 
 #
