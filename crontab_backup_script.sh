@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=88
+	script_version=89
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -375,7 +375,7 @@ backup_local_disk()
 		if [ -e $TARGET ]; then
 			rsync_command_line="$rsync_command $local_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 			RC="empty(1)"
-			report "rsync(1) command line is \"$rsync_command_line\" and" \
+			report "rsync(1) command line is \"$rsync_command_line\" and " \
 				"RC was \"$RC\" before the rsync command was executed"
 			blank_line
 			eval $rsync_command_line
