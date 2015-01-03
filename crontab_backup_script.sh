@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=89
+	script_version=90
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -936,6 +936,7 @@ did_we_get_the_secret_information_interrogative
 are_we_running_as_root_interrogative
 
 report "This is `basename $0` version $script_version."
+report "My nodename is `uname -n`."
 report "Starting time of this backup is `date`."
 report "We are using `$rsync_command --version | head -1`."
 determine_backup_devices
