@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=90
+	script_version=91
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -859,7 +859,7 @@ email_report()
 	tr -d \\023 < $tempfile \
 		| $ssh_command $applied_math_username@$applied_math_server \
 			"mail \
-				-a \"From: Andrea's Mac Mini <$private_originating_email_address>\" \
+				-a \"From: A's machine <$private_originating_email_address>\" \
 				-s \"backup report `date +%Y%m%d.%H%M` ($short_success_code) \
 rc=$formatted_return_codes in $formatted_elapsed_time\" \
 				$report_to_email_address"
@@ -936,7 +936,7 @@ did_we_get_the_secret_information_interrogative
 are_we_running_as_root_interrogative
 
 report "This is `basename $0` version $script_version."
-report "My nodename is `uname -n`."
+report "The nodename of this machine is `uname -n`."
 report "Starting time of this backup is `date`."
 report "We are using `$rsync_command --version | head -1`."
 determine_backup_devices
