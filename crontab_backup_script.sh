@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=91
+	script_version=92
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -441,7 +441,7 @@ backup_remote_disk()
 	report "---- Backing up remote disk $TARGET to $BACKUP"
 	blank_line
 
-	remote_rsync_options="-iavz --no-human-readable"
+	remote_rsync_options="-iavvz --no-human-readable"
 
 	if [ -e $BACKUP ]; then
 		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
@@ -630,12 +630,12 @@ backup_to_onsite_disk()
 	if [ -e $backup_3 ]; then
 
 		# root volume
-		local_rsync_options="-iavzxAXE --exclude=/Volumes/"
+		local_rsync_options="-iavvzxAXE --exclude=/Volumes/"
 		backup_local_disk $target_1 $backup_1
 		rc101=$?
 
 		# firewire_disk
-		local_rsync_options="-iavzxAXE"
+		local_rsync_options="-iavvzxAXE"
 		backup_local_disk $target_2 $backup_3
 		rc102=$?
 
@@ -709,12 +709,12 @@ backup_to_offsite_disk()
 	if [ -e $backup_3_ofs ]; then
 
 		# root volume
-		local_rsync_options="-iavzxAXE --exclude=/Volumes/"
+		local_rsync_options="-iavvzxAXE --exclude=/Volumes/"
 		backup_local_disk $target_1 $backup_1_ofs
 		rc201=$?
 
 		# firewire_disk
-		local_rsync_options="-iavzxAXE"
+		local_rsync_options="-iavvzxAXE"
 		backup_local_disk $target_2 $backup_3_ofs
 		rc202=$?
 
