@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=93
+	script_version=94
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -441,7 +441,7 @@ backup_remote_disk()
 	report "---- Backing up remote disk $TARGET to $BACKUP"
 	blank_line
 
-	remote_rsync_options="-iavz --no-human-readable"
+	remote_rsync_options="-iavz --no-human-readable --out-format='%l %n'"
 
 	if [ -e $BACKUP ]; then
 		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
