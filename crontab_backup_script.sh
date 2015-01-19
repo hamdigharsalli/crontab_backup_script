@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=94
+	script_version=95
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
