@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=95
+	script_version=96
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -859,7 +859,7 @@ email_report()
 	tr -d \\023 < $tempfile \
 		| $ssh_command $applied_math_username@$applied_math_server \
 			"mail \
-				-a \"From: A's machine <$private_originating_email_address>\" \
+				-a \"From: Backup Server <$private_originating_email_address>\" \
 				-s \"backup report `date +%Y%m%d.%H%M` ($short_success_code) \
 rc=$formatted_return_codes in $formatted_elapsed_time\" \
 				$report_to_email_address"
@@ -932,6 +932,8 @@ initialise_variables
 check_for_lockfile
 check_for_killfile_before_running
 initialise_tempfile
+report "Crontab Backup Report:"
+blank_line
 did_we_get_the_secret_information_interrogative
 are_we_running_as_root_interrogative
 
