@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=96
+	script_version=97
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -187,7 +187,7 @@ separator()
 function did_we_get_the_secret_information_interrogative
 {
     if [ -n $private_A_user_at_machine ]; then
-        report "We have got the secret information."
+        report "Non-public information repository successfully accessed."
     else
         blank_line
         report "Unable to continue; we are missing secret information."
@@ -932,7 +932,7 @@ initialise_variables
 check_for_lockfile
 check_for_killfile_before_running
 initialise_tempfile
-report "Crontab Backup Report:"
+report "This is the 0500 daily crontab backup report."
 blank_line
 did_we_get_the_secret_information_interrogative
 are_we_running_as_root_interrogative
