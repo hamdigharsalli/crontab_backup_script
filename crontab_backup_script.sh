@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=98
+	script_version=99
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -80,7 +80,7 @@ initialise_variables()
 	tempfile=/Users/$backup_username/crontab_backup_report
 	lockfile=/Users/$backup_username/crontab_backup_lockfile
 	killfile=/Users/$backup_username/crontab_backup_killfile
-	summfile=/Users/$backup_username/crontab_backup_summary_accumulator_file
+	summfile=/Users/$backup_username/crontab_backup_accumulator_file
 
 	target_1=/
 	target_2=/Volumes/firewire_disk/
@@ -905,7 +905,7 @@ graceful_exit()
     #
     # In bash, if the file does not exist, it is created.
     #
-    echo $formatted_return_codes >> $summfile
+    echo "$formatted_return_codes in $formatted_elapsed_time" >> $summfile
 
 	blank_line
 
