@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=103
+	script_version=104
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -905,7 +905,7 @@ graceful_exit()
     #
     # In bash, if the file does not exist, it is created.
     #
-    echo "$formatted_return_codes in $formatted_elapsed_time on `date +\"%F at %R %Z\"`" >> $summfile
+    echo "$formatted_return_codes: $formatted_elapsed_time on `date +\"%F at %R %Z\"`" >> $summfile
 
 	blank_line
 
