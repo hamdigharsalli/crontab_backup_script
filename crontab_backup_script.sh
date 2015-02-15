@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=104
+	script_version=105
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -867,6 +867,55 @@ rc=$formatted_return_codes in $formatted_elapsed_time\" \
 }
 
 #
+# Draws a bar chart
+#
+# Usage: bar_chart "label percentage"
+#
+# (The arguments are together in one unit because of the way
+# the function is called from within bash with "while read".)
+#
+
+function bar_chart
+{
+    label=`echo $1 | cut -d ' ' -f 1`
+    percentage=`echo $1 | cut -d ' ' -f 2`
+
+    bar_chart_width=50
+    scale_factor=$(expr 100 / $bar_chart_width)
+
+    if [[ $percentage -lt 0 ]]; then
+        echo "Usage: $0 0 -le percentage -le 100"
+        exit 1
+    fi
+
+    length_of_bar=$(expr $percentage / $scale_factor)
+    remaining_length=$(expr 100 / $scale_factor - $length_of_bar)
+
+    /bin/echo -n "$label`printf '\t%2d%%\t' $percentage`"
+
+    for i in `seq 0 $length_of_bar`; do
+        /bin/echo -n "*"
+    done
+
+    for i in `seq 0 $remaining_length`; do
+        /bin/echo -n "-"
+    done
+
+    echo "|"
+}
+
+#
+# Display a bar chart showing the percentage free on all mounted volumes.
+#
+
+function show_disk_space_graphically
+{
+    $df_command | tr -s ' ' | cut -d ' ' -f 1,5 \
+        | cut -d '%' -f 1 | sed '1d' \
+        | while read -r line; do bar_chart "$line"; done
+}
+
+#
 # Since bash has no goto, the way to exit gracefully in exceptional
 # situations (such as when the killfile is seen) without duplicating
 # this code all over is to encapsulate all the desired ending actions
@@ -922,6 +971,9 @@ graceful_exit()
 	#
 
 	$df_command >> $tempfile
+
+    blank_line
+    show_disk_space_graphically >> $tempfile
 
 	blank_line
 
