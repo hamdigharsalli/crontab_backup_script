@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=105
+	script_version=107
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -869,7 +869,7 @@ rc=$formatted_return_codes in $formatted_elapsed_time\" \
 #
 # Draws a bar chart
 #
-# Usage: bar_chart "label percentage"
+# Usage: bar_chart "percentage label"
 #
 # (The arguments are together in one unit because of the way
 # the function is called from within bash with "while read".)
@@ -877,10 +877,10 @@ rc=$formatted_return_codes in $formatted_elapsed_time\" \
 
 function bar_chart
 {
-    label=`echo $1 | cut -d ' ' -f 1`
-    percentage=`echo $1 | cut -d ' ' -f 2`
+    percentage=`echo $1 | cut -d ' ' -f 1`
+    label=`echo $1 | cut -d ' ' -f 2`
 
-    bar_chart_width=50
+    bar_chart_width=24
     scale_factor=$(expr 100 / $bar_chart_width)
 
     if [[ $percentage -lt 0 ]]; then
@@ -891,17 +891,19 @@ function bar_chart
     length_of_bar=$(expr $percentage / $scale_factor)
     remaining_length=$(expr 100 / $scale_factor - $length_of_bar)
 
-    /bin/echo -n "$label`printf '\t%2d%%\t' $percentage`"
+    if [ $length_of_bar -ge 1 ]; then
+        for i in `seq 1 $length_of_bar`; do
+            /bin/echo -n "1"
+        done
+    fi
 
-    for i in `seq 0 $length_of_bar`; do
-        /bin/echo -n "*"
-    done
+    if [ $remaining_length -ge 1 ]; then
+        for i in `seq 1 $remaining_length`; do
+            /bin/echo -n "0"
+        done
+    fi
 
-    for i in `seq 0 $remaining_length`; do
-        /bin/echo -n "-"
-    done
-
-    echo "|"
+    echo "`printf ' (%2d%%)' $percentage` $label"
 }
 
 #
@@ -910,8 +912,8 @@ function bar_chart
 
 function show_disk_space_graphically
 {
-    $df_command | tr -s ' ' | cut -d ' ' -f 1,5 \
-        | cut -d '%' -f 1 | sed '1d' \
+    $df_command | tr -s ' ' | cut -d ' ' -f 6,5 \
+        | tr -d '%' | sed '1d' \
         | while read -r line; do bar_chart "$line"; done
 }
 
