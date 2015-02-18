@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=109
+	script_version=110
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -880,7 +880,7 @@ function bar_chart
     percentage=`echo $1 | cut -d ' ' -f 1`
     label=`echo $1 | cut -d ' ' -f 2`
 
-    bar_chart_width=24
+    bar_chart_width=30
     scale_factor=$(expr 100 / $bar_chart_width)
 
     if [[ $percentage -lt 0 ]]; then
@@ -903,7 +903,7 @@ function bar_chart
         done
     fi
 
-    echo "`printf ' (%2d%%)' $percentage` $label"
+    echo " $label"
 }
 
 #
