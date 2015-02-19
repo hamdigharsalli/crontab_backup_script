@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=112
+	script_version=114
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -591,7 +591,6 @@ check_free_space_on_remote_machine()
 		blank_line
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
 			$user_at_machine "$df_command" >> $tempfile 2>&1
-		blank_line
 	fi
 }
 
@@ -916,7 +915,7 @@ function bar_chart
 
 function show_disk_space_graphically
 {
-    $df_command | tr -s ' ' | cut -d ' ' -f 6,5 \
+    $df_command | tr -s ' ' | cut -d ' ' -f 5,6 \
         | tr -d '%' | sed '1d' \
         | while read -r line; do bar_chart "$line"; done
 }
@@ -930,17 +929,10 @@ function show_disk_space_graphically_on_remote_machine
 	user_at_machine=$1
 	machine=`echo $user_at_machine | cut -d @ -f 2`
 
-	#
-	# Only try SSH if ping works first.
-	#
-
-	$ping_command $machine
-	if [ $? -eq 0 ]; then
-        $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
-			$user_at_machine "$df_command" | tr -s ' ' \
-            | cut -d ' ' -f 6,5 | tr -d '%' | sed '1d' \
-            | while read -r line; do bar_chart "$line"; done
-	fi
+    $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
+        $user_at_machine "$df_command" | tr -s ' ' \
+        | cut -d ' ' -f 5,6 | tr -d '%' | sed '1d' \
+        | while read -r line; do bar_chart "$line"; done
 }
 
 #
@@ -1041,6 +1033,7 @@ blank_line
 #
 
 report "Disk space on local drives:"
+
 blank_line
 $df_command >> $tempfile
 
@@ -1051,9 +1044,11 @@ blank_line
 check_free_space_on_remote_machine $private_M_user_at_machine
 
 blank_line
-show_disk_space_graphically_on_remote_machine $private_M_user_at_machine
+show_disk_space_graphically_on_remote_machine $private_M_user_at_machine >> $tempfile
 
+blank_line
 put_remote_machine_back_to_sleep $private_M_user_at_machine
+
 determine_state_of_remote_machine $private_M_machine
 blank_line
 
