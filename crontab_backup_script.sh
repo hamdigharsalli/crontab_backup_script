@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=111
+	script_version=112
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -880,7 +880,7 @@ function bar_chart
     percentage=`echo $1 | cut -d ' ' -f 1`
     label=`echo $1 | cut -d ' ' -f 2 | basename`
 
-    bar_chart_width=36
+    bar_chart_width=40
     scale_factor=$(expr 100 / $bar_chart_width)
 
     if [[ $percentage -lt 0 ]]; then
@@ -903,7 +903,11 @@ function bar_chart
         done
     fi
 
-    echo " $label"
+    %
+    % End the line.
+    %
+
+    echo
 }
 
 #
@@ -915,6 +919,28 @@ function show_disk_space_graphically
     $df_command | tr -s ' ' | cut -d ' ' -f 6,5 \
         | tr -d '%' | sed '1d' \
         | while read -r line; do bar_chart "$line"; done
+}
+
+#
+# Usage: $0 user@machine (TODO: refactor this fn to call previous one)
+#
+
+function show_disk_space_graphically_on_remote_machine
+{
+	user_at_machine=$1
+	machine=`echo $user_at_machine | cut -d @ -f 2`
+
+	#
+	# Only try SSH if ping works first.
+	#
+
+	$ping_command $machine
+	if [ $? -eq 0 ]; then
+        $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
+			$user_at_machine "$df_command" | tr -s ' ' \
+            | cut -d ' ' -f 6,5 | tr -d '%' | sed '1d' \
+            | while read -r line; do bar_chart "$line"; done
+	fi
 }
 
 #
@@ -1019,8 +1045,13 @@ blank_line
 $df_command >> $tempfile
 
 blank_line
+show_disk_space_graphically >> $tempfile
 
+blank_line
 check_free_space_on_remote_machine $private_M_user_at_machine
+
+blank_line
+show_disk_space_graphically_on_remote_machine $private_M_user_at_machine
 
 put_remote_machine_back_to_sleep $private_M_user_at_machine
 determine_state_of_remote_machine $private_M_machine
