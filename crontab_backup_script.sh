@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=114
+	script_version=115
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -336,6 +336,21 @@ determine_state_of_remote_machine()
 	else
 		report "The remote machine $m is down."
 	fi
+}
+
+function backup_remote_directory_to_local {
+    remote_user=$1
+    remote_dir=$2
+    local_dir=$3
+
+    remote_rsync_options="-iavz --no-human-readable --out-format='%l %n' -e \"ssh -i$HOME/.ssh/id_rsa\""
+
+    report "Backing up M's ~ to A's /"
+    $rsync_command $remote_rsync_options $remote_user:$remote_dir/* \
+        $local_dir | tail -30 >> $tempfile 2>&1
+
+    blank_line
+    report "Done backing up M's ~ to A's /"
 }
 
 #
@@ -1050,6 +1065,10 @@ blank_line
 put_remote_machine_back_to_sleep $private_M_user_at_machine
 
 determine_state_of_remote_machine $private_M_machine
+blank_line
+
+backup_remote_directory_to_local \
+    $private_M_user_at_machine /Users/$private_M_username $private_M_desktop_backup
 blank_line
 
 #
