@@ -338,16 +338,22 @@ determine_state_of_remote_machine()
 	fi
 }
 
+#
+# The following function is used to backup M's ~ to A's /
+#
+# rsync -i... | grep -v "^\." is supposed to show only files that changed.
+#
+
 function backup_remote_directory_to_local {
     remote_user=$1
     remote_dir=$2
     local_dir=$3
 
-    remote_rsync_options="-iavz --no-human-readable --out-format='%l %n' -e \"ssh -i$HOME/.ssh/id_rsa\""
+    remote_rsync_options="-iavz --no-human-readable -e \"ssh -i$HOME/.ssh/id_rsa\""
 
     report "Backing up M's ~ to A's /"
     $rsync_command $remote_rsync_options $remote_user:$remote_dir/* \
-        $local_dir | tail -30 >> $tempfile 2>&1
+        $local_dir | grep -v "^\." | tail -30 >> $tempfile 2>&1
 
     blank_line
     report "Done backing up M's ~ to A's /"
