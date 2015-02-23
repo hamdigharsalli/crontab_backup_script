@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=116
+	script_version=119
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -349,11 +349,13 @@ function backup_remote_directory_to_local {
     remote_dir=$2
     local_dir=$3
 
-    remote_rsync_options="-iavz --no-human-readable -e \"ssh -i$HOME/.ssh/id_rsa\""
+    remote_rsync_options="-iavz --no-human-readable -e \"ssh -i/Users/$backup_username/.ssh/id_rsa\""
 
     report "Backing up M's ~ to A's /"
-    $rsync_command $remote_rsync_options $remote_user:$remote_dir/* \
-        $local_dir | grep -v "^\." | tail -30 >> $tempfile 2>&1
+    blank_line
+
+    $rsync_command $remote_rsync_options $remote_user:$remote_dir/* $local_dir \
+        | grep -v "^\." | tail -12 >> $tempfile 2>&1
 
     blank_line
     report "Done backing up M's ~ to A's /"
@@ -1069,7 +1071,7 @@ show_disk_space_graphically_on_remote_machine $private_M_user_at_machine >> $tem
 
 blank_line
 backup_remote_directory_to_local \
-    $private_M_user_at_machine /Users/$private_M_username/ $private_M_desktop_backup
+    $private_M_user_at_machine /Users/$private_M_username $private_M_desktop_backup
 
 blank_line
 put_remote_machine_back_to_sleep $private_M_user_at_machine
