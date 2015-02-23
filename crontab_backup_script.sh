@@ -1062,13 +1062,13 @@ blank_line
 show_disk_space_graphically_on_remote_machine $private_M_user_at_machine >> $tempfile
 
 blank_line
+backup_remote_directory_to_local \
+    $private_M_user_at_machine /Users/$private_M_username/ $private_M_desktop_backup
+
+blank_line
 put_remote_machine_back_to_sleep $private_M_user_at_machine
 
 determine_state_of_remote_machine $private_M_machine
-blank_line
-
-backup_remote_directory_to_local \
-    $private_M_user_at_machine /Users/$private_M_username $private_M_desktop_backup
 blank_line
 
 #
