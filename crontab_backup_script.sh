@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=119
+	script_version=121
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -349,14 +349,23 @@ function backup_remote_directory_to_local {
     remote_dir=$2
     local_dir=$3
 
-    remote_rsync_options="-iavz --no-human-readable -e \"ssh -i/Users/$backup_username/.ssh/id_rsa\""
+    remote_rsync_options="-iavz --no-human-readable \
+        -e \"$ssh_command -i /Users/$backup_username/.ssh/id_rsa\""
 
     report "Backing up M's ~ to A's /"
     blank_line
 
-    $rsync_command $remote_rsync_options $remote_user:$remote_dir/* $local_dir \
-        | grep -v "^\." | tail -12 >> $tempfile 2>&1
+    rsync_command_line="$rsync_command $remote_rsync_options \
+        $remote_user:$remote_dir/\* $local_dir | grep -v '^\.' | tail -12 >> $tempfile 2>&1"
 
+    report "The rsync_command_line was \"$rsync_command_line\""
+    blank_line
+
+    eval $rsync_command_line
+    RC_from_rsync=$?
+
+    blank_line
+    report "return code from rsync(1) was \"$RC_from_rsync\""
     blank_line
     report "Done backing up M's ~ to A's /"
 }
