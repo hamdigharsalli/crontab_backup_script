@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=121
+	script_version=122
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -358,14 +358,14 @@ function backup_remote_directory_to_local {
     rsync_command_line="$rsync_command $remote_rsync_options \
         $remote_user:$remote_dir/\* $local_dir | grep -v '^\.' | tail -12 >> $tempfile 2>&1"
 
-    report "The rsync_command_line was \"$rsync_command_line\""
+    report "The rsync_command_line was \"$rsync_command_line\"."
     blank_line
 
     eval $rsync_command_line
     RC_from_rsync=$?
 
     blank_line
-    report "return code from rsync(1) was \"$RC_from_rsync\""
+    report "The return code from rsync(1) was \"$RC_from_rsync\"."
     blank_line
     report "Done backing up M's ~ to A's /"
 }
@@ -866,9 +866,9 @@ $overall_success_code"
 		"; a total of $total_size_formatted bytes"
 
 	report "were synchronised. Network usage was " \
-		"$total_bandwidth_used_formatted bytes. Return codes from rsync"
+		"$total_bandwidth_used_formatted bytes. Return codes from the"
 
-	report "programme were $formatted_return_codes."
+	report "rsync programme were $formatted_return_codes."
 }
 
 email_report()
