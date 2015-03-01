@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=122
+	script_version=123
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -262,6 +262,7 @@ initialise_lockfile()
 initialise_tempfile()
 {
 	rm -f $tempfile; touch $tempfile
+    report "<html><head><title>0500 Crontab Backup Report</title></head><body><pre>"
 }
 
 
@@ -888,10 +889,13 @@ email_report()
 	# my mail reader on the receiving end.
 	#
 
+    report "</pre></body></html>"
+
 	tr -d \\023 < $tempfile \
 		| $ssh_command $applied_math_username@$applied_math_server \
 			"mail \
 				-a \"From: Backup Server <$private_originating_email_address>\" \
+                -a \"Content-type: text/html\" \
 				-s \"backup report `date +%Y%m%d.%H%M` ($short_success_code) \
 rc=$formatted_return_codes in $formatted_elapsed_time\" \
 				$report_to_email_address"
