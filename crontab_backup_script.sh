@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=124
+	script_version=126
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -169,13 +169,13 @@ report()
 
 blank_line()
 {
-	report ""
+    echo "<br/>" >> $tempfile
 }
 
 separator()
 {
 	blank_line
-	report "=============================================================="
+    echo "<hr/> >> $tempfile
 }
 
 #
@@ -263,7 +263,7 @@ initialise_tempfile()
 {
 	rm -f $tempfile; touch $tempfile
 
-    echo "<!DOCTYPE HTML>                                    >> $tempfile
+    echo "<!DOCTYPE HTML>"                                   >> $tempfile
     echo "<html>"                                            >> $tempfile
     echo "    <head>"                                        >> $tempfile
     echo "        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>" >> $tempfile
@@ -1083,9 +1083,9 @@ blank_line
 report "Disk space on local drives:"
 
 blank_line
-<echo "<pre>" >> $tempfile
+echo "<pre>" >> $tempfile
 $df_command >> $tempfile
-<echo "</pre>" >> $tempfile
+echo "</pre>" >> $tempfile
 
 blank_line
 show_disk_space_graphically >> $tempfile
