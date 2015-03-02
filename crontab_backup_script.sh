@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=123
+	script_version=124
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -164,7 +164,7 @@ initialise_variables()
 
 report()
 {
-	echo $1$2$3$4$5$6$7 >> $tempfile
+	echo "<p>$1$2$3$4$5$6$7</p>" >> $tempfile
 }
 
 blank_line()
@@ -262,7 +262,14 @@ initialise_lockfile()
 initialise_tempfile()
 {
 	rm -f $tempfile; touch $tempfile
-    report "<html><head><title>0500 Crontab Backup Report</title></head><body><pre>"
+
+    echo "<!DOCTYPE HTML>                                    >> $tempfile
+    echo "<html>"                                            >> $tempfile
+    echo "    <head>"                                        >> $tempfile
+    echo "        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>" >> $tempfile
+    echo "        <title>0500 Crontab Backup Report</title>" >> $tempfile
+    echo "    </head>"                                       >> $tempfile
+    echo "    <body>"                                        >> $tempfile
 }
 
 
@@ -622,8 +629,10 @@ check_free_space_on_remote_machine()
 	if [ $? -eq 0 ]; then
 		report "Disk space on $machine:"
 		blank_line
+        echo "<pre>" >> $tempfile
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
 			$user_at_machine "$df_command" >> $tempfile 2>&1
+        echo "</pre>" >> $tempfile
 	fi
 }
 
@@ -889,7 +898,8 @@ email_report()
 	# my mail reader on the receiving end.
 	#
 
-    report "</pre></body></html>"
+    echo "    </body>" >> $tempfile
+    echo "</html>"     >> $tempfile
 
 	tr -d \\023 < $tempfile \
 		| $ssh_command $applied_math_username@$applied_math_server \
@@ -1026,7 +1036,9 @@ graceful_exit()
 	# spaces out of the output.
 	#
 
+    echo "<pre>" >> $tempfile
 	$df_command >> $tempfile
+    echo "</pre>" >> $tempfile
 
     blank_line
     show_disk_space_graphically >> $tempfile
@@ -1071,7 +1083,9 @@ blank_line
 report "Disk space on local drives:"
 
 blank_line
+<echo "<pre>" >> $tempfile
 $df_command >> $tempfile
+<echo "</pre>" >> $tempfile
 
 blank_line
 show_disk_space_graphically >> $tempfile
