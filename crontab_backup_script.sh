@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=126
+	script_version=127
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -164,7 +164,7 @@ initialise_variables()
 
 report()
 {
-	echo "<p>$1$2$3$4$5$6$7</p>" >> $tempfile
+	echo "<p style="margin-bottom: 0em;">$1$2$3$4$5$6$7</p>" >> $tempfile
 }
 
 blank_line()
@@ -176,6 +176,20 @@ separator()
 {
 	blank_line
     echo "<hr/> >> $tempfile
+}
+
+function begin_preformatted
+{
+    echo "<pre>" >> $tempfile
+}
+
+#
+# The following pair of functions bracket text in monospaced type.
+#
+
+function end_preformatted
+{
+    echo "</pre>" >> $tempfile
 }
 
 #
@@ -419,8 +433,10 @@ backup_local_disk()
 			report "rsync(1) command line is \"$rsync_command_line\" and " \
 				"RC was \"$RC\" before the rsync command was executed"
 			blank_line
+            begin_preformatted
 			eval $rsync_command_line
 			RC=$?
+            end_preformatted
 
 			first_marker=`tail -2 $tempfile | head -1`
 			second_marker=`tail -1 $tempfile`
@@ -490,8 +506,10 @@ backup_remote_disk()
 		report "rsync command line is \"$rsync_command_line\" and RC " \
 			"was \"$RC\" before the rsync command was executed."
 		blank_line
+        begin_preformatted
 		eval $rsync_command_line
 		RC=$?
+        end_preformatted
 		first_marker=`tail -2 $tempfile | head -1`
 		second_marker=`tail -1 $tempfile`
 		if grep -q "^sent.*bytes.*received.*bytes.*bytes\/sec" <<< "$first_marker" ; then
@@ -629,10 +647,10 @@ check_free_space_on_remote_machine()
 	if [ $? -eq 0 ]; then
 		report "Disk space on $machine:"
 		blank_line
-        echo "<pre>" >> $tempfile
+        begin_preformatted
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
 			$user_at_machine "$df_command" >> $tempfile 2>&1
-        echo "</pre>" >> $tempfile
+        end_preformatted
 	fi
 }
 
@@ -873,12 +891,10 @@ $rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:\
 $overall_success_code"
 
 	report "Elapsed time $elapsed_time seconds ($formatted_elapsed_time)" \
-		"; a total of $total_size_formatted bytes"
-
-	report "were synchronised. Network usage was " \
-		"$total_bandwidth_used_formatted bytes. Return codes from the"
-
-	report "rsync programme were $formatted_return_codes."
+		"; a total of $total_size_formatted bytes" \
+        " were synchronised. Network usage was " \
+		"$total_bandwidth_used_formatted bytes. Return codes from the" \
+	    " rsync programme were $formatted_return_codes."
 }
 
 email_report()
@@ -1036,9 +1052,9 @@ graceful_exit()
 	# spaces out of the output.
 	#
 
-    echo "<pre>" >> $tempfile
+    begin_preformatted
 	$df_command >> $tempfile
-    echo "</pre>" >> $tempfile
+    end_preformatted
 
     blank_line
     show_disk_space_graphically >> $tempfile
@@ -1083,9 +1099,9 @@ blank_line
 report "Disk space on local drives:"
 
 blank_line
-echo "<pre>" >> $tempfile
+begin_preformatted
 $df_command >> $tempfile
-echo "</pre>" >> $tempfile
+end_preformatted
 
 blank_line
 show_disk_space_graphically >> $tempfile
