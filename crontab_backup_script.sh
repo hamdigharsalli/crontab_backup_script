@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=128
+	script_version=130
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -164,7 +164,7 @@ initialise_variables()
 
 report()
 {
-	echo "<p style=\"margin-bottom: 0em;\">$1$2$3$4$5$6$7</p>" >> $tempfile
+	echo "<p style=\"margin-top: 0; margin-bottom: 0;\">$1$2$3$4$5$6$7</p>" >> $tempfile
 }
 
 blank_line()
@@ -439,8 +439,8 @@ backup_local_disk()
 
 			first_marker=`tail -2 $tempfile | head -1`
 			second_marker=`tail -1 $tempfile`
-			if grep -q "^sent.*bytes.*received.*bytes.*bytes\/sec" <<< "$first_marker" ; then
-				if grep -q "^total size is.*speedup is" <<< "$second_marker" ; then
+			if grep -q "sent.*bytes.*received.*bytes.*bytes\/sec" <<< "$first_marker" ; then
+				if grep -q "total size is.*speedup is" <<< "$second_marker" ; then
 					bytes_backed_up=`tail -1 $tempfile | cut -d ' ' -f 4`
 					if [ ${#bytes_backed_up} -ne 0 ]; then
 						size_accumulator=`echo $(($size_accumulator + $bytes_backed_up))`
@@ -511,8 +511,8 @@ backup_remote_disk()
         end_preformatted
 		first_marker=`tail -2 $tempfile | head -1`
 		second_marker=`tail -1 $tempfile`
-		if grep -q "^sent.*bytes.*received.*bytes.*bytes\/sec" <<< "$first_marker" ; then
-			if grep -q "^total size is.*speedup is" <<< "$second_marker" ; then
+		if grep -q "sent.*bytes.*received.*bytes.*bytes\/sec" <<< "$first_marker" ; then
+			if grep -q "total size is.*speedup is" <<< "$second_marker" ; then
 				bytes_backed_up=`tail -1 $tempfile | cut -d ' ' -f 4`
 				if [ ${#bytes_backed_up} -ne 0 ]; then
 					size_accumulator=`echo $(($size_accumulator + $bytes_backed_up))`
