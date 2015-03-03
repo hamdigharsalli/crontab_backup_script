@@ -175,7 +175,7 @@ blank_line()
 separator()
 {
 	blank_line
-    echo "<hr/> >> $tempfile
+    echo "<hr/>" >> $tempfile
 }
 
 function begin_preformatted
