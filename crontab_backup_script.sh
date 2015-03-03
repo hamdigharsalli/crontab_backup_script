@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=127
+	script_version=128
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -164,7 +164,7 @@ initialise_variables()
 
 report()
 {
-	echo "<p style="margin-bottom: 0em;">$1$2$3$4$5$6$7</p>" >> $tempfile
+	echo "<p style=\"margin-bottom: 0em;\">$1$2$3$4$5$6$7</p>" >> $tempfile
 }
 
 blank_line()
@@ -285,7 +285,6 @@ initialise_tempfile()
     echo "    </head>"                                       >> $tempfile
     echo "    <body>"                                        >> $tempfile
 }
-
 
 check_for_lockfile()
 {
