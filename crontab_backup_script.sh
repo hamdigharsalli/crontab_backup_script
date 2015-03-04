@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=130
+	script_version=131
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -403,14 +403,18 @@ function backup_remote_directory_to_local {
 
 mount_backup_volumes()
 {
+    begin_preformatted
 	/usr/sbin/diskutil quiet mountDisk $backup_device_1 >> $tempfile
 	/usr/sbin/diskutil mountDisk $backup_device_2       >> $tempfile
+    end_preformatted
 }
 
 unmount_backup_volumes()
 {
+    begin_preformatted
 	/usr/sbin/diskutil unmountDisk $backup_device_1     >> $tempfile
 	/usr/sbin/diskutil unmountDisk $backup_device_2     >> $tempfile
+    end_preformatted
 }
 
 backup_local_disk()
@@ -461,7 +465,8 @@ backup_local_disk()
 				fi
 			else
 				blank_line
-				report "FAILURE (A1): first marker not found [the last " \
+				report "FAILURE (A1): first marker not found (first " \
+                    "marker contains \"$first_marker\") [the last " \
 					"log entry was \"`echo $first_marker \
 					| sed -e 's/^\(rsync command line is\)\( "[^"]*".*$\)/\1..."/g'`]"
 				RC="A"
@@ -555,7 +560,8 @@ backup_remote_disk()
 			fi
 		else
 			blank_line
-			report "FAILURE (C1): first marker not found [the last " \
+			report "FAILURE (C1): first marker not found (first " \
+                "marker contains \"$first_marker\") [the last " \
 				"thing in the log before it stopped was \"`echo \
 				$first_marker | sed -e 's/^\(rsync command line is\)\( "[^"]*".*$\)/\1..."/g'`]."
 			RC="A"
@@ -609,8 +615,12 @@ $BACKUP/hpwtdogmom.org/.webmail/users/$private_M_directory/ $BACKUP/mail_spool/"
 		report "tar command line is \"$tar_command_line\" and RC was " \
 			"\"$RC\" before the tar command was executed."
 		blank_line
+
+        begin_preformatted
 		eval $tar_command_line
 		RC=$?
+        end_preformatted
+
 		if [ $RC -ne 0 ]; then
 			global_failure_code="F"
 		else
