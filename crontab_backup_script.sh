@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=133
+	script_version=134
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -379,11 +379,17 @@ function backup_remote_directory_to_local {
     rsync_command_line="$rsync_command $remote_rsync_options \
         $remote_user:$remote_dir/\* $local_dir | grep -v '^\.' | tail -12 >> $tempfile 2>&1"
 
-    report "The rsync_command_line was \"$rsync_command_line\"."
+    RC_from_rsync=empty
+
+    report "The rsync_command_line was <code>$rsync_command_line</code>" \
+        " and RC_from_rsync=\"$RC_from_rsync\" before rsync(1) was called."
+
     blank_line
 
+    begin_preformatted
     eval $rsync_command_line
     RC_from_rsync=$?
+    end_preformatted
 
     blank_line
     report "The return code from rsync(1) was \"$RC_from_rsync\"."
@@ -433,8 +439,8 @@ backup_local_disk()
 		if [ -e $TARGET ]; then
 			rsync_command_line="$rsync_command $local_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 			RC="empty(1)"
-			report "rsync(1) command line is \"$rsync_command_line\" and " \
-				"RC was \"$RC\" before the rsync command was executed"
+			report "rsync(1) command line is <code>$rsync_command_line</code> and " \
+				"RC was \"$RC\" before the rsync command was executed."
 			blank_line
             begin_preformatted
 			eval $rsync_command_line
@@ -507,7 +513,7 @@ backup_remote_disk()
 	if [ -e $BACKUP ]; then
 		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 		RC="empty(2)"
-		report "rsync command line is \"$rsync_command_line\" and RC " \
+		report "rsync command line is <code>$rsync_command_line</code> and RC " \
 			"was \"$RC\" before the rsync command was executed."
 		blank_line
         begin_preformatted
@@ -611,8 +617,10 @@ snapshot_M_email()
 	if [ -e $BACKUP ]; then
 		tar_command_line="tar cf $backup_directory/$snapshot_file \
 $BACKUP/hpwtdogmom.org/.webmail/users/$private_M_directory/ $BACKUP/mail_spool/"
+
 		RC="empty(3)"
-		report "tar command line is \"$tar_command_line\" and RC was " \
+
+		report "tar command line is <code>$tar_command_line</code> and RC was " \
 			"\"$RC\" before the tar command was executed."
 		blank_line
 
@@ -629,7 +637,10 @@ $BACKUP/hpwtdogmom.org/.webmail/users/$private_M_directory/ $BACKUP/mail_spool/"
 			if [ $RC -ne 0 ]; then
 				global_failure_code="F"
 			fi
+
+            begin_preformatted
 			ls -l $backup_directory | tail -n 6 | colrm 1 45 >> $tempfile
+            end_preformatted
 		fi
 	else
 		report "Warning: $BACKUP does not exist"
