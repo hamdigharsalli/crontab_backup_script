@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=131
+	script_version=132
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -441,8 +441,8 @@ backup_local_disk()
 			RC=$?
             end_preformatted
 
-			first_marker=`tail -2 $tempfile | head -1`
-			second_marker=`tail -1 $tempfile`
+			first_marker=`tail -3 $tempfile | head -1`
+			second_marker=`tail -2 $tempfile | head -1`
 			if grep -q "sent.*bytes.*received.*bytes.*bytes\/sec" <<< "$first_marker" ; then
 				if grep -q "total size is.*speedup is" <<< "$second_marker" ; then
 					bytes_backed_up=`tail -1 $tempfile | cut -d ' ' -f 4`
@@ -514,8 +514,8 @@ backup_remote_disk()
 		eval $rsync_command_line
 		RC=$?
         end_preformatted
-		first_marker=`tail -2 $tempfile | head -1`
-		second_marker=`tail -1 $tempfile`
+		first_marker=`tail -3 $tempfile | head -1`
+		second_marker=`tail -2 $tempfile | head -1`
 		if grep -q "sent.*bytes.*received.*bytes.*bytes\/sec" <<< "$first_marker" ; then
 			if grep -q "total size is.*speedup is" <<< "$second_marker" ; then
 				bytes_backed_up=`tail -1 $tempfile | cut -d ' ' -f 4`
