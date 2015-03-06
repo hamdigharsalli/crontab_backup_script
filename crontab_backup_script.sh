@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=135
+	script_version=136
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -452,7 +452,7 @@ backup_local_disk()
 			second_marker=`tail -2 $tempfile | head -1`
 			if grep -q "sent.*bytes.*received.*bytes.*bytes\/sec" <<< "$first_marker" ; then
 				if grep -q "total size is.*speedup is" <<< "$second_marker" ; then
-					bytes_backed_up=`tail -1 $tempfile | cut -d ' ' -f 4`
+					bytes_backed_up=`tail -2 $tempfile | cut -d ' ' -f 4`
 					if [ ${#bytes_backed_up} -ne 0 ]; then
 						size_accumulator=`echo $(($size_accumulator + $bytes_backed_up))`
 					else
@@ -525,7 +525,7 @@ backup_remote_disk()
 		second_marker=`tail -2 $tempfile | head -1`
 		if grep -q "sent.*bytes.*received.*bytes.*bytes\/sec" <<< "$first_marker" ; then
 			if grep -q "total size is.*speedup is" <<< "$second_marker" ; then
-				bytes_backed_up=`tail -1 $tempfile | cut -d ' ' -f 4`
+				bytes_backed_up=`tail -2 $tempfile | cut -d ' ' -f 4`
 				if [ ${#bytes_backed_up} -ne 0 ]; then
 					size_accumulator=`echo $(($size_accumulator + $bytes_backed_up))`
 				else
@@ -536,8 +536,8 @@ backup_remote_disk()
 					RC="E"
 					global_failure_code="F"
 				fi
-				bytes_sent=`tail -2 $tempfile | head -1 | cut -d ' ' -f 2`
-				bytes_rcvd=`tail -2 $tempfile | head -1 | cut -d ' ' -f 6`
+				bytes_sent=`tail -3 $tempfile | head -1 | cut -d ' ' -f 2`
+				bytes_rcvd=`tail -3 $tempfile | head -1 | cut -d ' ' -f 6`
 				if [ ${#bytes_sent} -ne 0 ]; then
 					if [ ${#bytes_rcvd} -ne 0 ]; then
 						total_bytes_networked=$(($bytes_sent + $bytes_rcvd))
