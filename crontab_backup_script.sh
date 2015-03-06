@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=134
+	script_version=135
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -373,6 +373,7 @@ function backup_remote_directory_to_local {
     remote_rsync_options="-iavz --no-human-readable \
         -e \"$ssh_command -i /Users/$backup_username/.ssh/id_rsa\""
 
+    blank_line
     report "Backing up M's ~ to A's /"
     blank_line
 
@@ -382,7 +383,7 @@ function backup_remote_directory_to_local {
     RC_from_rsync=empty
 
     report "The rsync_command_line was <code>$rsync_command_line</code>" \
-        " and RC_from_rsync=\"$RC_from_rsync\" before rsync(1) was called."
+        " and RC_from_rsync was \"$RC_from_rsync\" before rsync(1) was called."
 
     blank_line
 
@@ -392,7 +393,7 @@ function backup_remote_directory_to_local {
     end_preformatted
 
     blank_line
-    report "The return code from rsync(1) was \"$RC_from_rsync\"."
+    report "The return code from the rsync(1) programme was \"$RC_from_rsync\"."
     blank_line
     report "Done backing up M's ~ to A's /"
 }
@@ -513,8 +514,8 @@ backup_remote_disk()
 	if [ -e $BACKUP ]; then
 		rsync_command_line="$rsync_command $remote_rsync_options $TARGET $BACKUP | tail -12 >> $tempfile 2>&1"
 		RC="empty(2)"
-		report "rsync command line is <code>$rsync_command_line</code> and RC " \
-			"was \"$RC\" before the rsync command was executed."
+		report "The rsync command line is <code>$rsync_command_line</code> " \
+            "and RC was \"$RC\" before the rsync command was executed."
 		blank_line
         begin_preformatted
 		eval $rsync_command_line
@@ -620,8 +621,8 @@ $BACKUP/hpwtdogmom.org/.webmail/users/$private_M_directory/ $BACKUP/mail_spool/"
 
 		RC="empty(3)"
 
-		report "tar command line is <code>$tar_command_line</code> and RC was " \
-			"\"$RC\" before the tar command was executed."
+		report "The tar command line is <code>$tar_command_line</code> " \
+            "and RC was \"$RC\" before the tar command was executed."
 		blank_line
 
         begin_preformatted
@@ -665,6 +666,7 @@ check_free_space_on_remote_machine()
 
 	$ping_command $machine
 	if [ $? -eq 0 ]; then
+        blank_line
 		report "Disk space on $machine:"
 		blank_line
         begin_preformatted
