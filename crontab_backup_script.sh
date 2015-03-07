@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=137
+	script_version=138
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -455,6 +455,7 @@ backup_local_disk()
 					bytes_backed_up=`cut -d ' ' -f 4 <<< "$second_marker"`
 					if [ ${#bytes_backed_up} -ne 0 ]; then
 						size_accumulator=`echo $(($size_accumulator + $bytes_backed_up))`
+                        report "size_accumulator increased by $bytes_backed_up bytes"
 					else
 						blank_line
 						report "FAILURE (A): not updating size_accumulator...bytes_backed_up" \
@@ -528,6 +529,7 @@ backup_remote_disk()
 				bytes_backed_up=`cut -d ' ' -f 4 <<< "$second_marker"`
 				if [ ${#bytes_backed_up} -ne 0 ]; then
 					size_accumulator=`echo $(($size_accumulator + $bytes_backed_up))`
+                    report "size_accumulator increased by $bytes_backed_up bytes"
 				else
 					blank_line
 					report "FAILURE (C): not updating size_accumulator" \
@@ -543,6 +545,7 @@ backup_remote_disk()
 						total_bytes_networked=$(($bytes_sent + $bytes_rcvd))
 						bandwidth_accumulator=$(($bandwidth_accumulator \
 							+ $total_bytes_networked))
+                        report "bandwidth_accumulator increased by $total_bytes_networked bytes"
 					else
 						blank_line
 						report "FAILURE (B2): not updating bandwidth " \
