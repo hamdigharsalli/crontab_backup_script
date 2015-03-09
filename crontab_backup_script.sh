@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=139
+	script_version=140
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -164,32 +164,32 @@ initialise_variables()
 
 report()
 {
-	echo "<p style=\"margin-top: 0; margin-bottom: 0;\">$1$2$3$4$5$6$7</p>" >> $tempfile
+	echo "        <p style=\"margin-top: 0; margin-bottom: 0;\">$1$2$3$4$5$6$7</p>" >> $tempfile
 }
 
 blank_line()
 {
-    echo "<br/>" >> $tempfile
+    echo "        <br/>" >> $tempfile
 }
 
 separator()
 {
 	blank_line
-    echo "<hr/>" >> $tempfile
-}
-
-function begin_preformatted
-{
-    echo "<pre>" >> $tempfile
+    echo "        <hr/>" >> $tempfile
 }
 
 #
 # The following pair of functions bracket text in monospaced type.
 #
 
+function begin_preformatted
+{
+    echo "        <pre>" >> $tempfile
+}
+
 function end_preformatted
 {
-    echo "</pre>" >> $tempfile
+    echo "        </pre>" >> $tempfile
 }
 
 #
