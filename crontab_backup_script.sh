@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=138
+	script_version=139
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -242,8 +242,8 @@ check_for_killfile_before_running()
 {
 	if [ -e $killfile ]; then
 		blank_line
-		report "ALERT: killfile seen...this instance is exiting " \
-			"(removing lockfile and killfile)."
+		report "ALERT: killfile seen at `date +%Y%m%d.%H%M`...this " \
+            "instance is exiting (removing lockfile and killfile)."
 		rm -f $lockfile $killfile
 		short_success_code="A"
 		#
@@ -257,8 +257,8 @@ check_for_killfile_while_running()
 {
 	if [ -e $killfile ]; then
 		blank_line
-		report "ALERT: killfile seen...this instance is exiting " \
-			"(removing lockfile and killfile)."
+		report "ALERT: killfile seen at `date +%Y%m%d.%H%M`...this " \
+            "instance is exiting (removing lockfile and killfile)."
 		rm -f $lockfile $killfile
 		short_success_code="A"
 		#
@@ -290,7 +290,8 @@ check_for_lockfile()
 {
 	if [ -e $lockfile ] ; then
 		report "ALERT: another instance of $0 is apparently running " \
-			"(or an old lockfile exists)...this instance is exiting."
+			"(or an old lockfile exists) at `date +%Y%m%d.%H%M`..." \
+            "this instance is exiting."
 		blank_line
 		#
 		# Don't unmount the backup volumes first; somebody else is using
