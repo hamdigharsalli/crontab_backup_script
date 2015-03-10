@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=141
+	script_version=142
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -549,7 +549,7 @@ backup_remote_disk()
 						bandwidth_accumulator=$(($bandwidth_accumulator \
 							+ $total_bytes_networked))
                         report "bandwidth_accumulator increased by $total_bytes_networked" \
-                            to " $bandwidth_accumulator bytes."
+                            " to $bandwidth_accumulator bytes."
 					else
 						blank_line
 						report "FAILURE (B2): not updating bandwidth " \
