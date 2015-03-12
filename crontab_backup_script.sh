@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=142
+	script_version=143
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -1135,7 +1135,9 @@ $df_command >> $tempfile
 end_preformatted
 
 blank_line
+begin_preformatted
 show_disk_space_graphically >> $tempfile
+end_preformatted
 
 blank_line
 check_free_space_on_remote_machine $private_M_user_at_machine
