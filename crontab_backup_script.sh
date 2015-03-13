@@ -1082,7 +1082,7 @@ graceful_exit()
     # In bash, if the file does not exist, it is created.
     #
 
-    echo "$formatted_return_codes: $formatted_elapsed_time " \
+    echo "$formatted_return_codes: $formatted_elapsed_time" \
         "on `date +\"%F at %R %Z\"` ($short_success_code)" >> $summfile
 
 	blank_line
