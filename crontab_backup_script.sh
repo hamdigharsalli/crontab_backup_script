@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=143
+	script_version=144
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -190,6 +190,20 @@ function begin_preformatted
 function end_preformatted
 {
     echo "        </pre>" >> $tempfile
+}
+
+#
+# These functions are for bracketing output that is not <pre>
+#
+
+function begin_paragraph
+{
+    echo "        <p>" >> $tempfile
+}
+
+function end_paragraph
+{
+    echo "        </p>" >> $tempfile
 }
 
 #
@@ -1006,9 +1020,11 @@ function bar_chart
 
 function show_disk_space_graphically
 {
+    begin_paragraph
     $df_command | tr -s ' ' | cut -d ' ' -f 5,6 \
         | tr -d '%' | sed '1d' \
         | while read -r line; do bar_chart "$line"; done
+    end_paragraph
 }
 
 #
@@ -1135,9 +1151,7 @@ $df_command >> $tempfile
 end_preformatted
 
 blank_line
-begin_preformatted
 show_disk_space_graphically >> $tempfile
-end_preformatted
 
 blank_line
 check_free_space_on_remote_machine $private_M_user_at_machine
