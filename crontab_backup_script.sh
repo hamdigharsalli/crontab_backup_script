@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=144
+	script_version=145
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -1036,10 +1036,12 @@ function show_disk_space_graphically_on_remote_machine
 	user_at_machine=$1
 	machine=`echo $user_at_machine | cut -d @ -f 2`
 
+    begin_paragraph
     $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
         $user_at_machine "$df_command" | tr -s ' ' \
         | cut -d ' ' -f 5,6 | tr -d '%' | sed '1d' \
         | while read -r line; do bar_chart "$line"; done
+    end_paragraph
 }
 
 #
@@ -1134,7 +1136,6 @@ determine_backup_devices
 determine_state_of_remote_machine $applied_math_server
 determine_state_of_remote_machine $hpwtdogmom_server
 determine_state_of_remote_machine $private_M_machine 192.168.0.255 $private_M_machine_MAC_address
-blank_line
 
 #
 # Show disk space at the beginning of the report, for convenience.
@@ -1143,20 +1144,17 @@ blank_line
 # of the output of df.
 #
 
+blank line
 report "Disk space on local drives:"
 
-blank_line
 begin_preformatted
 $df_command >> $tempfile
 end_preformatted
 
-blank_line
 show_disk_space_graphically >> $tempfile
 
-blank_line
 check_free_space_on_remote_machine $private_M_user_at_machine
 
-blank_line
 show_disk_space_graphically_on_remote_machine $private_M_user_at_machine >> $tempfile
 
 blank_line
@@ -1167,7 +1165,6 @@ blank_line
 put_remote_machine_back_to_sleep $private_M_user_at_machine
 
 determine_state_of_remote_machine $private_M_machine
-blank_line
 
 #
 # We mount the backup drives after the `$df_command` so we can see in the
