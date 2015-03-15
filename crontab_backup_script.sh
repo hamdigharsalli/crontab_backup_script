@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=145
+	script_version=146
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -407,7 +407,6 @@ function backup_remote_directory_to_local {
     RC_from_rsync=$?
     end_preformatted
 
-    blank_line
     report "The return code from the rsync(1) programme was \"$RC_from_rsync\"."
     blank_line
     report "Done backing up M's ~ to A's /"
@@ -447,7 +446,6 @@ backup_local_disk()
 	BACKUP=$2
 	bytes_backed_up=0
 
-	blank_line
 	report "++++ Backing up local disk $TARGET to $BACKUP"
 	blank_line
 
@@ -457,7 +455,6 @@ backup_local_disk()
 			RC="empty(1)"
 			report "rsync(1) command line is <code>$rsync_command_line</code> and " \
 				"RC was \"$RC\" before the rsync command was executed."
-			blank_line
             begin_preformatted
 			eval $rsync_command_line
 			RC=$?
@@ -533,7 +530,6 @@ backup_remote_disk()
 		RC="empty(2)"
 		report "The rsync command line is <code>$rsync_command_line</code> " \
             "and RC was \"$RC\" before the rsync command was executed."
-		blank_line
         begin_preformatted
 		eval $rsync_command_line
 		RC=$?
@@ -644,7 +640,6 @@ $BACKUP/hpwtdogmom.org/.webmail/users/$private_M_directory/ $BACKUP/mail_spool/"
 
 		report "The tar command line is <code>$tar_command_line</code> " \
             "and RC was \"$RC\" before the tar command was executed."
-		blank_line
 
         begin_preformatted
 		eval $tar_command_line
@@ -1053,8 +1048,6 @@ function show_disk_space_graphically_on_remote_machine
 
 send_report_and_exit()
 {
-	blank_line
-
 	report "Ending time of this backup: `date`."
 
 	blank_line
@@ -1091,8 +1084,6 @@ graceful_exit()
 
 	report "Disk space on all local drives:"
 
-	blank_line
-
 	#
 	# If we don't do this before unmounting the backup disks, then we
 	# can't see how much space is left on them in the report.
@@ -1105,10 +1096,7 @@ graceful_exit()
 	$df_command >> $tempfile
     end_preformatted
 
-    blank_line
     show_disk_space_graphically >> $tempfile
-
-	blank_line
 
 	unmount_backup_volumes
 
@@ -1157,7 +1145,6 @@ check_free_space_on_remote_machine $private_M_user_at_machine
 
 show_disk_space_graphically_on_remote_machine $private_M_user_at_machine >> $tempfile
 
-blank_line
 backup_remote_directory_to_local \
     $private_M_user_at_machine /Users/$private_M_username $private_M_desktop_backup
 
