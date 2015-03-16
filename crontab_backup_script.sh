@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=147
+	script_version=148
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -1068,8 +1068,6 @@ graceful_exit()
 {
 	figure_overall_success_code
 	compute_statistics
-
-	blank_line
 
 	format_report
 
