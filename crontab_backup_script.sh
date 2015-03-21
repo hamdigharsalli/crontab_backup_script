@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=148
+	script_version=149
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -216,7 +216,7 @@ function end_paragraph
 function did_we_get_the_secret_information_interrogative
 {
     if [ -n $private_A_user_at_machine ]; then
-        report "Non-public information repository successfully accessed."
+        report "We have got the secret information."
     else
         blank_line
         report "Unable to continue; we are missing secret information."
@@ -242,7 +242,7 @@ function are_we_running_as_root_interrogative
 	else
 		verb="is not"
 	fi
-	report "The script $verb running as root (UID=$UID, EUID=$EUID)."
+	report "The script $verb running as root (UID=$UID and EUID=$EUID)."
 }
 
 #
