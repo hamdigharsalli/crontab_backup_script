@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=150
+	script_version=151
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -446,6 +446,7 @@ backup_local_disk()
 	BACKUP=$2
 	bytes_backed_up=0
 
+    blank_line
 	report "++++ Backing up local disk $TARGET to $BACKUP"
 	blank_line
 
@@ -496,7 +497,8 @@ backup_local_disk()
 				report "FAILURE (A1): first marker not found (first " \
                     "marker contains \"$first_marker\") [the last " \
 					"log entry was \"`echo $first_marker \
-					| sed -e 's/^\(rsync command line is\)\( "[^"]*".*$\)/\1..."/g'`]"
+                        | sed -e 's/^\(rsync command line is\)\( "[^"]*".*$\)/\1..."/g'`] " \
+                    "and RC from rsync(1) was \"$RC\"."
 				RC="A"
 				global_failure_code="F"
 			fi
