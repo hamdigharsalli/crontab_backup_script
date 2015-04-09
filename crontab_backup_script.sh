@@ -493,12 +493,8 @@ backup_local_disk()
 					global_failure_code="F"
 				fi
 			else
-				blank_line
-				report "FAILURE (A1): first marker not found (first " \
-                    "marker contains \"$first_marker\") [the last " \
-					"log entry was \"`echo $first_marker \
-                        | sed -e 's/^\(rsync command line is\)\( "[^"]*".*$\)/\1..."/g'`] " \
-                    "and RC from rsync(1) was \"$RC\"."
+				report "FAILURE (A1): first marker not found (contains " \
+                    "\"$first_marker\") and RC from rsync(1) was \"$RC\"."
 				RC="A"
 				global_failure_code="F"
 			fi
