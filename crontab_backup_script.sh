@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=151
+	script_version=152
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -495,6 +495,7 @@ backup_local_disk()
 			else
 				report "FAILURE (A1): first marker not found (contains " \
                     "\"$first_marker\") and RC from rsync(1) was \"$RC\"."
+                    " The rsync command apparently did not complete successfully."
 				RC="A"
 				global_failure_code="F"
 			fi
