@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=153
+	script_version=154
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -379,11 +379,14 @@ determine_state_of_remote_machine()
 #
 # rsync -i... | grep -v "^\." is supposed to show only files that changed.
 #
+# Usage: %0 remote_user remote_machine remote_dir local_dir
+#
 
 function backup_remote_directory_to_local {
     remote_user=$1
-    remote_dir=$2
-    local_dir=$3
+    remote_machine=$2
+    remote_dir=$3
+    local_dir=$4
 
     remote_rsync_options="-iavz --no-human-readable \
         -e \"$ssh_command -i /Users/$backup_username/.ssh/id_rsa\""
@@ -392,24 +395,29 @@ function backup_remote_directory_to_local {
     report "Backing up M's ~ to A's /"
     blank_line
 
-    rsync_command_line="$rsync_command $remote_rsync_options \
-        $remote_user:$remote_dir/\* $local_dir | grep -v '^\.' | tail -12 >> $tempfile 2>&1"
+    $ping_command $remote_machine
+    if [ $? -eq 0 ]; then
+        rsync_command_line="$rsync_command $remote_rsync_options \
+            $remote_user:$remote_dir/\* $local_dir | grep -v '^\.' | tail -12 >> $tempfile 2>&1"
 
-    RC_from_rsync=empty
+        RC_from_rsync=empty
 
-    report "The rsync_command_line was <code>$rsync_command_line</code>" \
-        " and RC_from_rsync was \"$RC_from_rsync\" before rsync(1) was called."
+        report "The rsync_command_line was <code>$rsync_command_line</code>" \
+            " and RC_from_rsync was \"$RC_from_rsync\" before rsync(1) was called."
 
-    blank_line
+        blank_line
 
-    begin_preformatted
-    eval $rsync_command_line
-    RC_from_rsync=$?
-    end_preformatted
+        begin_preformatted
+        eval $rsync_command_line
+        RC_from_rsync=$?
+        end_preformatted
 
-    report "The return code from the rsync(1) programme was \"$RC_from_rsync\"."
-    blank_line
-    report "Done backing up M's ~ to A's /"
+        report "The return code from the rsync(1) programme was \"$RC_from_rsync\"."
+        blank_line
+        report "Done backing up M's ~ to A's /"
+    else
+        report "Oops...can't do it; $remote_machine is not up.
+    fi
 }
 
 #
@@ -1164,7 +1172,8 @@ check_free_space_on_remote_machine $private_M_user_at_machine
 show_disk_space_graphically_on_remote_machine $private_M_user_at_machine >> $tempfile
 
 backup_remote_directory_to_local \
-    $private_M_user_at_machine /Users/$private_M_username $private_M_desktop_backup
+    $private_M_username $private_M_machine \
+    /Users/$private_M_username $private_M_desktop_backup
 
 blank_line
 put_remote_machine_back_to_sleep $private_M_user_at_machine
