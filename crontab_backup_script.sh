@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=155
+	script_version=156
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -743,7 +743,19 @@ check_for_existence_of_all_backup_volumes()
 	if [[ ! -e $backup_1 && ! -e $backup_1_ofs ]]
 	then
 		blank_line
-		report "Neither backup set seems to be completely available."
+		report "Warning: neither of the first backup set is here."
+	fi
+
+	if [[ ! -e $backup_2 && ! -e $backup_2_ofs ]]
+	then
+		blank_line
+		report "Warning: neither of the second backup set is here."
+	fi
+
+	if [[ ! -e $backup_3 && ! -e $backup_3_ofs ]]
+	then
+		blank_line
+		report "Warning: neither of the third backup set is here."
 	fi
 }
 
