@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=154
+	script_version=155
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -398,7 +398,8 @@ function backup_remote_directory_to_local {
     $ping_command $remote_machine
     if [ $? -eq 0 ]; then
         rsync_command_line="$rsync_command $remote_rsync_options \
-            $remote_user:$remote_dir/\* $local_dir | grep -v '^\.' | tail -12 >> $tempfile 2>&1"
+            $remote_user@$remote_machine:$remote_dir/\* $local_dir \
+            | grep -v '^\.' | tail -12 >> $tempfile 2>&1"
 
         RC_from_rsync=empty
 
@@ -416,7 +417,7 @@ function backup_remote_directory_to_local {
         blank_line
         report "Done backing up M's ~ to A's /"
     else
-        report "Oops...can't do it; $remote_machine is not up.
+        report "Oops...can't do it; $remote_machine is not up."
     fi
 }
 
