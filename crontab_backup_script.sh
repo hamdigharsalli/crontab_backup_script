@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=156
+	script_version=158
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -315,6 +315,9 @@ check_for_lockfile()
 		# guarantee that this instance of the script won't continue running
 		# in parallel.
 		#
+        echo "ALERT: another instance of $0 is apparently running " \
+			"(or an old lockfile exists) at `date +%Y%m%d.%H%M`..." \
+            "this instance is exiting." >> $summfile
 		exit 0
 	else
 		initialise_lockfile
@@ -1210,7 +1213,7 @@ backup_to_offsite_disk
 #
 # If we got to the end this way, then remove the lockfile (it is not
 # removed by an exceptional condition exit, because those are usually due
-# to another instanct of the same script running, and we don't want to
+# to another instance of the same script running, and we don't want to
 # interfere with the other script's lockfile).
 #
 
