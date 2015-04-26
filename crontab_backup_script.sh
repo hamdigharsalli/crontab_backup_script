@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=160
+	script_version=161
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -307,7 +307,7 @@ check_for_lockfile()
         # check for stale lockfile (in case the system was rebooted
         # while the script was running and a lockfile was left behind)
         #
-        ps ax | grep "[r]sync"
+        /bin/ps ax | grep "[r]sync"
         if [ $? -ne 0 ]; then
             #
             # but we found no rsync(1) process running
