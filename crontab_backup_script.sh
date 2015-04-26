@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=158
+	script_version=159
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -303,22 +303,36 @@ initialise_tempfile()
 check_for_lockfile()
 {
 	if [ -e $lockfile ] ; then
-		report "ALERT: another instance of $0 is apparently running " \
-			"(or an old lockfile exists) at `date +%Y%m%d.%H%M`..." \
-            "this instance is exiting."
-		blank_line
-		#
-		# Don't unmount the backup volumes first; somebody else is using
-		# them. Don't remove the lockfile; it belongs to somebody else.
-		# Don't bother setting the alert code because this function exits
-		# the script without sending an email report; then call exit to
-		# guarantee that this instance of the script won't continue running
-		# in parallel.
-		#
-        echo "ALERT: another instance of $0 is apparently running " \
-			"(or an old lockfile exists) at `date +%Y%m%d.%H%M`..." \
-            "this instance is exiting." >> $summfile
-		exit 0
+        #
+        # check for stale lockfile (in case the system was rebooted
+        # while the script was running and a lockfile was left behind)
+        #
+        ps ax | grep "[c]rontab_backup_script\.sh"
+        if [ $? -ne 0 ]; then
+            report "INFO: stale lockfile found at `date +%Y%m%d.%H%M`..." \
+                "removing old lockfile and continuing."
+            blank_line
+            echo "INFO: stale lockfile found at `date +%Y%m%d.%H%M`..." \
+                "removing old lockfile and continuing."
+            initialise_lockfile
+        else
+            report "ALERT: another instance of $0 is apparently running " \
+                "(or an old lockfile exists) at `date +%Y%m%d.%H%M`..." \
+                "this instance is exiting."
+            blank_line
+            #
+            # Don't unmount the backup volumes first; somebody else is using
+            # them. Don't remove the lockfile; it belongs to somebody else.
+            # Don't bother setting the alert code because this function exits
+            # the script without sending an email report; then call exit to
+            # guarantee that this instance of the script won't continue running
+            # in parallel.
+            #
+            echo "ALERT: another instance of $0 is apparently running " \
+                "(or an old lockfile exists) at `date +%Y%m%d.%H%M`..." \
+                "this instance is exiting." >> $summfile
+            exit 0
+        fi
 	else
 		initialise_lockfile
 	fi
