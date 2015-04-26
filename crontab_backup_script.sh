@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=159
+	script_version=160
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -307,8 +307,11 @@ check_for_lockfile()
         # check for stale lockfile (in case the system was rebooted
         # while the script was running and a lockfile was left behind)
         #
-        ps ax | grep "[c]rontab_backup_script\.sh"
+        ps ax | grep "[r]sync"
         if [ $? -ne 0 ]; then
+            #
+            # but we found no rsync(1) process running
+            #
             report "INFO: stale lockfile found at `date +%Y%m%d.%H%M`..." \
                 "removing old lockfile and continuing."
             blank_line
@@ -317,8 +320,7 @@ check_for_lockfile()
             initialise_lockfile
         else
             report "ALERT: another instance of $0 is apparently running " \
-                "(or an old lockfile exists) at `date +%Y%m%d.%H%M`..." \
-                "this instance is exiting."
+                "at `date +%Y%m%d.%H%M`...this instance is exiting."
             blank_line
             #
             # Don't unmount the backup volumes first; somebody else is using
@@ -329,8 +331,7 @@ check_for_lockfile()
             # in parallel.
             #
             echo "ALERT: another instance of $0 is apparently running " \
-                "(or an old lockfile exists) at `date +%Y%m%d.%H%M`..." \
-                "this instance is exiting." >> $summfile
+                "at `date +%Y%m%d.%H%M`...this instance is exiting." >> $summfile
             exit 0
         fi
 	else
