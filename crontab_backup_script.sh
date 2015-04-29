@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=161
+	script_version=162
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -319,8 +319,8 @@ check_for_lockfile()
                 "removing old lockfile and continuing."
             initialise_lockfile
         else
-            report "ALERT: another instance of $0 is apparently running " \
-                "at `date +%Y%m%d.%H%M`...this instance is exiting."
+            report "ALERT: `basename $0` is already running " \
+                "at `date +%Y%m%d.%H%M`...this instance exiting."
             blank_line
             #
             # Don't unmount the backup volumes first; somebody else is using
@@ -330,8 +330,8 @@ check_for_lockfile()
             # guarantee that this instance of the script won't continue running
             # in parallel.
             #
-            echo "ALERT: another instance of $0 is apparently running " \
-                "at `date +%Y%m%d.%H%M`...this instance is exiting." >> $summfile
+            echo "ALERT: `basename $0` is already running " \
+                "at `date +%Y%m%d.%H%M`...this instance exiting." >> $summfile
             exit 0
         fi
 	else
