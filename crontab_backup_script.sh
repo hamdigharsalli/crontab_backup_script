@@ -320,8 +320,7 @@ check_for_lockfile()
             initialise_lockfile
         else
             report "ALERT: `basename $0` is already running " \
-                "at `date +%Y%m%d.%H%M`...this instance exiting."
-            blank_line
+                "at `date +%Y%m%d.%H%M`...this instance is exiting."
             #
             # Don't unmount the backup volumes first; somebody else is using
             # them. Don't remove the lockfile; it belongs to somebody else.
@@ -331,7 +330,7 @@ check_for_lockfile()
             # in parallel.
             #
             echo "ALERT: `basename $0` is already running " \
-                "at `date +%Y%m%d.%H%M`...this instance exiting." >> $summfile
+                "at `date +%Y%m%d.%H%M`...this instance is exiting." >> $summfile
             exit 0
         fi
 	else
