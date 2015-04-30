@@ -329,7 +329,7 @@ check_for_lockfile()
             # guarantee that this instance of the script won't continue running
             # in parallel.
             #
-            echo "ALERT: `basename $0` is already running " \
+            echo "ALERT: `basename $0` is already running" \
                 "at `date +%Y%m%d.%H%M`...this instance is exiting." >> $summfile
             exit 0
         fi
