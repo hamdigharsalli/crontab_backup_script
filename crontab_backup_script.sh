@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=162
+	script_version=163
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -120,6 +120,8 @@ initialise_variables()
 	offsite_backup_success_code="F"
 	overall_success_code="FAILURE"
 	short_success_code="F"
+
+	rcM="-"
 
 	rc101="-"
 	rc102="-"
@@ -433,9 +435,13 @@ function backup_remote_directory_to_local {
         report "The return code from the rsync(1) programme was \"$RC_from_rsync\"."
         blank_line
         report "Done backing up M's ~ to A's /"
+        RC=$RC_from_rsync
     else
         report "Oops...can't do it; $remote_machine is not up."
+        RC="D"
     fi
+
+    return $RC
 }
 
 #
@@ -981,7 +987,7 @@ compute_statistics()
 
 format_report()
 {
-	formatted_return_codes="$rc101,$rc102,$rc103,$rc104,$rc105,$rc106,\
+	formatted_return_codes="$rcM;$rc101,$rc102,$rc103,$rc104,$rc105,$rc106,\
 $rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,\
 $rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:\
 $overall_success_code"
@@ -1204,6 +1210,7 @@ show_disk_space_graphically_on_remote_machine $private_M_user_at_machine >> $tem
 backup_remote_directory_to_local \
     $private_M_username $private_M_machine \
     /Users/$private_M_username $private_M_desktop_backup
+rcM=$?
 
 blank_line
 put_remote_machine_back_to_sleep $private_M_user_at_machine
