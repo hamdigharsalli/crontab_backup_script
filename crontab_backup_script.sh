@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=164
+	script_version=165
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -760,6 +760,22 @@ put_remote_machine_back_to_sleep()
     sleep 60
 }
 
+#
+# Usage: $0 user@machine
+#
+
+function dim_display_on_remote_machine
+{
+    user_at_machine=$1
+	machine=`echo $user_at_machine | cut -d @ -f 2`
+
+    $ping_command $machine
+    if [ $? -eq 0 ]; then
+        $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
+            $user_at_machine "pmset displaysleepnow" >> $tempfile 2>&1
+    fi
+}
+
 check_for_existence_of_all_backup_volumes()
 {
 	if [[ ! -e $backup_1 && ! -e $backup_1_ofs ]]
@@ -1168,6 +1184,8 @@ graceful_exit()
 # Here is where the script really begins.
 #==========================================================================
 
+pmset displaysleepnow
+
 initialise_variables
 check_for_lockfile
 check_for_killfile_before_running
@@ -1202,6 +1220,7 @@ end_preformatted
 
 show_disk_space_graphically >> $tempfile
 
+dim_display_on_remote_machine $private_M_user_at_machine
 check_free_space_on_remote_machine $private_M_user_at_machine
 
 show_disk_space_graphically_on_remote_machine $private_M_user_at_machine >> $tempfile
