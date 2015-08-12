@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=165
+	script_version=166
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -754,6 +754,7 @@ put_remote_machine_back_to_sleep()
 
     $ping_command $machine
     if [ $? -eq 0 ]; then
+        report "Sending sleep command to $machine."
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine "pmset sleepnow" >> $tempfile 2>&1
     fi
@@ -771,6 +772,7 @@ function dim_display_on_remote_machine
 
     $ping_command $machine
     if [ $? -eq 0 ]; then
+        report "Dimming the display on $machine"
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine "pmset displaysleepnow" >> $tempfile 2>&1
     fi
@@ -1184,6 +1186,7 @@ graceful_exit()
 # Here is where the script really begins.
 #==========================================================================
 
+report "Dimming the display."
 pmset displaysleepnow
 
 initialise_variables
