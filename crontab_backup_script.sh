@@ -456,6 +456,7 @@ function backup_remote_directory_to_local {
 
 mount_backup_volumes()
 {
+    report "Mounting the offline backup volumes."
     begin_preformatted
 	/usr/sbin/diskutil quiet mountDisk $backup_device_1 >> $tempfile
 	/usr/sbin/diskutil mountDisk $backup_device_2       >> $tempfile
@@ -464,6 +465,7 @@ mount_backup_volumes()
 
 unmount_backup_volumes()
 {
+    report "Dismounting the offline backup volumes."
     begin_preformatted
 	/usr/sbin/diskutil unmountDisk $backup_device_1     >> $tempfile
 	/usr/sbin/diskutil unmountDisk $backup_device_2     >> $tempfile
@@ -773,6 +775,8 @@ function dim_display_on_remote_machine
     $ping_command $machine
     if [ $? -eq 0 ]; then
         # First query if the display is on or off currently.
+
+        report "Checking whether the display on M's machine is lit up."
 
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine \
@@ -1259,7 +1263,7 @@ rcM=$?
 
 blank_line
 put_remote_machine_back_to_sleep $private_M_user_at_machine
-
+sleep 20
 determine_state_of_remote_machine $private_M_machine
 
 #
