@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=172
+	script_version=173
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -331,7 +331,7 @@ check_for_lockfile()
             # guarantee that this instance of the script won't continue running
             # in parallel.
             #
-            echo "ALERT: `basename $0` is already running" \
+            echo "ALERT: `basename $0` v$script_version is already running" \
                 "at `date +%Y%m%d.%H%M`...this instance is exiting." >> $summfile
             exit 0
         fi
@@ -778,10 +778,12 @@ function dim_display_on_remote_machine
 
         report "Checking whether the display on M's machine is lit up."
 
+        # Note: a double-quoted string is split with a backslash and works.
+
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine \
             "pmset -g log | grep -i \"display is\" | tail -2 \
-                | tr -s ' ' | cut -d ' ' -f 1-3,5-99 >> $tempfile 2>&1
+                | tr -s ' ' | cut -d ' ' -f 1-3,5-99" >> $tempfile 2>&1
 
         report "Dimming the display on $machine"
 
@@ -1187,7 +1189,8 @@ graceful_exit()
     #
 
     echo "$formatted_return_codes in $formatted_elapsed_time" \
-        "on `date +\"%F at %R %Z\"` ($short_success_code)" >> $summfile
+        "on `date +\"%F at %R %Z\"` ($short_success_code) " \
+        "version $script_version" >> $summfile
 
 	blank_line
 
