@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=175
+	script_version=176
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -785,7 +785,11 @@ function dim_display_on_remote_machine
             "pmset -g log | grep -i 'display is' | tail -1 \
                 | cut -f 2" >> $tempfile 2>&1
 
-        report "The last time the display was turned on was"
+        # Calculate how long the display has been lit up.
+        time_on=1
+        time_now=2
+
+        report "The display has been on for ?s:"
 
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine \
