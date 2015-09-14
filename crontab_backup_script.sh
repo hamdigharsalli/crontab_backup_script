@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=177
+	script_version=179
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -382,6 +382,7 @@ determine_state_of_remote_machine()
 		java -classpath /private/var/root WakeOnLan \
 			$broadcast_address $mac_address >> $tempfile
 
+        report "sleeping for 30 seconds"
 		sleep 30
 	fi
 
@@ -760,6 +761,7 @@ put_remote_machine_back_to_sleep()
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine "pmset sleepnow" >> $tempfile 2>&1
     fi
+    report "sleeping for 60 seconds"
     sleep 60
 }
 
@@ -783,41 +785,38 @@ function dim_display_on_remote_machine
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine \
             "pmset -g log | grep -i 'display is' | tail -1 \
-                | cut -f 2" >> $tempfile 2>&1
+                | cut -f 2" | grep -iq "turned on"
 
-        # Calculate how long the display has been lit up.
+        if [$? == 0]; then
+            # Calculate how long the display has been lit up.
 
-        time_on=`$ssh_command -i /Users/$backup_username/.ssh/id_rsa \
-            $user_at_machine \
-            "pmset -g log | grep -i 'display is turned on' | tail -1 \
-                | cut -d ' ' -f 1-3 | quote \
-                | xargs date -j -f \"%Y-%m-%s %H:%M:%S %z\" +%s"`
+            time_on=`$ssh_command -i /Users/$backup_username/.ssh/id_rsa \
+                $user_at_machine \
+                "pmset -g log | grep -i 'display is turned on' | tail -1 \
+                    | cut -d ' ' -f 1-3 | /usr/local/bin/quote \
+                    | xargs date -j -f '%Y-%m-%d %H:%M:%S %z' +%s"`
 
-        time_now=`$ssh_command -i /Users/$backup_username/.ssh/id_rsa \
-            $user_at_machine "date +%s"`
+            time_now=`$ssh_command -i /Users/$backup_username/.ssh/id_rsa \
+                $user_at_machine "date +%s"`
 
-        on_time=`expr $time_now - $time_on`
+            on_time=`expr $time_now - $time_on`
 
-        report "The display has been on for $on_time s."
+            report "The display has been on for $on_time s."
 
-        $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
-            $user_at_machine \
-            "pmset -g log | grep -i 'display is turned on' | tail -1 \
-                | tr -s ' ' | cut -d ' ' -f 1-3,5-99" >> $tempfile 2>&1
+            report "Dimming the display on $machine"
 
-        report "`date +'%F %T %z'`" " is the current time."
+            $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
+                $user_at_machine "pmset displaysleepnow" >> $tempfile 2>&1
 
-        report "Dimming the display on $machine"
+            # Now see if the screen really is off.
 
-        $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
-            $user_at_machine "pmset displaysleepnow" >> $tempfile 2>&1
-
-        # Now see if the screen really is off.
-
-        $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
-            $user_at_machine \
-            "pmset -g log | grep -i 'display is' | tail -1 \
-                | cut -f 2" >> $tempfile 2>&1
+            $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
+                $user_at_machine \
+                "pmset -g log | grep -i 'display is' | tail -1 \
+                    | cut -f 2" >> $tempfile 2>&1
+        else
+            report "The display is dark."
+        fi
     fi
 }
 
@@ -1288,6 +1287,7 @@ rcM=$?
 
 blank_line
 put_remote_machine_back_to_sleep $private_M_user_at_machine
+report "sleeping for 20 seconds"
 sleep 20
 determine_state_of_remote_machine $private_M_machine
 
