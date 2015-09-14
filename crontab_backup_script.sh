@@ -790,14 +790,15 @@ function dim_display_on_remote_machine
         time_on=`$ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine \
             "pmset -g log | grep -i 'display is turned on' | tail -1 \
-                | cut -d ' ' -f 1-3 | date -j +%s"`
+                | cut -d ' ' -f 1-3 | quote \
+                | xargs date -j -f \"%Y-%m-%s %H:%M:%S %z\" +%s"`
 
         time_now=`$ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine "date +%s"`
 
         on_time=`expr $time_now - $time_on`
 
-        report "The display has been on for $on_time seconds."
+        report "The display has been on for $on_time s."
 
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine \
