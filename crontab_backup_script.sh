@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=179
+	script_version=180
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -826,9 +826,31 @@ function dim_display_on_remote_machine
 
 function dim_display_on_local_machine
 {
-    report "Dimming the display on this machine."
-    pmset displaysleepnow
-    report "`pmset -g log | grep -i "display is" | tail -1 | cut -c 48-99`"
+    pmset -g log | grep -i 'display is' | tail -1 \
+        | cut -f 2 | grep -iq 'turned on'
+
+    if [$? == 0]; then
+        # Calculate how long the display has been lit up.
+
+        time_on=`pmset -g log | grep -i 'display is turned on' | tail -1 \
+            | cut -d ' ' -f 1-3 | /usr/local/bin/quote \
+            | xargs date -j -f '%Y-%m-%d %H:%M:%S %z' +%s"`
+
+        time_now=`date +%s`
+
+        on_time=`expr $time_now - $time_on`
+
+        report "The display has been on for $on_time s."
+
+        report "Dimming the display on this machine."
+        pmset displaysleepnow
+
+        # Now see if the screen really is off.
+        report "`pmset -g log | grep -i "display is" | tail -1 \
+            | cut -f 2`"
+    else
+        report "The display is dark."
+    fi
 }
 
 check_for_existence_of_all_backup_volumes()
