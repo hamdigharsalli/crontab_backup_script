@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=180
+	script_version=181
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -775,7 +775,7 @@ function dim_display_on_remote_machine
 	machine=`echo $user_at_machine | cut -d @ -f 2`
 
     $ping_command $machine
-    if [ $? -eq 0 ]; then
+    if [[ $? -eq 0 ]]; then
         # First query if the display is on or off currently.
 
         report "Checking whether the display on M's machine is lit up."
@@ -787,7 +787,7 @@ function dim_display_on_remote_machine
             "pmset -g log | grep -i 'display is' | tail -1 \
                 | cut -f 2" | grep -iq "turned on"
 
-        if [$? == 0]; then
+        if [[ $? -eq 0 ]]; then
             # Calculate how long the display has been lit up.
 
             time_on=`$ssh_command -i /Users/$backup_username/.ssh/id_rsa \
@@ -829,7 +829,7 @@ function dim_display_on_local_machine
     pmset -g log | grep -i 'display is' | tail -1 \
         | cut -f 2 | grep -iq 'turned on'
 
-    if [$? == 0]; then
+    if [[ $? -eq 0 ]]; then
         # Calculate how long the display has been lit up.
 
         time_on=`pmset -g log | grep -i 'display is turned on' | tail -1 \
