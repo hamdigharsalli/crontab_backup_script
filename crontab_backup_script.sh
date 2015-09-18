@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=181
+	script_version=182
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -801,7 +801,7 @@ function dim_display_on_remote_machine
 
             on_time=`expr $time_now - $time_on`
 
-            report "The display has been on for $on_time s."
+            report "The display has been lit up for $on_time seconds."
 
             report "Dimming the display on $machine"
 
@@ -840,7 +840,7 @@ function dim_display_on_local_machine
 
         on_time=`expr $time_now - $time_on`
 
-        report "The display has been on for $on_time s."
+        report "The display on this machine has been lit up for $on_time seconds."
 
         report "Dimming the display on this machine."
         pmset displaysleepnow
