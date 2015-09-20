@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=182
+	script_version=183
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -834,7 +834,7 @@ function dim_display_on_local_machine
 
         time_on=`pmset -g log | grep -i 'display is turned on' | tail -1 \
             | cut -d ' ' -f 1-3 | /usr/local/bin/quote \
-            | xargs date -j -f '%Y-%m-%d %H:%M:%S %z' +%s"`
+            | xargs date -j -f '%Y-%m-%d %H:%M:%S %z' +%s`
 
         time_now=`date +%s`
 
@@ -846,7 +846,7 @@ function dim_display_on_local_machine
         pmset displaysleepnow
 
         # Now see if the screen really is off.
-        report "`pmset -g log | grep -i "display is" | tail -1 \
+        report "`pmset -g log | grep -i 'display is' | tail -1 \
             | cut -f 2`"
     else
         report "The display is dark."
