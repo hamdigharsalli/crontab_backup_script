@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=183
+	script_version=184
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -801,7 +801,10 @@ function dim_display_on_remote_machine
 
             on_time=`expr $time_now - $time_on`
 
-            report "The display has been lit up for $on_time seconds."
+            report "The display has been lit up for `echo $on_time \
+                | perl -e 'my $sec = <>; printf \"%dd %dh %dm %ds\", \
+                    int($sec/(24*60*60)), ($sec/(60*60))%24, \
+                    ($sec/60)%60, $sec%60;'`"
 
             report "Dimming the display on $machine"
 
@@ -840,7 +843,9 @@ function dim_display_on_local_machine
 
         on_time=`expr $time_now - $time_on`
 
-        report "The display on this machine has been lit up for $on_time seconds."
+        report "The display on this machine has been lit up for" \
+            "`echo $on_time | perl -e 'my $sec = <>; printf \"%dd %dh %dm %ds\", \
+            int($sec/(24*60*60)), ($sec/(60*60))%24, ($sec/60)%60, $sec%60;'`"
 
         report "Dimming the display on this machine."
         pmset displaysleepnow
