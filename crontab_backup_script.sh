@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=186
+	script_version=187
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -829,6 +829,9 @@ function dim_display_on_remote_machine
 
 function dim_display_on_local_machine
 {
+    /bin/echo -n "Display status: " >> $tempfile
+    report "`pmset -g log | grep -i 'display is' | tail -1 | cut -f 2`."
+
     pmset -g log | grep -i 'display is' | tail -1 \
         | cut -f 2 | grep -iq 'turned on'
 
@@ -1272,7 +1275,8 @@ check_for_lockfile
 check_for_killfile_before_running
 initialise_tempfile
 dim_display_on_local_machine
-report "This is the 0500 daily crontab backup report."
+blank_line
+report "This is the `date +%H%M` daily crontab backup report."
 blank_line
 did_we_get_the_secret_information_interrogative
 are_we_running_as_root_interrogative
