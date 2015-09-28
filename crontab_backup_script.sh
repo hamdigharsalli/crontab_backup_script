@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=187
+	script_version=188
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -778,10 +778,6 @@ function dim_display_on_remote_machine
     if [[ $? -eq 0 ]]; then
         # First query if the display is on or off currently.
 
-        report "Checking whether the display on M's machine is lit up."
-
-        # Note: a double-quoted string is split with a backslash and works.
-
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine \
             "pmset -g log | grep -i 'display is' | tail -1 \
@@ -801,7 +797,7 @@ function dim_display_on_remote_machine
 
             on_time=`expr $time_now - $time_on`
 
-            report "The display has been lit up for `echo $on_time \
+            report "The display on $machine has been lit up for `echo $on_time \
                 | perl -e 'my $sec = <>; printf \"%dd %dh %dm %ds\", \
                     int($sec/(24*60*60)), ($sec/(60*60))%24, \
                     ($sec/60)%60, $sec%60;'`."
@@ -818,7 +814,7 @@ function dim_display_on_remote_machine
                 "pmset -g log | grep -i 'display is' | tail -1 \
                     | cut -f 2" >> $tempfile 2>&1
         else
-            report "The display is dark."
+            report "The display on $machine is dark."
         fi
     fi
 }
@@ -829,9 +825,6 @@ function dim_display_on_remote_machine
 
 function dim_display_on_local_machine
 {
-    /bin/echo -n "Display status: " >> $tempfile
-    report "`pmset -g log | grep -i 'display is' | tail -1 | cut -f 2`."
-
     pmset -g log | grep -i 'display is' | tail -1 \
         | cut -f 2 | grep -iq 'turned on'
 
