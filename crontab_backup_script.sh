@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=188
+	script_version=189
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -178,6 +178,20 @@ separator()
 {
 	blank_line
     echo "        <hr/>" >> $tempfile
+}
+
+#
+# To avoid unexplained hangs when running the script manually, give an
+# indication when we deliberately pause.
+#
+# Usage: %0 seconds
+#
+
+function reportsleep
+{
+    how_long_to_sleep=$1
+    report "(sleeping for %how_long_to_sleep seconds)"
+    sleep $how_long_to_sleep
 }
 
 #
@@ -382,8 +396,7 @@ determine_state_of_remote_machine()
 		java -classpath /private/var/root WakeOnLan \
 			$broadcast_address $mac_address >> $tempfile
 
-        report "sleeping for 30 seconds"
-		sleep 30
+        reportsleep 30
 	fi
 
 	$ping_command $m
@@ -411,7 +424,6 @@ function backup_remote_directory_to_local {
     remote_rsync_options="-iavz --no-human-readable \
         -e \"$ssh_command -i /Users/$backup_username/.ssh/id_rsa\""
 
-    blank_line
     report "Backing up M's ~ to A's /"
     blank_line
 
@@ -434,7 +446,6 @@ function backup_remote_directory_to_local {
         end_preformatted
 
         report "The return code from the rsync(1) programme was \"$RC_from_rsync\"."
-        blank_line
         report "Done backing up M's ~ to A's /"
         RC=$RC_from_rsync
     else
@@ -509,7 +520,7 @@ backup_local_disk()
                         size_accumulator_formatted=`echo $size_accumulator \
                             | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
 
-                        report "size_accumulator increased by $bytes_backed_up_formatted" \
+                        # report "size_accumulator increased by $bytes_backed_up_formatted" \
                             " to $size_accumulator_formatted bytes."
 					else
 						blank_line
@@ -588,7 +599,7 @@ backup_remote_disk()
                     size_accumulator_formatted=`echo $size_accumulator \
                         | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
 
-                    report "size_accumulator increased by $bytes_backed_up_formatted" \
+                    # report "size_accumulator increased by $bytes_backed_up_formatted" \
                         " to $size_accumulator_formatted bytes."
 				else
 					blank_line
@@ -612,7 +623,7 @@ backup_remote_disk()
                         total_bytes_networked_formatted=`echo $total_bytes_networked \
                             | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
                     
-                        report "bandwidth_accumulator increased by $total_bytes_networked_formatted" \
+                        # report "bandwidth_accumulator increased by $total_bytes_networked_formatted" \
                             " to $bandwidth_accumulator_formatted bytes."
 					else
 						blank_line
@@ -738,7 +749,6 @@ check_free_space_on_remote_machine()
 	if [ $? -eq 0 ]; then
         blank_line
 		report "Disk space on $machine:"
-		blank_line
         begin_preformatted
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
 			$user_at_machine "$df_command" >> $tempfile 2>&1
@@ -761,8 +771,7 @@ put_remote_machine_back_to_sleep()
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine "pmset sleepnow" >> $tempfile 2>&1
     fi
-    report "sleeping for 60 seconds"
-    sleep 60
+    reportsleep 40
 }
 
 #
@@ -1309,10 +1318,8 @@ backup_remote_directory_to_local \
     /Users/$private_M_username $private_M_desktop_backup
 rcM=$?
 
-blank_line
 put_remote_machine_back_to_sleep $private_M_user_at_machine
-report "sleeping for 20 seconds"
-sleep 20
+reportsleep 20
 determine_state_of_remote_machine $private_M_machine
 
 #
