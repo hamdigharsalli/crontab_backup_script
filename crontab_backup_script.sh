@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=190
+	script_version=191
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -570,7 +570,6 @@ backup_remote_disk()
 	bytes_rcvd=0
 	total_bytes_networked=0
 
-	blank_line
 	report "---- Backing up remote disk $TARGET to $BACKUP"
 	blank_line
 
@@ -693,7 +692,6 @@ snapshot_M_email()
 	backup_directory=$BACKUP/daily_archive
 	snapshot_file=hpwtdogmom.org.webmail_M_only_and_mail_spool.`date +%s`.tar
 
-	blank_line
 	report "---- snapshotting M's email to $BACKUP"
 	blank_line
 
@@ -907,7 +905,6 @@ backup_to_onsite_disk()
 		# Backup remote files
 		#
 
-		blank_line
 		report "Checking if target directories exist " \
 			"in the $backup_2 volume..."
 
@@ -1277,7 +1274,6 @@ check_for_lockfile
 check_for_killfile_before_running
 initialise_tempfile
 dim_display_on_local_machine
-blank_line
 report "This is the `date +%H%M` daily crontab backup report."
 blank_line
 did_we_get_the_secret_information_interrogative
@@ -1317,6 +1313,7 @@ backup_remote_directory_to_local \
     $private_M_username $private_M_machine \
     /Users/$private_M_username $private_M_desktop_backup
 rcM=$?
+blank_line
 
 put_remote_machine_back_to_sleep $private_M_user_at_machine
 reportsleep 20
