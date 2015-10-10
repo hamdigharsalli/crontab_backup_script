@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=189
+	script_version=190
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -190,7 +190,7 @@ separator()
 function reportsleep
 {
     how_long_to_sleep=$1
-    report "(sleeping for %how_long_to_sleep seconds)"
+    report "(sleeping for $how_long_to_sleep seconds)"
     sleep $how_long_to_sleep
 }
 
