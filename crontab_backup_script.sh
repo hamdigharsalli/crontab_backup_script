@@ -408,7 +408,7 @@ determine_state_of_remote_machine()
 }
 
 #
-# The following function is used to backup M's ~ to A's /
+# The following function backs up a remote directory to a local one.
 #
 # rsync -i... | grep -v "^\." is supposed to show only files that changed.
 #
@@ -454,6 +454,22 @@ function backup_remote_directory_to_local {
     fi
 
     return $RC
+}
+
+#
+# Backup M's ~ to A's /
+#
+# Usage: $0
+#
+
+function backup_M_disk_to_A_disk
+{
+    backup_remote_directory_to_local \
+        $private_M_username $private_M_machine \
+        /Users/$private_M_username $private_M_desktop_backup
+    rcM=$?
+
+    blank_line
 }
 
 #
@@ -731,10 +747,29 @@ $BACKUP/hpwtdogmom.org/.webmail/users/$private_M_directory/ $BACKUP/mail_spool/"
 }
 
 #
+# Show disk space at the beginning of the report, for convenience.
+#
+# We can't use the report() function here as it compresses blank spaces out
+# of the output of df.
+#
+# Usage: $0
+#
+
+function show_disk_space_on_local_machine
+{
+    blank line
+    report "Disk space on local drives:"
+
+    begin_preformatted
+        $df_command >> $tempfile
+    end_preformatted
+}
+
+#
 # Usage: $0 user@machine
 #
 
-check_free_space_on_remote_machine()
+show_disk_space_on_remote_machine()
 {
 	user_at_machine=$1
 	machine=`echo $user_at_machine | cut -d @ -f 2`
@@ -769,7 +804,7 @@ put_remote_machine_back_to_sleep()
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine "pmset sleepnow" >> $tempfile 2>&1
     fi
-    reportsleep 40
+    reportsleep 90
 }
 
 #
@@ -1176,12 +1211,12 @@ function bar_chart
 # Display a bar chart showing the percentage free on all mounted volumes.
 #
 
-function show_disk_space_graphically
+function show_disk_space_graphically_on_local_machine
 {
     begin_paragraph
     $df_command | tr -s ' ' | cut -d ' ' -f 5,6 \
         | tr -d '%' | sed '1d' \
-        | while read -r line; do bar_chart "$line"; done
+        | while read -r line; do bar_chart "$line"; done >> $tempfile
     end_paragraph
 }
 
@@ -1198,7 +1233,7 @@ function show_disk_space_graphically_on_remote_machine
     $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
         $user_at_machine "$df_command" | tr -s ' ' \
         | cut -d ' ' -f 5,6 | tr -d '%' | sed '1d' \
-        | while read -r line; do bar_chart "$line"; done
+        | while read -r line; do bar_chart "$line"; done >> $tempfile
     end_paragraph
 }
 
@@ -1258,7 +1293,7 @@ graceful_exit()
 	$df_command >> $tempfile
     end_preformatted
 
-    show_disk_space_graphically >> $tempfile
+    show_disk_space_graphically_on_local_machine
 
 	unmount_backup_volumes
 
@@ -1287,36 +1322,17 @@ determine_backup_devices
 determine_state_of_remote_machine $applied_math_server
 determine_state_of_remote_machine $hpwtdogmom_server
 determine_state_of_remote_machine $private_M_machine 192.168.0.255 $private_M_machine_MAC_address
-
-#
-# Show disk space at the beginning of the report, for convenience.
-#
-# We can't use the report() function here as it compresses blank spaces out
-# of the output of df.
-#
-
-blank line
-report "Disk space on local drives:"
-
-begin_preformatted
-$df_command >> $tempfile
-end_preformatted
-
-show_disk_space_graphically >> $tempfile
-
 dim_display_on_remote_machine $private_M_user_at_machine
-check_free_space_on_remote_machine $private_M_user_at_machine
 
-show_disk_space_graphically_on_remote_machine $private_M_user_at_machine >> $tempfile
+show_disk_space_on_local_machine
+show_disk_space_graphically_on_local_machine
 
-backup_remote_directory_to_local \
-    $private_M_username $private_M_machine \
-    /Users/$private_M_username $private_M_desktop_backup
-rcM=$?
-blank_line
+show_disk_space_on_remote_machine $private_M_user_at_machine
+show_disk_space_graphically_on_remote_machine $private_M_user_at_machine
+
+backup_M_disk_to_A_disk
 
 put_remote_machine_back_to_sleep $private_M_user_at_machine
-reportsleep 20
 determine_state_of_remote_machine $private_M_machine
 
 #
@@ -1327,7 +1343,6 @@ determine_state_of_remote_machine $private_M_machine
 #
 
 mount_backup_volumes
-
 check_for_existence_of_all_backup_volumes
 
 backup_to_onsite_disk
