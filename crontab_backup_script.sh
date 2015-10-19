@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=191
+	script_version=192
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -190,7 +190,7 @@ separator()
 function reportsleep
 {
     how_long_to_sleep=$1
-    report "(sleeping for $how_long_to_sleep seconds)"
+    report "(pause for $how_long_to_sleep seconds)"
     sleep $how_long_to_sleep
 }
 
@@ -468,8 +468,6 @@ function backup_M_disk_to_A_disk
         $private_M_username $private_M_machine \
         /Users/$private_M_username $private_M_desktop_backup
     rcM=$?
-
-    blank_line
 }
 
 #
@@ -948,6 +946,8 @@ backup_to_onsite_disk()
 		create_directory_if_it_does_not_exist $backup_2 mail_spool
 		create_directory_if_it_does_not_exist $backup_2 daily_archive
 
+        blank_line
+
 		backup_remote_disk $target_3 $backup_2/hpwtdogmom.org/
 		rc103=$?
 
@@ -1026,6 +1026,8 @@ backup_to_offsite_disk()
 		create_directory_if_it_does_not_exist $backup_2_ofs applied-math.org
 		create_directory_if_it_does_not_exist $backup_2_ofs mail_spool
 		create_directory_if_it_does_not_exist $backup_2_ofs daily_archive
+
+        blank_line
 
 		backup_remote_disk $target_3 $backup_2_ofs/hpwtdogmom.org/
 		rc203=$?
@@ -1342,6 +1344,7 @@ determine_state_of_remote_machine $private_M_machine
 # failing.
 #
 
+blank_line
 mount_backup_volumes
 check_for_existence_of_all_backup_volumes
 
