@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=193
+	script_version=194
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -1359,6 +1359,8 @@ backup_to_offsite_disk
 #
 
 rm -f $lockfile
+
+determine_state_of_remote_machine $private_M_machine
 
 graceful_exit
 
