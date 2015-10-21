@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=194
+	script_version=195
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -438,8 +438,6 @@ function backup_remote_directory_to_local {
         report "The rsync_command_line was <code>$rsync_command_line</code>" \
             " and RC_from_rsync was \"$RC_from_rsync\" before rsync(1) was called."
 
-        blank_line
-
         begin_preformatted
         eval $rsync_command_line
         RC_from_rsync=$?
@@ -778,7 +776,6 @@ show_disk_space_on_remote_machine()
 
 	$ping_command $machine
 	if [ $? -eq 0 ]; then
-        blank_line
 		report "Disk space on $machine:"
         begin_preformatted
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
@@ -1361,6 +1358,7 @@ backup_to_offsite_disk
 rm -f $lockfile
 
 determine_state_of_remote_machine $private_M_machine
+blank_line
 
 graceful_exit
 
