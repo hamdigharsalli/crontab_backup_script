@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=195
+	script_version=196
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -839,8 +839,6 @@ function dim_display_on_remote_machine
                     int($sec/(24*60*60)), ($sec/(60*60))%24, \
                     ($sec/60)%60, $sec%60;'`."
 
-            report "Dimming the display on $machine"
-
             $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
                 $user_at_machine "pmset displaysleepnow" >> $tempfile 2>&1
 
@@ -880,7 +878,6 @@ function dim_display_on_local_machine
             "`echo $on_time | perl -e 'my $sec = <>; printf \"%dd %dh %dm %ds\", \
             int($sec/(24*60*60)), ($sec/(60*60))%24, ($sec/60)%60, $sec%60;'`." 
 
-        report "Dimming the display on this machine."
         pmset displaysleepnow
 
         # Now see if the screen really is off.
@@ -1249,7 +1246,7 @@ send_report_and_exit()
 
 	blank_line
 
-	report "End of report ($short_success_code)"
+	report "End of report ($formatted_return_codes)"
 
 	email_report
 
