@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=196
+	script_version=197
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -797,7 +797,7 @@ put_remote_machine_back_to_sleep()
     if [ $? -eq 0 ]; then
         report "Sending sleep command to $machine."
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
-            $user_at_machine "pmset sleepnow &" >> $tempfile 2>&1
+            $user_at_machine "nohup /bin/sh -c '/bin/sleep 5 && pmset sleepnow'" >> $tempfile 2>&1
     fi
     reportsleep 60
 }
@@ -1354,7 +1354,13 @@ backup_to_offsite_disk
 
 rm -f $lockfile
 
-determine_state_of_remote_machine $private_M_machine
+$ping_command $private_M_machine
+if [ $? -eq 0 ]; then
+    report "The remote machine $m is up."
+else
+    report "The remote machine $m is down."
+fi
+
 blank_line
 
 graceful_exit
