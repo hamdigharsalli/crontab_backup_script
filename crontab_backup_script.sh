@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=197
+	script_version=198
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -118,6 +118,7 @@ initialise_variables()
 	global_failure_code="S"
 	onsite_backup_success_code="F"
 	offsite_backup_success_code="F"
+    M_root_backup_success_code="F"
 	overall_success_code="FAILURE"
 	short_success_code="F"
 
@@ -447,7 +448,7 @@ function backup_remote_directory_to_local {
         report "Done backing up M's ~ to A's /"
         RC=$RC_from_rsync
     else
-        report "Oops...can't do it; $remote_machine is not up."
+        report "Oops...can't do it; $remote_machine is not responding to ping."
         RC="D"
     fi
 
@@ -466,6 +467,10 @@ function backup_M_disk_to_A_disk
         $private_M_username $private_M_machine \
         /Users/$private_M_username $private_M_desktop_backup
     rcM=$?
+
+    if [ $rcM -eq 0 ]; then
+        M_root_backup_success_code="S"
+    fi
 }
 
 #
@@ -799,7 +804,7 @@ put_remote_machine_back_to_sleep()
         $ssh_command -i /Users/$backup_username/.ssh/id_rsa \
             $user_at_machine "nohup /bin/sh -c '/bin/sleep 5 && pmset sleepnow'" >> $tempfile 2>&1
     fi
-    reportsleep 60
+    reportsleep 45
 }
 
 #
@@ -1080,6 +1085,10 @@ figure_overall_success_code()
 	if [ "$offsite_backup_success_code" == "S" ]; then
 		overall_success_code="SUCCESS"
 	fi
+
+    if [ "$M_root_backup_success_code" == "F" ]; then
+        overall_success_code="FAILURE"
+    fi
 
 	if [ "$overall_success_code" == "SUCCESS" ]; then
 		short_success_code="S"
