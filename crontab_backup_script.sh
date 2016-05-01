@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=198
+	script_version=199
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -1326,19 +1326,19 @@ report "We are using `$rsync_command --version | head -1`."
 determine_backup_devices
 determine_state_of_remote_machine $applied_math_server
 determine_state_of_remote_machine $hpwtdogmom_server
-determine_state_of_remote_machine $private_M_machine 192.168.0.255 $private_M_machine_MAC_address
-dim_display_on_remote_machine $private_M_user_at_machine
+# determine_state_of_remote_machine $private_M_machine 192.168.0.255 $private_M_machine_MAC_address
+# dim_display_on_remote_machine $private_M_user_at_machine
 
 show_disk_space_on_local_machine
 show_disk_space_graphically_on_local_machine
 
-show_disk_space_on_remote_machine $private_M_user_at_machine
-show_disk_space_graphically_on_remote_machine $private_M_user_at_machine
+# show_disk_space_on_remote_machine $private_M_user_at_machine
+# show_disk_space_graphically_on_remote_machine $private_M_user_at_machine
 
-backup_M_disk_to_A_disk
+# backup_M_disk_to_A_disk
 
-put_remote_machine_back_to_sleep $private_M_user_at_machine
-determine_state_of_remote_machine $private_M_machine
+# put_remote_machine_back_to_sleep $private_M_user_at_machine
+# determine_state_of_remote_machine $private_M_machine
 
 #
 # We mount the backup drives after the `$df_command` so we can see in the
@@ -1363,12 +1363,12 @@ backup_to_offsite_disk
 
 rm -f $lockfile
 
-$ping_command $private_M_machine
-if [ $? -eq 0 ]; then
-    report "The remote machine $m is up."
-else
-    report "The remote machine $m is down."
-fi
+# $ping_command $private_M_machine
+# if [ $? -eq 0 ]; then
+#     report "The remote machine $m is up."
+# else
+#     report "The remote machine $m is down."
+# fi
 
 blank_line
 
