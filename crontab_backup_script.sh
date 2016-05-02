@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=199
+	script_version=200
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -1126,7 +1126,7 @@ compute_statistics()
 
 format_report()
 {
-	formatted_return_codes="($rcM);$rc101,$rc102,$rc103,$rc104,$rc105,$rc106,\
+	formatted_return_codes="$rc101,$rc102,$rc103,$rc104,$rc105,$rc106,\
 $rc107,$rc108,$rc109,$rc110,$rc111,$rc112,$rc113;$rc201,$rc202,$rc203,\
 $rc204,$rc205,$rc206,$rc207,$rc208,$rc209,$rc210,$rc211,$rc212,$rc213:\
 $overall_success_code"
