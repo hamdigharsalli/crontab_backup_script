@@ -1086,9 +1086,9 @@ figure_overall_success_code()
 		overall_success_code="SUCCESS"
 	fi
 
-    if [ "$M_root_backup_success_code" == "F" ]; then
-        overall_success_code="FAILURE"
-    fi
+    # if [ "$M_root_backup_success_code" == "F" ]; then
+    #    overall_success_code="FAILURE"
+    # fi
 
 	if [ "$overall_success_code" == "SUCCESS" ]; then
 		short_success_code="S"
