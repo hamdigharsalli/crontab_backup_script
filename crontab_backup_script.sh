@@ -758,7 +758,7 @@ $BACKUP/hpwtdogmom.org/.webmail/users/$private_M_directory/ $BACKUP/mail_spool/"
 
 function show_disk_space_on_local_machine
 {
-    blank line
+    blank_line
     report "Disk space on local drives:"
 
     begin_preformatted
