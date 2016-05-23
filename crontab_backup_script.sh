@@ -24,7 +24,7 @@ initialise_variables()
 	report_to_email_address=$private_email_address_to_send_report_to
 	from_email_address=cron
 
-	script_version=200
+	script_version=201
 
 	#
 	# Note that only alphanumeric characters and underscores are allowed
@@ -537,7 +537,7 @@ backup_local_disk()
                         size_accumulator_formatted=`echo $size_accumulator \
                             | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
 
-                        # report "size_accumulator increased by $bytes_backed_up_formatted" \
+                        report "size_accumulator increased by $bytes_backed_up_formatted" \
                             " to $size_accumulator_formatted bytes."
 					else
 						blank_line
@@ -615,7 +615,7 @@ backup_remote_disk()
                     size_accumulator_formatted=`echo $size_accumulator \
                         | perl -pe '1 while s/(.*)(\d)(\d\d\d)/$1$2,$3/'`
 
-                    # report "size_accumulator increased by $bytes_backed_up_formatted" \
+                    report "size_accumulator increased by $bytes_backed_up_formatted" \
                         " to $size_accumulator_formatted bytes."
 				else
 					blank_line
@@ -727,11 +727,13 @@ $BACKUP/hpwtdogmom.org/.webmail/users/$private_M_directory/ $BACKUP/mail_spool/"
         end_preformatted
 
 		if [ $RC -ne 0 ]; then
+			report "Return code from tar was $RC."
 			global_failure_code="F"
 		else
 			gzip $backup_directory/$snapshot_file
 			RC=$?
 			if [ $RC -ne 0 ]; then
+				report "Return code from gzip was $RC."
 				global_failure_code="F"
 			fi
 
@@ -1331,6 +1333,10 @@ determine_state_of_remote_machine $hpwtdogmom_server
 
 show_disk_space_on_local_machine
 show_disk_space_graphically_on_local_machine
+
+#
+# The following were taken out when M's desktop was decommissioned.
+#
 
 # show_disk_space_on_remote_machine $private_M_user_at_machine
 # show_disk_space_graphically_on_remote_machine $private_M_user_at_machine
