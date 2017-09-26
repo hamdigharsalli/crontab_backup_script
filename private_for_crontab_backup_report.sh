@@ -1,1 +1,1 @@
-/home/rjl/Documents/thesis/github/notes.new/private_for_crontab_backup_report.sh
+../notes.new/private_for_crontab_backup_report.sh
